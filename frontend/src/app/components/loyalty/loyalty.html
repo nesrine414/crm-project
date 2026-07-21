@@ -1,0 +1,76 @@
+<div class="breadcrumb-bar">
+  <span class="breadcrumb-label">Fidélisation & Récompenses</span>
+</div>
+
+<div class="stats-grid" style="display: flex; gap: 15px; margin-top: 15px;">
+  <div class="stat-card" style="flex: 1; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <span class="stat-title" style="display: block; color: #666; font-size: 0.85rem;">Points Globaux Distribués</span>
+    <span class="stat-value" style="font-size: 1.4rem; font-weight: bold; color: #4F46E5;">{{ stats().totalPoints }} pts</span>
+  </div>
+  <div class="stat-card" style="flex: 1; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <span class="stat-title" style="display: block; color: #666; font-size: 0.85rem;">Comptes Entreprises Actifs</span>
+    <span class="stat-value" style="font-size: 1.4rem; font-weight: bold; color: #10B981;">{{ stats().activeAccounts }}</span>
+  </div>
+</div>
+
+<div class="list-panel" style="margin-top: 20px;">
+  <div class="filters-row" style="margin-bottom: 15px;">
+    <input type="text" placeholder="Rechercher un compte structure..." [(ngModel)]="searchTerm" style="padding: 8px 12px; width: 280px; border-radius: 4px; border: 1px solid #ccc;">
+  </div>
+
+  <div class="table-card" style="background: white; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 2px solid #eee; text-align: left; font-size: 0.9rem; color: #555;">
+          <th style="padding: 12px;">Raison Sociale Client</th>
+          <th style="padding: 12px;">Palier</th>
+          <th style="padding: 12px;">Solde Cumulé</th>
+          <th style="padding: 12px;">Progression Palier</th>
+          <th style="padding: 12px; text-align: right;">Ajustement</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (account of filteredAccounts(); track account.id) {
+          <tr style="border-bottom: 1px solid #eee; font-size: 0.95rem;">
+            <td style="padding: 12px; font-weight: 600; color: #111827;">{{ account.clientName }}</td>
+            <td style="padding: 12px;"><span style="background: #f3f4f6; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">{{ account.tier }}</span></td>
+            <td style="padding: 12px;"><strong>{{ account.points }}</strong> pts</td>
+            <td style="padding: 12px;">
+              <div style="background: #eee; width: 120px; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="background: #10B981; height: 100%;" [style.width.%]="progressToNextTier(account.points)"></div>
+              </div>
+            </td>
+            <td style="padding: 12px; text-align: right;">
+              <button class="add-btn" (click)="openAddPoints(account)" style="padding: 4px 10px; font-size: 0.8rem;">+ Points</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (showAddPointsModal()) {
+  <div class="modal-overlay" (click)="closeAddPoints()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Ajuster le solde de points</h2>
+        <button class="close-btn" (click)="closeAddPoints()">✕</button>
+      </div>
+      <form (ngSubmit)="submitAddPoints()" style="padding: 20px;">
+        <div style="margin-bottom: 15px;">
+          <label style="display:block; margin-bottom:5px; font-weight:600;">Points à attribuer *</label>
+          <input type="number" [(ngModel)]="addPointsForm.points" name="points" required style="width:100%; height:34px; padding:0 8px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+          <label style="display:block; margin-bottom:5px; font-weight:600;">Motif / Référence règlementaire</label>
+          <input type="text" [(ngModel)]="addPointsForm.label" name="label" placeholder="Ex: Signature avenant" style="width:100%; height:34px; padding:0 8px;">
+        </div>
+        <div style="text-align: right; margin-top: 20px;">
+          <button type="button" (click)="closeAddPoints()" style="margin-right: 8px; padding: 6px 12px;">Annuler</button>
+          <button type="submit" class="add-btn" style="padding: 6px 14px;">Appliquer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

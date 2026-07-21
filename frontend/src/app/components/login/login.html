@@ -1,0 +1,49 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="brand-badge">L</div>
+      <span class="brand-name">LCA CRM</span>
+    </div>
+
+    <h2>Connexion</h2>
+    <p class="subtitle">Accédez à votre espace de gestion client</p>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label>Email</label>
+        <div class="input-icon-wrapper">
+          <input type="email" [(ngModel)]="email" name="email" placeholder="Entrez votre email" required>
+          <span class="input-icon">✉</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Mot de passe</label>
+        <div class="input-icon-wrapper">
+          <input [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" name="password" placeholder="Entrez votre mot de passe" required>
+          <span class="input-icon" (click)="togglePassword()">🔒</span>
+        </div>
+      </div>
+
+@if (errorMessage()) {
+        <p class="error-message">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="submit-btn" [disabled]="isLoading()">
+        {{ isLoading() ? 'Connexion...' : 'Se connecter' }}
+      </button>
+      <div class="link-row">
+        <a routerLink="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
+        <span class="link-sep">|</span>
+        <a routerLink="/register" class="forgot-link">Créer un compte</a>
+      </div>
+    </form>
+
+    <div class="divider"><span>Ou se connecter avec</span></div>
+
+    <div class="oauth-row">
+      <button type="button" class="oauth-btn oauth-google">Google</button>
+      <button type="button" class="oauth-btn oauth-linkedin">LinkedIn</button>
+    </div>
+  </div>
+</div>

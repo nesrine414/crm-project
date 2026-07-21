@@ -1,0 +1,251 @@
+<div class="breadcrumb-bar">
+  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  <span class="breadcrumb-sep">›</span>
+  <span class="breadcrumb-label">Entreprises & Clients</span>
+
+  <div class="breadcrumb-actions">
+    <button class="ghost-btn" (click)="refreshData()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Actualiser
+    </button>
+    <button class="ghost-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+      Exporter
+    </button>
+  </div>
+</div>
+
+<div class="list-panel">
+  <div class="list-panel-header">
+    <h2>Clients & Leads <span class="count-badge">{{ filteredClients().length }}</span></h2>
+    <div class="list-panel-actions">
+      <button class="add-btn" (click)="openAddModal()">+ Nouvelle entreprise</button>
+    </div>
+  </div>
+
+  <div class="search-wrapper">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+<input type="text" placeholder="Rechercher une entreprise, un secteur, une ville..." [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-check"><input type="checkbox"></th>
+          <th class="sortable" (click)="sortBy()">Nom de l'entreprise <span class="sort-icon">{{ sortIcon() }}</span></th>
+          <th>Secteur d'activité</th>
+          <th>Ville</th>
+          <th>Statut</th>
+          <th>Valeur Gagnée</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (client of pagedClients(); track client.id) {
+          <tr (click)="selectClient(client)" [class.active-row]="selectedClient()?.id === client.id">
+            <td class="col-check" (click)="$event.stopPropagation()"><input type="checkbox"></td>
+            <td>
+              <div class="name-with-avatar">
+                <span class="avatar" [style.background]="avatarColorOf(client)">{{ initialsOf(client) }}</span>
+                <div>
+                  <div class="name-cell">{{ client.name }}</div>
+                  <div class="title-cell">{{ client.contacts.length }} contact(s) lié(s)</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ client.sector || '—' }}</td>
+<td>{{ client.address || '—' }}</td>            <td>
+              <span class="status-badge" [class.badge-client]="client.status === 'Client'">
+                {{ client.status }}
+              </span>
+            </td>
+            <td class="value-cell">{{ dealValue(client.id) > 0 ? (dealValue(client.id) + ' DT') : '—' }}</td>
+            <td class="col-actions" (click)="$event.stopPropagation()">
+              <div class="row-actions">
+                <button class="icon-btn" title="Voir les détails">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-row">Aucun client ni entreprise ne correspond à votre recherche.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination-bar">
+      <span class="pagination-info">Affichage de {{ pagedClients().length }} sur {{ filteredClients().length }} structures</span>
+      @if (totalPages() > 1) {
+        <div class="pagination-pages">
+          @for (p of [].constructor(totalPages()); track $index) {
+            <button class="page-btn" [class.page-active]="currentPage() === $index + 1" (click)="goToPage($index + 1)">{{ $index + 1 }}</button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- VOLET LATÉRAL DE DÉTAIL D'UNE ENTREPRISE -->
+@if (selectedClient(); as client) {
+  <div class="modal-overlay" (click)="closeDetail()">
+    <div class="modal-card detail-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="name-with-avatar">
+          <span class="avatar avatar-lg" [style.background]="avatarColorOf(client)">{{ initialsOf(client) }}</span>
+          <div>
+            <h2>{{ client.name }}</h2>
+            <p class="detail-title">
+              {{ client.sector || 'Secteur non spécifié' }} @if (client.address) { · {{ client.address }} }
+            </p>
+          </div>
+        </div>
+        <button class="close-btn" (click)="closeDetail()">✕</button>
+      </div>
+
+      <div class="detail-tabs">
+        <button class="tab-btn" [class.tab-active]="activeTab() === 'contacts'" (click)="setTab('contacts')">Contacts rattachés</button>
+                <button class="tab-btn" [class.tab-active]="activeTab() === 'interactions'" (click)="setTab('interactions')">Interactions</button>
+
+        <button class="tab-btn" [class.tab-active]="activeTab() === 'opportunities'" (click)="setTab('opportunities')">Opportunités</button>
+      </div>
+
+      <!-- ONGLET : LISTE DES CONTACTS IMBRIQUÉS -->
+      @if (activeTab() === 'contacts') {
+        <div class="timeline" style="padding-top: 10px;">
+          @for (contact of client.contacts; track contact.id) {
+            <div style="padding: 12px; border-bottom: 1px solid #eee; display: flex; flex-direction: column; gap: 4px;">
+              <div style="font-weight: 600; color: #111827;">{{ contact.first_name }} {{ contact.last_name }}</div>
+              @if (contact.role) {
+                <div style="font-size: 0.85rem; color: #6b7280; font-style: italic;">{{ contact.role }}</div>
+              }
+              <div style="font-size: 0.85rem; color: #4b5563; display: flex; gap: 15px; margin-top: 4px;">
+                <span>📧 {{ contact.email }}</span>
+                @if (contact.phone) { <span>📞 {{ contact.phone }}</span> }
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-text">Aucun collaborateur n'est rattaché à cette entreprise pour le moment.</p>
+          }
+        </div>
+      }
+      <!-- ONGLET : HISTORIQUE DES INTERACTIONS -->
+      @if (activeTab() === 'interactions') {
+        <div class="timeline" style="padding-top: 10px;">
+
+          <div style="padding: 0 0 14px 0;">
+            @if (!showAddInteractionForm()) {
+              <button class="add-btn" style="width: 100%;" (click)="toggleAddInteractionForm()">+ Enregistrer une interaction</button>
+            } @else {
+              <form (ngSubmit)="submitNewInteraction()" style="background: #f8fafc; padding: 14px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px;">
+                <div class="field">
+                  <label>Type d'interaction</label>
+                  <select [(ngModel)]="newInteraction.type" name="type" style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
+                    <option value="Email">Email</option>
+                    <option value="Appel">Appel</option>
+                    <option value="Réunion">Réunion</option>
+                    <option value="Entretien">Entretien</option>
+                    <option value="Visite">Visite sur site</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Date</label>
+                  <input type="date" [(ngModel)]="newInteraction.date" name="date" style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
+                </div>
+                <div class="field">
+                  <label>Note</label>
+                  <textarea [(ngModel)]="newInteraction.note" name="note" rows="3" placeholder="Résumé de l'échange..." style="width: 100%; border: 1px solid #ccc; border-radius: 6px; padding: 8px 10px; font-family: inherit;"></textarea>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button type="button" class="cancel-btn" (click)="toggleAddInteractionForm()">Annuler</button>
+                  <button type="submit" class="submit-btn-modal">Enregistrer</button>
+                </div>
+              </form>
+            }
+          </div>
+
+          @for (interaction of clientInteractions(); track interaction.id) {
+            <div style="padding: 12px; border-bottom: 1px solid #eee; display: flex; flex-direction: column; gap: 4px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="status-badge badge-client">{{ interaction.type }}</span>
+                <span style="font-size: 0.8rem; color: #9CA3AF;">{{ interaction.date }}</span>
+              </div>
+              @if (interaction.note) {
+                <div style="font-size: 0.85rem; color: #4b5563; margin-top: 4px;">{{ interaction.note }}</div>
+              }
+            </div>
+          } @empty {
+            <p class="empty-text">Aucune interaction enregistrée pour le moment.</p>
+          }
+        </div>
+      }
+
+      <!-- ONGLET : OPPORTUNITÉS DE L'ENTREPRISE -->
+      @if (activeTab() === 'opportunities') {
+  <div class="opp-list">
+    @for (opp of clientOpportunities(); track opp.id) {
+      <div class="opp-item">
+        <div>
+          <p class="opp-name">{{ opp.project_subject }}</p>
+          <span class="opp-stage">{{ opp.stage }} · {{ opp.result }}</span>
+        </div>
+        <span class="opp-amount">{{ opp.estimated_amount }} DT</span>
+      </div>
+    } @empty {
+      <p class="empty-text">Aucune opportunité d'affaires en cours pour cette entreprise.</p>
+    }
+  </div>
+}
+    </div>
+  </div>
+}
+
+<!-- MODAL : CRÉATION D'UNE ENTREPRISE -->
+@if (showAddModal()) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Ajouter une nouvelle entreprise</h2>
+        <button class="close-btn" (click)="closeAddModal()">✕</button>
+      </div>
+
+      <form (ngSubmit)="submitNewClient()">
+        <div class="form-row">
+          <div class="field">
+            <label>Nom de l'entreprise / Structure <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="newClient.name" name="name" placeholder="Ex: TechCorp SAS" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Secteur d'activité</label>
+            <input type="text" [(ngModel)]="newClient.sector" name="sector" placeholder="Ex: Informatique, Santé, Industrie">
+          </div>
+          <div class="field">
+            <label>Ville de résidence</label>
+            <input type="text" [(ngModel)]="newClient.city" name="city" placeholder="Ex: Tunis, Sousse">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Type de qualification réglementaire</label>
+            <select [(ngModel)]="newClient.status" name="status" style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
+              <option value="Client">Client Actif</option>
+              <option value="Lead">Lead / Prospect</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 25px;">
+          <button type="button" class="cancel-btn" (click)="closeAddModal()">Annuler</button>
+          <button type="submit" class="submit-btn-modal">Créer la fiche structure</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

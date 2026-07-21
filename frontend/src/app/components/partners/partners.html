@@ -1,0 +1,97 @@
+<div class="breadcrumb-bar">
+  <span class="breadcrumb-label">Partenaires</span>
+</div>
+
+<div class="list-panel">
+  <div class="list-panel-header">
+    <h2>Partenaires Stratégiques <span class="count-badge">{{ filteredPartners().length }}</span></h2>
+    <button class="add-btn" (click)="openAddModal()">+ Nouveau partenaire</button>
+  </div>
+
+  <div class="search-wrapper">
+    <input type="text" placeholder="Rechercher un partenaire..." [(ngModel)]="searchTerm">
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th (click)="sortBy()" class="sortable">Nom de la structure <span class="sort-icon">{{ sortIcon() }}</span></th>
+          <th>Secteur</th>
+          <th>Ville</th>
+          <th>Contacts rattachés</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (partner of pagedPartners(); track partner.id) {
+          <tr (click)="selectPartner(partner)">
+            <td>
+              <div class="name-with-avatar">
+                <span class="avatar" [style.background]="avatarColorOf(partner)">{{ initialsOf(partner) }}</span>
+                <span class="name-cell">{{ partner.name }}</span>
+              </div>
+            </td>
+            <td>{{ partner.sector || '—' }}</td>
+            <td>{{ partner.address || '—' }}</td>
+            <td><span class="status-badge">{{ partner.contacts.length }} contact(s)</span></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="4" class="empty-row">Aucun partenaire trouvé.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (selectedPartner(); as partner) {
+  <div class="modal-overlay" (click)="closeDetail()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ partner.name }}</h2>
+        <button class="close-btn" (click)="closeDetail()">✕</button>
+      </div>
+      <div style="padding: 20px;">
+        <p><strong>Secteur :</strong> {{ partner.sector || '—' }}</p>
+        <p><strong>Adresse :</strong> {{ partner.address || '—' }}</p>
+        <h3 style="margin-top:20px;">Liste des contacts :</h3>
+        @for (c of partner.contacts; track c.id) {
+          <div style="margin-bottom:10px; padding:10px; background:#f9f9f9; border-radius:4px;">
+            <strong>{{ c.first_name }} {{ c.last_name }}</strong> @if(c.role){({{c.role}})} <br>
+            📧 {{ c.email }} @if(c.phone){ | 📞 {{ c.phone }} }
+          </div>
+        } @empty {
+          <p>Aucun contact lié.</p>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+@if (showAddModal()) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Ajouter un Partenaire</h2>
+        <button class="close-btn" (click)="closeAddModal()">✕</button>
+      </div>
+      <form (ngSubmit)="submitNewPartner()" style="padding:20px;">
+        <div style="margin-bottom:15px;">
+          <label style="display:block; margin-bottom:5px;">Nom du partenaire *</label>
+          <input type="text" [(ngModel)]="newPartner.name" name="name" required style="width:100%; height:35px;">
+        </div>
+        <div style="margin-bottom:15px;">
+          <label style="display:block; margin-bottom:5px;">Secteur</label>
+          <input type="text" [(ngModel)]="newPartner.sector" name="sector" style="width:100%; height:35px;">
+        </div>
+<div style="margin-bottom:15px;">
+  <label style="display:block; margin-bottom:5px;">Ville / Adresse</label>
+  <input type="text" [(ngModel)]="newPartner.address" name="address" style="width:100%; height:35px;">
+</div>
+        <div class="modal-actions">
+          <button type="button" (click)="closeAddModal()">Annuler</button>
+          <button type="submit" class="add-btn">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

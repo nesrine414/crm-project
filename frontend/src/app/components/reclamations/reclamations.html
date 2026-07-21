@@ -1,0 +1,127 @@
+<div class="breadcrumb-bar">
+  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  <span class="breadcrumb-sep">›</span>
+  <span class="breadcrumb-label">Réclamations</span>
+  <div class="breadcrumb-actions">
+    <button class="ghost-btn" (click)="refreshData()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Actualiser
+    </button>
+  </div>
+</div>
+
+<div class="list-panel">
+  <div class="list-panel-header">
+    <h2>Gestion des Réclamations <span class="count-badge">{{ filteredReclamations().length }}</span></h2>
+    <button class="add-btn" (click)="openAddModal()">+ Déclarer un ticket</button>
+  </div>
+
+  <div class="search-wrapper">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" placeholder="Rechercher un ticket..." [(ngModel)]="searchTerm">
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Objet du Ticket</th>
+          <th>Structure émettrice</th>
+          <th>Priorité</th>
+          <th>Canal</th>
+          <th>Statut réglementaire</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of filteredReclamations(); track r.id) {
+          <tr (click)="selectReclamation(r)">
+            <td style="font-weight: 600;">{{ r.subject }}</td>
+            <td>{{ getCompanyName(r.company) }}</td>
+            <td><span class="badge-priority">{{ r.priority }}</span></td>
+            <td>{{ r.channel }}</td>
+            <td (click)="$event.stopPropagation()">
+              <select [ngModel]="r.status" (ngModelChange)="updateStatus(r, $event)">
+                <option value="Ouverte">Ouverte</option>
+                <option value="En cours">En cours</option>
+                <option value="Résolue">Résolue</option>
+              </select>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="empty-row">Aucun incident à signaler.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+@if (selectedReclamation(); as r) {
+  <div class="modal-overlay" (click)="closeDetail()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Ticket #{{ r.id }} : {{ r.subject }}</h2>
+        <button class="close-btn" (click)="closeDetail()">✕</button>
+      </div>
+      <div style="padding: 20px;">
+<p><strong>Créée par :</strong> {{ getCompanyName(r.company) }} le {{ r.created_at }}</p>        <p><strong>Canal de réception :</strong> {{ r.channel }}</p>
+        <p><strong>Gravité :</strong> {{ r.priority }}</p>
+        <div style="margin-top: 15px; padding: 12px; background: #f5f5f5; border-radius: 4px;">
+          <strong>Description de l'incident :</strong>
+          <p style="margin-top: 5px;">{{ r.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showAddModal()) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Ouvrir un Dossier de Réclamation</h2>
+        <button class="close-btn" (click)="closeAddModal()">✕</button>
+      </div>
+      <form (ngSubmit)="submitReclamation()" style="padding: 20px;">
+        <div style="margin-bottom: 12px;">
+          <label style="display:block; margin-bottom:4px;">Structure émettrice *</label>
+          <select [(ngModel)]="newReclamation.company" name="company" required style="width:100%; height:32px;">
+            @for (c of companies(); track c.id) {
+  <option [value]="c.id">{{ c.name }}</option>
+}
+          </select>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="display:block; margin-bottom:4px;">Objet de la réclamation *</label>
+          <input type="text" [(ngModel)]="newReclamation.subject" name="subject" required style="width:100%; height:32px;" placeholder="Ex: Retard de livraison réglementaire">
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="display:block; margin-bottom:4px;">Description complète *</label>
+          <textarea [(ngModel)]="newReclamation.description" name="description" required style="width:100%; height:80px;"></textarea>
+        </div>
+        <div style="margin-bottom: 12px; display: flex; gap: 10px;">
+          <div style="flex: 1;">
+            <label>Priorité</label>
+            <select [(ngModel)]="newReclamation.priority" name="priority" style="width:100%; height:32px;">
+              <option value="Faible">Faible</option>
+              <option value="Moyenne">Moyenne</option>
+              <option value="Élevée">Élevée</option>
+            </select>
+          </div>
+          <div style="flex: 1;">
+            <label>Canal</label>
+            <select [(ngModel)]="newReclamation.channel" name="channel" style="width:100%; height:32px;">
+              <option value="Email">Email</option>
+              <option value="Téléphone">Téléphone</option>
+              <option value="Réunion">Réunion</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" (click)="closeAddModal()">Annuler</button>
+          <button type="submit" class="add-btn">Soumettre le Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

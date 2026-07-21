@@ -1,0 +1,14 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  display: block;
+  position: relative;
+  flex: 1;
+  margin-top: 24px;
+  padding: 0 24px;
+  background: var(--bg-page);
+}

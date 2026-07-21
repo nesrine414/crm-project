@@ -1,0 +1,39 @@
+<div class="breadcrumb-bar">
+  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  <span class="breadcrumb-sep">›</span>
+  <span class="breadcrumb-label">Paramètres Système</span>
+</div>
+
+<div class="list-panel">
+  <div class="list-panel-header">
+    <h2>Accès à la plateforme</h2>
+    
+  </div>
+  <p class="config-subtitle">Application réservée à un usage interne — 2 utilisatrices, profil unique Administratrice LCA.</p>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom d'utilisateur</th>
+          <th>Email</th>
+          <th>Profil</th>
+          <th>Dernière connexion</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of users(); track u.id) {
+          <tr>
+<td class="name-cell">{{ (u.first_name || u.last_name) ? (u.first_name + ' ' + u.last_name) : u.username }}</td>            <td class="email-cell">{{ u.email }}</td>
+            <td><span class="status-badge badge-client">Administratrice LCA</span></td>
+            <td>{{ formatDate(u.last_login) }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="empty-row">Aucune utilisatrice trouvée — vérifie que les comptes ont bien été créés côté Django.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
