@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { CrmDataService } from '../../services/crm-data';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-rapports',
@@ -69,4 +70,133 @@ export class Rapports {
   });
 
   hasSectorData = computed(() => this.sectorDistribution().length > 0);
+
+   exportPdf() {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const navy: [number, number, number] = [31, 59, 92];
+    const teal: [number, number, number] = [26, 172, 192];
+    const gray: [number, number, number] = [100, 116, 139];
+    const lightBg: [number, number, number] = [248, 250, 252];
+
+    const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    // ---- Bandeau d'en-tête ----
+    doc.setFillColor(...navy);
+    doc.rect(0, 0, pageWidth, 32, 'F');
+
+    doc.setFillColor(...teal);
+    doc.roundedRect(14, 8, 16, 16, 3, 3, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('L', 20.5, 19);
+
+    doc.setFontSize(16);
+    doc.text('LCA CRM — Rapport de performance', 36, 16);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Généré le ${today}`, 36, 23);
+
+    let y = 46;
+
+    // ---- Section KPIs ----
+    doc.setTextColor(...navy);
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Indicateurs clés', 14, y);
+    y += 8;
+
+    const nps = this.npsScore();
+    const kpis = [
+      { label: 'NPS Score', value: nps !== null ? `${nps! > 0 ? '+' : ''}${nps}` : '—', sub: nps !== null ? `${this.crmData.feedbacks().length} avis clients` : 'Aucun feedback collecté' },
+      { label: 'LTV moyen', value: `${this.ltvMoyen()} DT`, sub: 'Valeur moyenne par client actif' },
+      { label: 'Taux de churn', value: '—', sub: 'Nécessite un historique dans le temps' },
+      {
+        label: 'CAC',
+        value: this.crmData.campagnes().length > 0 ? `${this.cac()} DT` : '—',
+        sub: this.crmData.campagnes().length > 0 ? `${this.totalCampaignBudget()} DT de budget campagnes` : 'Aucune campagne enregistrée'
+      }
+    ];
+
+    const cardWidth = (pageWidth - 28 - 12) / 2;
+    const cardHeight = 26;
+    kpis.forEach((kpi, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const x = 14 + col * (cardWidth + 12);
+      const cardY = y + row * (cardHeight + 8);
+
+      doc.setFillColor(...lightBg);
+      doc.roundedRect(x, cardY, cardWidth, cardHeight, 2, 2, 'F');
+
+      doc.setTextColor(...gray);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(kpi.label.toUpperCase(), x + 6, cardY + 8);
+
+      doc.setTextColor(...navy);
+      doc.setFontSize(15);
+      doc.setFont('helvetica', 'bold');
+      doc.text(kpi.value, x + 6, cardY + 17);
+
+      doc.setTextColor(...gray);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text(kpi.sub, x + 6, cardY + 22);
+    });
+
+    y += 2 * (cardHeight + 8) + 8;
+
+    // ---- Section Répartition par secteur ----
+    doc.setTextColor(...navy);
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Répartition par secteur', 14, y);
+    y += 10;
+
+    if (this.hasSectorData()) {
+      const barMaxWidth = pageWidth - 28 - 70;
+      for (const s of this.sectorDistribution()) {
+        doc.setTextColor(...navy);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text(s.sector, 14, y + 4);
+
+        doc.setFillColor(226, 232, 240);
+        doc.roundedRect(60, y - 1, barMaxWidth, 6, 1, 1, 'F');
+
+        const [r, g, b] = this.hexToRgb(s.color);
+        doc.setFillColor(r, g, b);
+        doc.roundedRect(60, y - 1, (barMaxWidth * s.pct) / 100, 6, 1, 1, 'F');
+
+        doc.setTextColor(...gray);
+        doc.setFontSize(9);
+        doc.text(`${s.pct}%  (${s.count})`, 60 + barMaxWidth + 4, y + 4);
+
+        y += 12;
+      }
+    } else {
+      doc.setTextColor(...gray);
+      doc.setFontSize(10);
+      doc.text("Aucun client n'a de secteur renseigné.", 14, y);
+    }
+
+    // ---- Pied de page ----
+    const pageHeight = doc.internal.pageSize.getHeight();
+    doc.setDrawColor(226, 232, 240);
+    doc.line(14, pageHeight - 16, pageWidth - 14, pageHeight - 16);
+    doc.setTextColor(...gray);
+    doc.setFontSize(8);
+    doc.text('LCA CRM — Document généré automatiquement', 14, pageHeight - 10);
+
+    const filename = `rapport-lca-crm-${new Date().toISOString().slice(0, 10)}.pdf`;
+    doc.save(filename);
+  }
+
+  private hexToRgb(hex: string): [number, number, number] {
+    const clean = hex.replace('#', '');
+    const bigint = parseInt(clean, 16);
+    return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+  }
 }

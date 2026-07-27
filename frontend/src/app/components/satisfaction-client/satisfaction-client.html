@@ -1,0 +1,131 @@
+<div class="breadcrumb-bar">
+  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  </svg>
+  <span class="breadcrumb-sep">›</span>
+  <span class="breadcrumb-label">Satisfaction Client</span>
+</div>
+
+<div class="satisfaction-page">
+  <div class="page-header">
+    <div>
+      <h1>Enquêtes de Satisfaction Client</h1>
+      <p class="subtitle">Gestion et archivage annuel des résultats d'enquêtes au format PDF</p>
+    </div>
+    <button class="btn-primary" (click)="openUploadModal()">
+      + Ajouter une enquête
+    </button>
+  </div>
+
+  <div class="filters-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Rechercher par client ou note..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+    />
+
+    <select class="year-select" [ngModel]="yearFilter()" (ngModelChange)="yearFilter.set($event)">
+      <option [ngValue]="null">Toutes les années</option>
+      @for (year of availableYears; track year) {
+        <option [ngValue]="year">{{ year }}</option>
+      }
+    </select>
+
+    @if (searchTerm() || yearFilter()) {
+      <button class="btn-clear" (click)="clearFilters()">Effacer les filtres</button>
+    }
+  </div>
+
+  <div class="table-container">
+    <table class="surveys-table">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Année</th>
+          <th>Notes / Remarques</th>
+          <th>Ajouté par</th>
+          <th>Date d'ajout</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (survey of filteredSurveys; track survey.id) {
+          <tr class="survey-row">
+            <td class="company-cell">{{ survey.company_name }}</td>
+            <td>
+              <span class="year-badge">{{ survey.year }}</span>
+            </td>
+            <td class="notes-cell">{{ survey.notes || '—' }}</td>
+            <td>{{ survey.uploaded_by_name || '—' }}</td>
+            <td>{{ survey.uploaded_at | date:'dd/MM/yyyy' }}</td>
+            <td class="actions-col">
+              <button class="btn-icon view" (click)="viewPdf(survey.pdf_file)" title="Voir le PDF">
+                📄 Voir
+              </button>
+              <button class="btn-icon delete" (click)="deleteSurvey(survey.id)" title="Supprimer">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-state">
+              Aucune enquête de satisfaction enregistrée pour le moment.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Upload -->
+@if (showUploadModal()) {
+  <div class="modal-overlay" (click)="closeUploadModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Ajouter une enquête de satisfaction</h2>
+
+      @if (errorMessage()) {
+        <div class="error-banner">{{ errorMessage() }}</div>
+      }
+
+      <div class="form-group">
+        <label>Client *</label>
+        <select [(ngModel)]="uploadForm.company">
+          <option [ngValue]="null">-- Sélectionner un client --</option>
+          @for (company of companies(); track company.id) {
+            <option [ngValue]="company.id">{{ company.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Année *</label>
+        <input type="number" [(ngModel)]="uploadForm.year" min="2000" max="2100" />
+      </div>
+
+      <div class="form-group">
+        <label>Fichier PDF *</label>
+        <input type="file" accept="application/pdf" (change)="onFileSelected($event)" />
+        @if (uploadForm.file) {
+          <span class="file-selected">✓ {{ uploadForm.file.name }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Notes (optionnel)</label>
+        <textarea [(ngModel)]="uploadForm.notes" rows="3" placeholder="Remarques sur cette enquête..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeUploadModal()">Annuler</button>
+        <button class="btn-primary" (click)="submitUpload()" [disabled]="isUploading()">
+          {{ isUploading() ? 'Envoi...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

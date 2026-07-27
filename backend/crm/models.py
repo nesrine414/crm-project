@@ -8,6 +8,11 @@ class Company(models.Model):
         ('Client', 'Client'),
         ('Partenaire', 'Partenaire'),
     ]
+    SERVICE_CHOICES = [
+        ('Recrutement', 'Recrutement'),
+        ('Formation', 'Formation'),
+        ('Consulting', 'Consulting'),
+    ]
 
     name = models.CharField(max_length=200)
     sector = models.CharField(max_length=100, blank=True)
@@ -15,6 +20,7 @@ class Company(models.Model):
     address = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=100, blank=True)
     acquisition_channel = models.CharField(max_length=100, blank=True)  # Canal d'acquisition
+    service_provided = models.CharField(max_length=50, choices=SERVICE_CHOICES, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Lead')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -97,17 +103,34 @@ class Reclamation(models.Model):
     ]
     STATUS_CHOICES = [('Ouverte', 'Ouverte'), ('En cours', 'En cours'), ('Résolue', 'Résolue')]
 
+    number = models.CharField(max_length=20, unique=True, blank=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='reclamations')
     subject = models.CharField(max_length=200)
     description = models.TextField(blank=True)
+    plan_action = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Ouverte')
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Moyenne')
     channel = models.CharField(max_length=30, choices=CHANNEL_CHOICES, default='Téléphone')
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reclamations')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if not self.number:
+            from django.utils import timezone
+            year = timezone.now().year
+            last = Reclamation.objects.filter(number__startswith=f'REC-{year}-').order_by('-id').first()
+            if last and last.number:
+                try:
+                    seq = int(last.number.split('-')[-1]) + 1
+                except (ValueError, IndexError):
+                    seq = 1
+            else:
+                seq = 1
+            self.number = f'REC-{year}-{seq:03d}'
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.subject} - {self.company.name}"
+        return f"{self.number} – {self.subject}"
 
 
 class ReclamationNote(models.Model):
@@ -153,3 +176,61 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{self.type} - {self.message}"
+    
+class NonConformite(models.Model):
+    PROCESSUS_CHOICES = [
+        ('PMS', 'Pilotage et Management Stratégique'),
+        ('PCS', 'Prestation de Consulting'),
+        ('PRT', 'Prestation de Recrutement'),
+        ('PFR', 'Prestation de Formation'),
+        ('GFS', 'Gestion des Fonctions Support'),
+    ]
+    GRAVITE_CHOICES = [(1, 'Faible'), (2, 'Moyenne'), (3, 'Élevée / Majeure')]
+    EFFICACITE_CHOICES = [
+        ('Efficace', 'Efficace'), ('Non efficace', 'Non efficace'),
+        ('Insuffisant', 'Insuffisant'), ('A vérifier', 'À vérifier'),
+    ]
+    AVANCEMENT_CHOICES = [('P', 'Planifier'), ('D', 'Réaliser'), ('C', 'Contrôler'), ('A', 'Acter (clôturer)')]
+    STATUT_CHOICES = [('Ouvert', 'Ouvert'), ('Fermé', 'Fermé')]
+
+    numero = models.IntegerField(unique=True)
+    date = models.DateField()
+    probleme = models.TextField()
+    origine = models.CharField(max_length=150, blank=True)
+    processus = models.CharField(max_length=10, choices=PROCESSUS_CHOICES)
+    gravite = models.IntegerField(choices=GRAVITE_CHOICES)
+    action_immediate = models.TextField(blank=True)
+    analyse_causes = models.TextField(blank=True)
+    recurrence = models.BooleanField(default=False)
+    action_corrective = models.TextField(blank=True)
+    date_prevue = models.CharField(max_length=50, blank=True)
+    responsable = models.CharField(max_length=150, blank=True)
+    date_realisation = models.CharField(max_length=50, blank=True)
+    delais = models.CharField(max_length=100, blank=True)
+    efficacite = models.CharField(max_length=20, choices=EFFICACITE_CHOICES, blank=True)
+    commentaire = models.TextField(blank=True)
+    avancement = models.CharField(max_length=1, choices=AVANCEMENT_CHOICES, default='P')
+    statut = models.CharField(max_length=10, choices=STATUT_CHOICES, default='Ouvert')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-numero']
+
+    def __str__(self):
+        return f"NC-{self.numero} — {self.probleme[:50]}"
+
+
+class SatisfactionSurveyPDF(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='satisfaction_pdfs')
+    year = models.IntegerField()
+    pdf_file = models.FileField(upload_to='satisfaction_pdfs/%Y/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        unique_together = ('company', 'year')
+        ordering = ['-year']
+
+    def __str__(self):
+        return f"{self.company.name} - {self.year}"

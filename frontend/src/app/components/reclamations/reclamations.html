@@ -1,127 +1,286 @@
+<!-- ===== BREADCRUMB ===== -->
 <div class="breadcrumb-bar">
-  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  </svg>
   <span class="breadcrumb-sep">›</span>
   <span class="breadcrumb-label">Réclamations</span>
   <div class="breadcrumb-actions">
     <button class="ghost-btn" (click)="refreshData()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M23 4v6h-6M1 20v-6h6" />
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+      </svg>
       Actualiser
     </button>
+    <button class="ghost-btn" (click)="exportToExcel()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <path d="M7 10l5 5 5-5" />
+        <path d="M12 15V3" />
+      </svg>
+      Exporter
+    </button>
   </div>
+
 </div>
 
+<!-- ===== MAIN PANEL ===== -->
 <div class="list-panel">
   <div class="list-panel-header">
-    <h2>Gestion des Réclamations <span class="count-badge">{{ filteredReclamations().length }}</span></h2>
-    <button class="add-btn" (click)="openAddModal()">+ Déclarer un ticket</button>
+    <div>
+      <h2>Réclamations <span class="count-badge">{{ filteredReclamations().length }}</span></h2>
+      <p class="panel-subtitle">Suivi des tickets et dossiers de réclamation clients</p>
+    </div>
+    <button class="add-btn" (click)="openAddModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round" width="16" height="16">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      Nouvelle réclamation
+    </button>
   </div>
 
+  <!-- Search -->
   <div class="search-wrapper">
-    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-    <input type="text" placeholder="Rechercher un ticket..." [(ngModel)]="searchTerm">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <path d="M21 21l-4.35-4.35" />
+    </svg>
+    <input type="text" placeholder="Rechercher par numéro, objet, client, responsable…"
+      [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
   </div>
 
+  <!-- Table -->
   <div class="table-card">
     <table>
       <thead>
         <tr>
-          <th>Objet du Ticket</th>
-          <th>Structure émettrice</th>
+          <th>N° Ticket</th>
+          <th>Objet</th>
+          <th>Client</th>
+          <th>Plan d'action</th>
+          <th>Responsable</th>
           <th>Priorité</th>
-          <th>Canal</th>
-          <th>Statut réglementaire</th>
+          <th>Statut</th>
+          <th class="col-actions"></th>
         </tr>
       </thead>
       <tbody>
         @for (r of filteredReclamations(); track r.id) {
-          <tr (click)="selectReclamation(r)">
-            <td style="font-weight: 600;">{{ r.subject }}</td>
-            <td>{{ getCompanyName(r.company) }}</td>
-            <td><span class="badge-priority">{{ r.priority }}</span></td>
-            <td>{{ r.channel }}</td>
-            <td (click)="$event.stopPropagation()">
-              <select [ngModel]="r.status" (ngModelChange)="updateStatus(r, $event)">
-                <option value="Ouverte">Ouverte</option>
-                <option value="En cours">En cours</option>
-                <option value="Résolue">Résolue</option>
-              </select>
-            </td>
-          </tr>
+        <tr (click)="selectReclamation(r)" [class.active-row]="selectedReclamation()?.id === r.id">
+          <td>
+            <span class="ticket-number">{{ r.number || '#' + r.id }}</span>
+          </td>
+          <td>
+            <div class="subject-cell">{{ r.subject }}</div>
+            <div class="channel-cell">{{ r.channel }}</div>
+          </td>
+          <td>{{ getCompanyName(r.company) }}</td>
+          <td class="plan-cell">{{ r.plan_action || '—' }}</td>
+          <td>{{ r.assigned_to_name || getUserName(r.assigned_to) }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="priorityClass(r.priority)">{{ r.priority }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="statusClass(r.status)">{{ r.status }}</span>
+          </td>
+          <td class="col-actions" (click)="$event.stopPropagation()">
+            <div class="row-actions">
+              <button class="icon-btn" title="Modifier" (click)="openEditModal(r)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+              </button>
+              <button class="icon-btn icon-btn-danger" title="Supprimer" (click)="deleteReclamation(r.id)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14H6L5 6" />
+                  <path d="M10 11v6M14 11v6" />
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
         } @empty {
-          <tr><td colspan="5" class="empty-row">Aucun incident à signaler.</td></tr>
+        <tr>
+          <td colspan="8" class="empty-row">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
+              </svg>
+              <p>Aucune réclamation enregistrée pour le moment.</p>
+            </div>
+          </td>
+        </tr>
         }
       </tbody>
     </table>
   </div>
 </div>
 
-
+<!-- ===== DETAIL PANEL ===== -->
 @if (selectedReclamation(); as r) {
-  <div class="modal-overlay" (click)="closeDetail()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Ticket #{{ r.id }} : {{ r.subject }}</h2>
-        <button class="close-btn" (click)="closeDetail()">✕</button>
+<div class="modal-overlay" (click)="closeDetail()">
+  <div class="modal-card detail-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="ticket-number" style="font-size:0.85rem; margin-bottom:4px;">{{ r.number || '#' + r.id }}</div>
+        <h2>{{ r.subject }}</h2>
+        <p class="detail-title">{{ getCompanyName(r.company) }}</p>
       </div>
-      <div style="padding: 20px;">
-<p><strong>Créée par :</strong> {{ getCompanyName(r.company) }} le {{ r.created_at }}</p>        <p><strong>Canal de réception :</strong> {{ r.channel }}</p>
-        <p><strong>Gravité :</strong> {{ r.priority }}</p>
-        <div style="margin-top: 15px; padding: 12px; background: #f5f5f5; border-radius: 4px;">
-          <strong>Description de l'incident :</strong>
-          <p style="margin-top: 5px;">{{ r.description }}</p>
+      <button class="close-btn" (click)="closeDetail()">✕</button>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Statut</span>
+          <span class="status-badge" [ngClass]="statusClass(r.status)">{{ r.status }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Priorité</span>
+          <span class="status-badge" [ngClass]="priorityClass(r.priority)">{{ r.priority }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Canal</span>
+          <span>{{ r.channel }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Responsable</span>
+          <span>{{ r.assigned_to_name || getUserName(r.assigned_to) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Date d'ouverture</span>
+          <span>{{ r.created_at ? (r.created_at | slice:0:10) : '—' }}</span>
         </div>
       </div>
+
+      @if (r.description) {
+      <div class="detail-section">
+        <div class="detail-section-title">Description</div>
+        <p>{{ r.description }}</p>
+      </div>
+      }
+
+      @if (r.plan_action) {
+      <div class="detail-section">
+        <div class="detail-section-title">Plan d'action</div>
+        <p>{{ r.plan_action }}</p>
+      </div>
+      }
+    </div>
+
+    <div class="detail-footer">
+      <button class="submit-btn-modal" (click)="openEditModal(r); closeDetail()">Modifier ce ticket</button>
     </div>
   </div>
+</div>
 }
 
+<!-- ===== ADD / EDIT MODAL ===== -->
 @if (showAddModal()) {
-  <div class="modal-overlay" (click)="closeAddModal()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Ouvrir un Dossier de Réclamation</h2>
-        <button class="close-btn" (click)="closeAddModal()">✕</button>
-      </div>
-      <form (ngSubmit)="submitReclamation()" style="padding: 20px;">
-        <div style="margin-bottom: 12px;">
-          <label style="display:block; margin-bottom:4px;">Structure émettrice *</label>
-          <select [(ngModel)]="newReclamation.company" name="company" required style="width:100%; height:32px;">
+<div class="modal-overlay" (click)="closeAddModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editMode() ? 'Modifier la réclamation' : 'Nouvelle réclamation' }}</h2>
+      <button class="close-btn" (click)="closeAddModal()">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitReclamation()" style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+
+      <!-- Row 1: Company + Channel -->
+      <div class="form-row">
+        <div class="field">
+          <label>Client / Structure <span class="required">*</span></label>
+          <select [(ngModel)]="form.company" name="company" required>
+            <option [ngValue]="null">-- Sélectionner --</option>
             @for (c of companies(); track c.id) {
-  <option [value]="c.id">{{ c.name }}</option>
-}
+            <option [ngValue]="c.id">{{ c.name }}</option>
+            }
           </select>
         </div>
-        <div style="margin-bottom: 12px;">
-          <label style="display:block; margin-bottom:4px;">Objet de la réclamation *</label>
-          <input type="text" [(ngModel)]="newReclamation.subject" name="subject" required style="width:100%; height:32px;" placeholder="Ex: Retard de livraison réglementaire">
+        <div class="field">
+          <label>Canal de réception</label>
+          <select [(ngModel)]="form.channel" name="channel">
+            <option value="Email">Email</option>
+            <option value="Téléphone">Téléphone</option>
+            <option value="Réunion">Réunion</option>
+            <option value="Formulaire web">Formulaire web</option>
+            <option value="Portail client">Portail client</option>
+          </select>
         </div>
-        <div style="margin-bottom: 12px;">
-          <label style="display:block; margin-bottom:4px;">Description complète *</label>
-          <textarea [(ngModel)]="newReclamation.description" name="description" required style="width:100%; height:80px;"></textarea>
+      </div>
+
+      <!-- Row 2: Subject -->
+      <div class="field">
+        <label>Objet de la réclamation <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="form.subject" name="subject" required
+          placeholder="Ex: Retard de livraison, erreur de facturation…">
+      </div>
+
+      <!-- Row 3: Description -->
+      <div class="field">
+        <label>Description complète</label>
+        <textarea [(ngModel)]="form.description" name="description" rows="3"
+          placeholder="Décrivez l'incident en détail…"></textarea>
+      </div>
+
+      <!-- Row 4: Plan d'action -->
+      <div class="field">
+        <label>Plan d'action</label>
+        <textarea [(ngModel)]="form.plan_action" name="plan_action" rows="3"
+          placeholder="Quelles mesures correctives sont prévues ?"></textarea>
+      </div>
+
+      <!-- Row 5: Priority + Status + Assigned -->
+      <div class="form-row">
+        <div class="field">
+          <label>Priorité</label>
+          <select [(ngModel)]="form.priority" name="priority">
+            <option value="Faible">Faible</option>
+            <option value="Moyenne">Moyenne</option>
+            <option value="Élevée">Élevée</option>
+          </select>
         </div>
-        <div style="margin-bottom: 12px; display: flex; gap: 10px;">
-          <div style="flex: 1;">
-            <label>Priorité</label>
-            <select [(ngModel)]="newReclamation.priority" name="priority" style="width:100%; height:32px;">
-              <option value="Faible">Faible</option>
-              <option value="Moyenne">Moyenne</option>
-              <option value="Élevée">Élevée</option>
-            </select>
-          </div>
-          <div style="flex: 1;">
-            <label>Canal</label>
-            <select [(ngModel)]="newReclamation.channel" name="channel" style="width:100%; height:32px;">
-              <option value="Email">Email</option>
-              <option value="Téléphone">Téléphone</option>
-              <option value="Réunion">Réunion</option>
-            </select>
-          </div>
+        <div class="field">
+          <label>Statut</label>
+          <select [(ngModel)]="form.status" name="status">
+            <option value="Ouverte">Ouverte</option>
+            <option value="En cours">En cours</option>
+            <option value="Résolue">Résolue</option>
+          </select>
         </div>
-        <div class="modal-actions">
-          <button type="button" (click)="closeAddModal()">Annuler</button>
-          <button type="submit" class="add-btn">Soumettre le Ticket</button>
+        <div class="field">
+          <label>Responsable de résolution</label>
+          <select [(ngModel)]="form.assigned_to" name="assigned_to">
+            <option [ngValue]="null">-- Non assigné --</option>
+            @for (u of users(); track u.id) {
+            <option [ngValue]="u.id">
+              {{ (u.first_name + ' ' + u.last_name).trim() || u.username }}
+            </option>
+            }
+          </select>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="modal-actions" style="margin-top: 8px;">
+        <button type="button" class="cancel-btn" (click)="closeAddModal()">Annuler</button>
+        <button type="submit" class="submit-btn-modal">
+          {{ editMode() ? 'Enregistrer les modifications' : 'Créer le ticket' }}
+        </button>
+      </div>
+    </form>
   </div>
+</div>
 }

@@ -3,15 +3,17 @@ from rest_framework import generics
 from .models import Notification
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-
+from .models import NonConformite
+from .serializers import NonConformiteSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Company, Contact, Interaction, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign
+from .models import Company, Contact, Interaction, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign, SatisfactionSurveyPDF
 from .serializers import (
     CompanySerializer, ContactSerializer, InteractionSerializer,
     OpportunitySerializer, ReclamationSerializer, ReclamationNoteSerializer,
-    FeedbackSerializer, CampaignSerializer, UserSerializer, RegisterSerializer,CustomTokenObtainPairSerializer, NotificationSerializer
+    FeedbackSerializer, CampaignSerializer, UserSerializer, RegisterSerializer,CustomTokenObtainPairSerializer, NotificationSerializer,
+    SatisfactionSurveyPDFSerializer
 )
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
@@ -137,3 +139,18 @@ class PasswordResetConfirmView(APIView):
         user.save()
 
         return Response({'detail': 'Mot de passe mis à jour avec succès.'})
+    
+class NonConformiteViewSet(viewsets.ModelViewSet):
+    queryset = NonConformite.objects.all()
+    serializer_class = NonConformiteSerializer
+
+
+class SatisfactionSurveyPDFViewSet(viewsets.ModelViewSet):
+    queryset = SatisfactionSurveyPDF.objects.all()
+    serializer_class = SatisfactionSurveyPDFSerializer
+
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(uploaded_by=self.request.user)
+        else:
+            serializer.save()

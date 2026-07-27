@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CrmDataService, Company, ContactItem } from '../../services/crm-data';
+import { exportToCsv } from '../../utils/export-utils';
 
 type TabType = 'contacts' | 'interactions' | 'opportunities';
 @Component({
@@ -27,6 +28,7 @@ export class Clients implements OnInit {
     name: '',
     sector: '',
     city: '',
+    service_provided: '' as 'Recrutement' | 'Formation' | 'Consulting' | '',
     status: 'Client' as 'Client' | 'Lead'
   };
   newInteraction = {
@@ -72,10 +74,12 @@ export class Clients implements OnInit {
 }
 
   filteredClients = computed(() => {
-    const term = this.searchTerm().toLowerCase();
+    const term = this.searchTerm().toLowerCase().trim();
     let result = this.crmData.clients().filter(c =>
       c.name.toLowerCase().includes(term) ||
       (c.sector ?? '').toLowerCase().includes(term) ||
+      (c.service_provided ?? '').toLowerCase().includes(term) ||
+      (c.status ?? '').toLowerCase().includes(term) ||
       (c.address ?? '').toLowerCase().includes(term)
     );
 
@@ -142,7 +146,7 @@ export class Clients implements OnInit {
   });
 
   openAddModal() {
-    this.newClient = { name: '', sector: '', city: '', status: 'Client' };
+    this.newClient = { name: '', sector: '', city: '', service_provided: '', status: 'Client' };
     this.showAddModal.set(true);
   }
 
@@ -151,7 +155,14 @@ export class Clients implements OnInit {
   }
 
   submitNewClient() {
-    this.crmData.addCompany(this.newClient).subscribe({
+    const payload = {
+      name: this.newClient.name,
+      sector: this.newClient.sector,
+      address: this.newClient.city,
+      service_provided: this.newClient.service_provided,
+      status: this.newClient.status
+    };
+    this.crmData.addCompany(payload as any).subscribe({
       next: () => {
         this.refreshData();
         this.showAddModal.set(false);
@@ -180,5 +191,32 @@ export class Clients implements OnInit {
       },
       error: (err) => console.error("Erreur lors de l'ajout de l'interaction :", err)
     });
+  }
+
+  updateClientService(client: Company, event: Event) {
+    const selectElem = event.target as HTMLSelectElement;
+    const value = selectElem.value as 'Recrutement' | 'Formation' | 'Consulting' | '';
+    this.crmData.updateCompany(client.id, { service_provided: value }).subscribe({
+      next: (updated) => {
+        this.refreshData();
+        this.selectedClient.set({ ...client, service_provided: updated.service_provided });
+      },
+      error: (err) => console.error("Erreur de mise à jour du service :", err)
+    });
+  }
+
+  exportToExcel() {
+    const today = new Date().toISOString().slice(0, 10);
+    const headers = ['Nom de l\'entreprise', 'Secteur d\'activité', 'Service fourni', 'Ville', 'Statut', 'Contacts liés', 'Valeur gagnée (DT)'];
+    const rows = this.filteredClients().map(c => [
+      c.name,
+      c.sector ?? '',
+      c.service_provided ?? '',
+      c.address ?? '',
+      c.status,
+      c.contacts?.length ?? 0,
+      this.dealValue(c.id) > 0 ? this.dealValue(c.id) : ''
+    ]);
+    exportToCsv(`Clients_LCA_${today}`, headers, rows);
   }
 }

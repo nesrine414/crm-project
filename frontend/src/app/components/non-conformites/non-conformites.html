@@ -1,0 +1,216 @@
+<div class="breadcrumb-bar">
+  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  <span class="breadcrumb-sep">›</span>
+  <span class="breadcrumb-label">Qualité — Non-conformités</span>
+  <div class="breadcrumb-actions">
+    <button class="ghost-btn" (click)="refreshData()">Actualiser</button>
+  </div>
+</div>
+
+<div class="list-panel">
+  <div class="list-panel-header">
+    <h2>Non-conformités <span class="count-badge">{{ filteredNcs().length }}</span></h2>
+    <button class="add-btn" (click)="openAddModal()">+ Déclarer une non-conformité</button>
+  </div>
+
+  <div class="search-wrapper">
+    <input type="text" placeholder="Rechercher un problème, un responsable, un processus..." [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Date</th>
+          <th>Problème</th>
+          <th>Processus</th>
+          <th>Gravité</th>
+          <th>Responsable</th>
+          <th>Avancement</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (nc of filteredNcs(); track nc.id) {
+          <tr (click)="selectNc(nc)" style="cursor: pointer;">
+            <td>NC-{{ nc.numero }}</td>
+            <td>{{ nc.date }}</td>
+            <td style="max-width: 300px;">{{ nc.probleme.slice(0, 80) }}{{ nc.probleme.length > 80 ? '...' : '' }}</td>
+            <td>{{ nc.processus }}</td>
+            <td>
+              <span class="status-badge" [style.background]="nc.gravite === 3 ? '#FEE2E2' : nc.gravite === 2 ? '#FEF3C7' : '#F1F5F9'" [style.color]="nc.gravite === 3 ? '#991B1B' : nc.gravite === 2 ? '#92400E' : '#475569'">
+                {{ graviteLabels[nc.gravite] }}
+              </span>
+            </td>
+            <td>{{ nc.responsable || '—' }}</td>
+            <td>
+              <select [ngModel]="nc.avancement" (ngModelChange)="updateAvancement(nc, $event)" (click)="$event.stopPropagation()">
+                <option value="P">P — Planifier</option>
+                <option value="D">D — Réaliser</option>
+                <option value="C">C — Contrôler</option>
+                <option value="A">A — Acter</option>
+              </select>
+            </td>
+            <td>
+              @if (nc.statut === 'Fermé') {
+                <span class="badge-ferme">Fermé</span>
+              } @else {
+                <select [ngModel]="nc.statut" (ngModelChange)="updateStatut(nc, $event)" (click)="$event.stopPropagation()">
+                  <option value="Ouvert">Ouvert</option>
+                  <option value="Fermé">Fermé</option>
+                </select>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8" class="empty-row">Aucune non-conformité enregistrée.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- VOLET DÉTAIL -->
+@if (selectedNc(); as nc) {
+  <div class="modal-overlay" (click)="closeDetail()">
+    <div class="modal-card detail-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>NC-{{ nc.numero }} — {{ processusLabels[nc.processus] }}</h2>
+        <button class="close-btn" (click)="closeDetail()">✕</button>
+      </div>
+      <div style="padding: 10px 0; display: flex; flex-direction: column; gap: 12px;">
+        <div><strong>Problème :</strong> {{ nc.probleme }}</div>
+        <div><strong>Origine :</strong> {{ nc.origine || '—' }}</div>
+        <div><strong>Gravité :</strong> {{ graviteLabels[nc.gravite] }}</div>
+        <div><strong>Action immédiate :</strong> {{ nc.action_immediate || '—' }}</div>
+        <div><strong>Analyse des causes :</strong> {{ nc.analyse_causes || '—' }}</div>
+        <div><strong>Récurrence :</strong> {{ nc.recurrence ? 'Oui' : 'Non' }}</div>
+        <div><strong>Action corrective :</strong> {{ nc.action_corrective || '—' }}</div>
+        <div><strong>Date prévue :</strong> {{ nc.date_prevue || '—' }}</div>
+        <div><strong>Responsable :</strong> {{ nc.responsable || '—' }}</div>
+        <div><strong>Date de réalisation :</strong> {{ nc.date_realisation || '—' }}</div>
+        <div><strong>Délais :</strong> {{ nc.delais || '—' }}</div>
+        <div><strong>Efficacité :</strong> {{ nc.efficacite || '—' }}</div>
+        <div><strong>Commentaire :</strong> {{ nc.commentaire || '—' }}</div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL CRÉATION -->
+@if (showAddModal()) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Déclarer une non-conformité</h2>
+        <button class="close-btn" (click)="closeAddModal()">✕</button>
+      </div>
+      <form (ngSubmit)="submitNewNc()">
+        <div class="form-row">
+          <div class="field"><label>Numéro</label><input type="number" [(ngModel)]="newNc.numero" name="numero" readonly></div>
+          <div class="field"><label>Date <span class="required">*</span></label><input type="date" [(ngModel)]="newNc.date" name="date" required></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 2;"><label>Problème <span class="required">*</span></label><textarea [(ngModel)]="newNc.probleme" name="probleme" rows="2" required></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Processus <span class="required">*</span></label>
+            <select [(ngModel)]="newNc.processus" name="processus" required>
+              <option value="PMS">PMS — Pilotage et Management Stratégique</option>
+              <option value="PCS">PCS — Prestation de Consulting</option>
+              <option value="PRT">PRT — Prestation de Recrutement</option>
+              <option value="PFR">PFR — Prestation de Formation</option>
+              <option value="GFS">GFS — Gestion des Fonctions Support</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Gravité <span class="required">*</span></label>
+            <select [(ngModel)]="newNc.gravite" name="gravite" required>
+              <option [ngValue]="1">Faible</option>
+              <option [ngValue]="2">Moyenne</option>
+              <option [ngValue]="3">Élevée / Majeure</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label>Origine</label><input type="text" [(ngModel)]="newNc.origine" name="origine" placeholder="Interne, Externe, Client..."></div>
+          <div class="field">
+            <label>Récurrence</label>
+            <select [(ngModel)]="newNc.recurrence" name="recurrence">
+              <option [ngValue]="false">Non</option>
+              <option [ngValue]="true">Oui</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Action immédiate</label><textarea [(ngModel)]="newNc.action_immediate" name="action_immediate" rows="2"></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Analyse des causes</label><textarea [(ngModel)]="newNc.analyse_causes" name="analyse_causes" rows="2"></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Action corrective</label><textarea [(ngModel)]="newNc.action_corrective" name="action_corrective" rows="2"></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label>Date prévue</label><input type="text" [(ngModel)]="newNc.date_prevue" name="date_prevue" placeholder="Ex: 30/06/2026 ou 2026"></div>
+          <div class="field"><label>Responsable</label><input type="text" [(ngModel)]="newNc.responsable" name="responsable"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label>Date de réalisation</label><input type="text" [(ngModel)]="newNc.date_realisation" name="date_realisation" placeholder="Ex: 30/06/2026 ou 2026"></div>
+          <div class="field"><label>Délais</label><input type="text" [(ngModel)]="newNc.delais" name="delais" placeholder="Ex: Après un an"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Efficacité</label>
+            <select [(ngModel)]="newNc.efficacite" name="efficacite">
+              <option value="">— Non évalué —</option>
+              <option value="Efficace">Efficace</option>
+              <option value="Non efficace">Non efficace</option>
+              <option value="Insuffisant">Insuffisant</option>
+              <option value="A vérifier">À vérifier</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Avancement (PDCA)</label>
+            <select [(ngModel)]="newNc.avancement" name="avancement">
+              <option value="P">P — Planifier</option>
+              <option value="D">D — Réaliser</option>
+              <option value="C">C — Contrôler</option>
+              <option value="A">A — Acter</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Statut</label>
+            <select [(ngModel)]="newNc.statut" name="statut">
+              <option value="Ouvert">Ouvert</option>
+              <option value="Fermé">Fermé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Commentaire</label><textarea [(ngModel)]="newNc.commentaire" name="commentaire" rows="2"></textarea></div>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 20px;">
+          <button type="button" class="cancel-btn" (click)="closeAddModal()">Annuler</button>
+          <button type="submit" class="submit-btn-modal">Déclarer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
