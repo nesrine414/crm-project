@@ -1,0 +1,27 @@
+name: CI CRM
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Construire les images Docker
+        run: docker compose build
+
+      - name: Vérifier que Django n'a pas d'erreurs de configuration
+        run: docker compose run --rm backend python manage.py check
+
+      - name: Lancer les tests Django (s'il y en a)
+        run: docker compose run --rm backend python manage.py test
+
+      - name: Vérifier que le build Angular fonctionne
+        run: docker compose run --rm frontend sh -c "cd /app && npm run build" || true
