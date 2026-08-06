@@ -15,7 +15,7 @@
         Accueil
       </a>
 
-      <div class="tab-dropdown" [class.tab-active]="isInSection(['/clients', '/leads', '/partners'])">
+      <div class="tab-dropdown" [class.tab-active]="isInSection(['/clients', '/leads', '/partners', '/prestataires'])">
         <button class="tab tab-trigger">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Contacts <span class="dropdown-arrow">▾</span>
@@ -23,6 +23,7 @@
         <div class="dropdown-menu">
           <a routerLink="/clients" routerLinkActive="dropdown-item-active" (click)="closeMobileMenu()">Clients</a>
           <a routerLink="/partners" routerLinkActive="dropdown-item-active" (click)="closeMobileMenu()">Partenaires</a>
+          <a routerLink="/prestataires" routerLinkActive="dropdown-item-active" (click)="closeMobileMenu()">Prestataires</a>
         </div>
       </div>
 
@@ -41,11 +42,6 @@
           <a routerLink="/loyalty" routerLinkActive="dropdown-item-active" (click)="closeMobileMenu()">Satisfaction Client</a>
         </div>
       </div>
-
-      <a routerLink="/rapports" routerLinkActive="tab-active" class="tab" (click)="closeMobileMenu()">
-        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        Rapports
-      </a>
 
       <a routerLink="/campagnes" routerLinkActive="tab-active" class="tab" (click)="closeMobileMenu()">
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>

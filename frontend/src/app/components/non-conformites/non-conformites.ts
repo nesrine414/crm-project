@@ -15,6 +15,9 @@ export class NonConformites implements OnInit {
   searchTerm = signal('');
   selectedNc = signal<NonConformite | null>(null);
   showAddModal = signal(false);
+  showEditModal = signal(false);
+  editNc = signal<NonConformite | null>(null);
+  editForm: Partial<NonConformite> = {};
 
   processusLabels: Record<string, string> = {
     PMS: 'Pilotage et Management Stratégique',
@@ -110,6 +113,34 @@ export class NonConformites implements OnInit {
         this.showAddModal.set(false);
       },
       error: (err) => console.error('Erreur lors de la création de la non-conformité :', err)
+    });
+  }
+
+  openEditModal(nc: NonConformite, event?: Event) {
+    if (event) event.stopPropagation();
+    this.editNc.set(nc);
+    this.editForm = { ...nc };
+    this.showEditModal.set(true);
+  }
+
+  closeEditModal() {
+    this.showEditModal.set(false);
+    this.editNc.set(null);
+  }
+
+  submitEditNc() {
+    const current = this.editNc();
+    if (!current) return;
+
+    this.crmData.updateNonConformite(current.id, this.editForm).subscribe({
+      next: () => {
+        this.refreshData();
+        if (this.selectedNc()?.id === current.id) {
+          this.selectedNc.set({ ...current, ...this.editForm } as NonConformite);
+        }
+        this.closeEditModal();
+      },
+      error: (err) => console.error('Erreur de mise à jour de la non-conformité :', err)
     });
   }
 

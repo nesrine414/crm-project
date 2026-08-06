@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import update_last_login
-from .models import Company, Contact, Interaction, NonConformite, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign, Notification, SatisfactionSurveyPDF
+from .models import Company, Contact, Interaction, NonConformite, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign, Notification, SatisfactionSurveyPDF, PrestataireEvaluation
 from django.contrib.auth.models import User
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -16,8 +16,17 @@ class InteractionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PrestataireEvaluationSerializer(serializers.ModelSerializer):
+    company_name = serializers.ReadOnlyField(source='company.name')
+
+    class Meta:
+        model = PrestataireEvaluation
+        fields = '__all__'
+
+
 class CompanySerializer(serializers.ModelSerializer):
     contacts = ContactSerializer(many=True, read_only=True)
+    prestataire_evaluations = PrestataireEvaluationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Company
@@ -68,8 +77,8 @@ class CampaignSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'last_login', 'date_joined']
-
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_active', 'last_login', 'date_joined']
+        read_only_fields = ['last_login', 'date_joined']
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
 
@@ -122,14 +131,23 @@ class NonConformiteSerializer(serializers.ModelSerializer):
 class SatisfactionSurveyPDFSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source='company.name', read_only=True)
     uploaded_by_name = serializers.SerializerMethodField()
+    criteres_disponibles = serializers.SerializerMethodField()
 
     class Meta:
         model = SatisfactionSurveyPDF
-        fields = ['id', 'company', 'company_name', 'year', 'pdf_file', 
-                  'uploaded_at', 'uploaded_by_name', 'notes']
+        fields = ['id', 'company', 'company_name', 'year', 'service_type',
+                  'detailed_scores', 'score_global', 'score_recommendation', 'future_intent',
+                  'point_fort', 'amelioration', 'pdf_file', 'uploaded_at',
+                  'uploaded_by', 'uploaded_by_name', 'notes', 'criteres_disponibles']
+        read_only_fields = ['score_global']  # calculé automatiquement côté serveur si detailed_scores fourni
 
     def get_uploaded_by_name(self, obj):
         if obj.uploaded_by:
             name = f"{obj.uploaded_by.first_name} {obj.uploaded_by.last_name}".strip()
             return name if name else obj.uploaded_by.username
-        return None
+        return "Administrateur"
+
+    def get_criteres_disponibles(self, obj):
+        """Renvoie la liste des critères attendus pour le service_type de cet enregistrement,
+        pratique pour que le frontend sache quels champs afficher."""
+        return SatisfactionSurveyPDF.CRITERES_PAR_SERVICE.get(obj.service_type, [])

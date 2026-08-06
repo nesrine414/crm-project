@@ -13,7 +13,7 @@ export class AuthService {
   private baseUrl = 'http://127.0.0.1:8000/api';
   isLoggedIn = signal<boolean>(this.hasToken());
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   private hasToken(): boolean {
     return !!localStorage.getItem('access_token');
@@ -21,6 +21,15 @@ export class AuthService {
 
   login(username: string, password: string): Observable<TokenResponse> {
     return this.http.post<TokenResponse>(`${this.baseUrl}/token/`, { username, password }).pipe(
+      tap(response => {
+        localStorage.setItem('access_token', response.access);
+        localStorage.setItem('refresh_token', response.refresh);
+        this.isLoggedIn.set(true);
+      })
+    );
+  }
+  loginWithGoogle(credential: string): Observable<TokenResponse> {
+    return this.http.post<TokenResponse>(`${this.baseUrl}/auth/google/`, { credential }).pipe(
       tap(response => {
         localStorage.setItem('access_token', response.access);
         localStorage.setItem('refresh_token', response.refresh);

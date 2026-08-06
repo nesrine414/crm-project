@@ -57,12 +57,13 @@
           <th>Ville</th>
           <th>Statut</th>
           <th>Valeur Gagnée</th>
-          <th class="col-actions"></th>
+          <th class="col-actions">Actions</th>
         </tr>
       </thead>
       <tbody>
         @for (client of pagedClients(); track client.id) {
-        <tr (click)="selectClient(client)" [class.active-row]="selectedClient()?.id === client.id">
+        <tr (click)="selectClient(client)" [class.active-row]="selectedClient()?.id === client.id"
+          style="cursor: pointer;">
           <td class="col-check" (click)="$event.stopPropagation()"><input type="checkbox"></td>
           <td>
             <div class="name-with-avatar">
@@ -84,7 +85,10 @@
           <td class="value-cell">{{ dealValue(client.id) > 0 ? (dealValue(client.id) + ' DT') : '—' }}</td>
           <td class="col-actions" (click)="$event.stopPropagation()">
             <div class="row-actions">
-              <button class="icon-btn" title="Voir les détails">
+              <button class="icon-btn" (click)="openEditModal(client, $event)" title="Modifier l'entreprise">
+                ✏️
+              </button>
+              <button class="icon-btn" (click)="selectClient(client)" title="Voir les détails">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                   stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10" />
@@ -127,22 +131,17 @@
         <span class="avatar avatar-lg" [style.background]="avatarColorOf(client)">{{ initialsOf(client) }}</span>
         <div>
           <h2>{{ client.name }}</h2>
-          <p class="detail-title">
-            {{ client.sector || 'Secteur non spécifié' }} @if (client.address) { · {{ client.address }} }
+          <p class="detail-title" style="margin-top: 4px; font-size: 0.9rem; color: #6b7280;">
+            {{ client.sector || 'Secteur non spécifié' }}
+            @if (client.address) { · {{ client.address }} }
+            @if (client.service_provided) { · {{ client.service_provided }} }
           </p>
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 0.85rem; color: #4b5563;">
-            <span style="font-weight: 600; color: #374151;">Service fourni :</span>
-            <select [value]="client.service_provided || ''" (change)="updateClientService(client, $event)"
-              style="padding: 3px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
-              <option value="">-- Non spécifié --</option>
-              <option value="Recrutement">Recrutement</option>
-              <option value="Formation">Formation</option>
-              <option value="Consulting">Consulting</option>
-            </select>
-          </div>
         </div>
       </div>
-      <button class="close-btn" (click)="closeDetail()">✕</button>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="ghost-btn" (click)="openEditModal(client)">✏️ Modifier</button>
+        <button class="close-btn" (click)="closeDetail()">✕</button>
+      </div>
     </div>
 
     <div class="detail-tabs">
@@ -158,9 +157,59 @@
     <!-- ONGLET : LISTE DES CONTACTS IMBRIQUÉS -->
     @if (activeTab() === 'contacts') {
     <div class="timeline" style="padding-top: 10px;">
+
+      <div style="padding-bottom: 14px;">
+        @if (!showContactForm()) {
+        <button class="add-btn" style="width: 100%;" (click)="openAddContactForm()">+ Ajouter un contact</button>
+        } @else {
+        <form (ngSubmit)="submitContactForm()"
+          style="background: #f8fafc; padding: 14px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px;">
+          <div class="form-row">
+            <div class="field">
+              <label>Prénom <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="contactForm.first_name" name="contact_first_name" required
+                placeholder="Ex: Chokri">
+            </div>
+            <div class="field">
+              <label>Nom <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="contactForm.last_name" name="contact_last_name" required
+                placeholder="Ex: Dahbi">
+            </div>
+          </div>
+          <div class="field">
+            <label>Fonction</label>
+            <input type="text" [(ngModel)]="contactForm.role" name="contact_role" placeholder="Ex: Responsable qualité">
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Email</label>
+              <input type="email" [(ngModel)]="contactForm.email" name="contact_email"
+                placeholder="Ex: contact@entreprise.com">
+            </div>
+            <div class="field">
+              <label>Téléphone</label>
+              <input type="text" [(ngModel)]="contactForm.phone" name="contact_phone" placeholder="Ex: +216 12 345 678">
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="cancel-btn" (click)="closeContactForm()">Annuler</button>
+            <button type="submit" class="submit-btn-modal">
+              {{ editingContactId() ? 'Enregistrer les modifications' : 'Ajouter le contact' }}
+            </button>
+          </div>
+        </form>
+        }
+      </div>
+
       @for (contact of client.contacts; track contact.id) {
       <div style="padding: 12px; border-bottom: 1px solid #eee; display: flex; flex-direction: column; gap: 4px;">
-        <div style="font-weight: 600; color: #111827;">{{ contact.first_name }} {{ contact.last_name }}</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div style="font-weight: 600; color: #111827;">{{ contact.first_name }} {{ contact.last_name }}</div>
+          <div style="display: flex; gap: 4px;">
+            <button class="icon-btn" (click)="openEditContactForm(contact)" title="Modifier le contact">✏️</button>
+            <button class="icon-btn" (click)="deleteContact(contact.id)" title="Supprimer le contact">🗑️</button>
+          </div>
+        </div>
         @if (contact.role) {
         <div style="font-size: 0.85rem; color: #6b7280; font-style: italic;">{{ contact.role }}</div>
         }
@@ -265,6 +314,21 @@
 </div>
 }
 
+<!-- DATALIST SUGGESTIONS SECTEURS D'ACTIVITÉ -->
+<datalist id="secteurs-list">
+  <option value="Automobile"></option>
+  <option value="Aéronautique"></option>
+  <option value="Agroalimentaire"></option>
+  <option value="Informatique / IT"></option>
+  <option value="Santé / Pharma"></option>
+  <option value="Industrie"></option>
+  <option value="Services & Conseil"></option>
+  <option value="Textile & Habillement"></option>
+  <option value="Énergie & Environnement"></option>
+  <option value="BTP & Construction"></option>
+  <option value="Commerce & Distribution"></option>
+</datalist>
+
 <!-- MODAL : CRÉATION D'UNE ENTREPRISE -->
 @if (showAddModal()) {
 <div class="modal-overlay" (click)="closeAddModal()">
@@ -285,19 +349,9 @@
       <div class="form-row">
         <div class="field">
           <label>Secteur d'activité</label>
-          <select [(ngModel)]="newClient.sector" name="sector"
+          <input type="text" [(ngModel)]="newClient.sector" name="sector" list="secteurs-list"
+            placeholder="Sélectionner ou saisir un secteur (ex: Aéronautique)"
             style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
-            <option value="">Non spécifié</option>
-            <option value="Automobile">Automobile</option>
-            <option value="Aéronautique">Aéronautique</option>
-            <option value="Agroalimentaire">Agroalimentaire</option>
-            <option value="Informatique / IT">Informatique / IT</option>
-            <option value="Santé / Pharma">Santé / Pharma</option>
-            <option value="Industrie">Industrie</option>
-            <option value="Services & Conseil">Services & Conseil</option>
-            <option value="Textile & Habillement">Textile & Habillement</option>
-            <option value="Autre">Autre</option>
-          </select>
         </div>
         <div class="field">
           <label>Ville de résidence</label>
@@ -317,7 +371,7 @@
           </select>
         </div>
         <div class="field">
-          <label>Type de qualification réglementaire</label>
+          <label>Statut</label>
           <select [(ngModel)]="newClient.status" name="status"
             style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
             <option value="Client">Client Actif</option>
@@ -329,6 +383,66 @@
       <div class="modal-actions" style="margin-top: 25px;">
         <button type="button" class="cancel-btn" (click)="closeAddModal()">Annuler</button>
         <button type="submit" class="submit-btn-modal">Créer la fiche structure</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+<!-- MODAL : MODIFICATION D'UNE ENTREPRISE -->
+@if (showEditModal()) {
+<div class="modal-overlay" (click)="closeEditModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Modifier l'entreprise {{ editClientData.name }}</h2>
+      <button class="close-btn" (click)="closeEditModal()">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitEditClient()">
+      <div class="form-row">
+        <div class="field">
+          <label>Nom de l'entreprise / Structure <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="editClientData.name" name="edit_name" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Secteur d'activité</label>
+          <input type="text" [(ngModel)]="editClientData.sector" name="edit_sector" list="secteurs-list"
+            placeholder="Écrire le secteur (ex: Aéronautique, Automobile...)"
+            style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
+        </div>
+        <div class="field">
+          <label>Ville de résidence</label>
+          <input type="text" [(ngModel)]="editClientData.city" name="edit_city" placeholder="Ex: Tunis, Sousse">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Service fourni</label>
+          <select [(ngModel)]="editClientData.service_provided" name="edit_service_provided"
+            style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
+            <option value="">Non spécifié</option>
+            <option value="Recrutement">Recrutement</option>
+            <option value="Formation">Formation</option>
+            <option value="Consulting">Consulting</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Statut</label>
+          <select [(ngModel)]="editClientData.status" name="edit_status"
+            style="width: 100%; height: 38px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px;">
+            <option value="Client">Client Actif</option>
+            <option value="Lead">Lead / Prospect</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 25px;">
+        <button type="button" class="cancel-btn" (click)="closeEditModal()">Annuler</button>
+        <button type="submit" class="submit-btn-modal">Enregistrer les modifications</button>
       </div>
     </form>
   </div>

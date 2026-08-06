@@ -8,12 +8,12 @@ import { Pipeline } from './components/pipeline/pipeline';
 import { Reclamations } from './components/reclamations/reclamations';
 import { SatisfactionClientComponent } from './components/satisfaction-client/satisfaction-client';
 import { Campagnes } from './components/campagnes/campagnes';
-import { Rapports } from './components/rapports/rapports';
 import { Configuration } from './components/configuration/configuration';
 import { authGuard } from './guards/auth-guard';
 import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
 import { NonConformites } from './components/non-conformites/non-conformites';
+import { PrestatairesComponent } from './components/prestataires/prestataires';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -21,13 +21,14 @@ export const routes: Routes = [
   { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
   { path: 'clients', component: Clients, canActivate: [authGuard] },
   { path: 'partners', component: Partners, canActivate: [authGuard] },
+  { path: 'prestataires', component: PrestatairesComponent, canActivate: [authGuard] },
   { path: 'pipeline', component: Pipeline, canActivate: [authGuard] },
   { path: 'reclamations', component: Reclamations, canActivate: [authGuard] },
   { path: 'loyalty', component: SatisfactionClientComponent, canActivate: [authGuard] },
 
   { path: 'campagnes', component: Campagnes, canActivate: [authGuard] },
   { path: 'configuration', component: Configuration, canActivate: [authGuard] },
-  { path: 'rapports', component: Rapports, canActivate: [authGuard] },
+  { path: 'rapports', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'forgot-password', component: ForgotPassword },
   { path: 'reset-password', component: ResetPassword },

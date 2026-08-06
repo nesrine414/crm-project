@@ -7,11 +7,16 @@ class Company(models.Model):
         ('Lead', 'Lead'),
         ('Client', 'Client'),
         ('Partenaire', 'Partenaire'),
+        ('Prestataire', 'Prestataire'),
     ]
     SERVICE_CHOICES = [
         ('Recrutement', 'Recrutement'),
         ('Formation', 'Formation'),
         ('Consulting', 'Consulting'),
+        ('Comptable', 'Comptable'),
+        ('Fourniture bureautique', 'Fourniture bureautique'),
+        ('Informatique', 'Informatique'),
+        ('Autre', 'Autre'),
     ]
 
     name = models.CharField(max_length=200)
@@ -20,12 +25,31 @@ class Company(models.Model):
     address = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=100, blank=True)
     acquisition_channel = models.CharField(max_length=100, blank=True)  # Canal d'acquisition
-    service_provided = models.CharField(max_length=50, choices=SERVICE_CHOICES, blank=True)
+    service_provided = models.CharField(max_length=100, choices=SERVICE_CHOICES, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Lead')
+
+    # Champs spécifiques aux Prestataires (conforme Excel ENR-GFS-03)
+    patente = models.CharField(max_length=20, default='Oui', blank=True)
+    convention_contrat = models.CharField(max_length=20, default='Non', blank=True)
+    date_debut_contrat = models.DateField(null=True, blank=True)
+    date_fin_contrat = models.DateField(null=True, blank=True)
+    interlocuteur_principal = models.CharField(max_length=150, blank=True)
+    fonction_interlocuteur = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(blank=True, default='')
+    phone = models.CharField(max_length=30, blank=True, default='')
+    cv_document = models.FileField(upload_to='prestataire_cvs/%Y/', null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
+
+class Prestataire(Company):
+    class Meta:
+        proxy = True
+        verbose_name = "Prestataire"
+        verbose_name_plural = "Prestataires"
 
 
 class Contact(models.Model):
@@ -72,7 +96,7 @@ class Opportunity(models.Model):
         ('Perdu', 'Perdu'),
     ]
 
-    offer_id = models.CharField(max_length=30, blank=True)  # Ex: MDC-26-001
+    offer_id = models.CharField(max_length=30, blank=True)
     year = models.IntegerField(null=True, blank=True)
     entry_date = models.DateField(auto_now_add=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='opportunities')
@@ -81,14 +105,13 @@ class Opportunity(models.Model):
     stage = models.CharField(max_length=30, choices=STAGE_CHOICES, default='Qualification')
     result = models.CharField(max_length=20, choices=RESULT_CHOICES, default='En cours')
     estimated_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    probability = models.IntegerField(default=0)  # en %
+    probability = models.IntegerField(default=0)
     expected_close_date = models.DateField(null=True, blank=True)
     lost_reason = models.TextField(blank=True)
     action_plan = models.TextField(blank=True)
 
     @property
     def weighted_revenue(self):
-        """CA Pondéré = Montant Estimé × Probabilité"""
         return round(float(self.estimated_amount) * (self.probability / 100), 2)
 
     def __str__(self):
@@ -141,7 +164,7 @@ class ReclamationNote(models.Model):
 
 class Feedback(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='feedbacks')
-    rating = models.IntegerField()  # 1 à 5
+    rating = models.IntegerField()
     comment = models.TextField(blank=True)
     date = models.DateField(auto_now_add=True)
 
@@ -158,6 +181,7 @@ class Campaign(models.Model):
     conversions_count = models.IntegerField(default=0)
     budget = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     start_date = models.DateField()
+
 
 class Notification(models.Model):
     TYPE_CHOICES = [
@@ -176,7 +200,8 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{self.type} - {self.message}"
-    
+
+
 class NonConformite(models.Model):
     PROCESSUS_CHOICES = [
         ('PMS', 'Pilotage et Management Stratégique'),
@@ -221,16 +246,121 @@ class NonConformite(models.Model):
 
 
 class SatisfactionSurveyPDF(models.Model):
+    SERVICE_CHOICES = [
+        ('Consulting', 'Consulting'),
+        ('Formation', 'Formation'),
+        ('Recrutement', 'Recrutement'),
+    ]
+    INTENT_CHOICES = [
+        ('Oui', 'Oui'),
+        ('Non', 'Non'),
+        ('Peut-être', 'Peut-être'),
+    ]
+
+    # 👇 Grilles de critères officielles LCA, par service (source : fichier Excel de l'encadrante)
+    CRITERES_PAR_SERVICE = {
+        'Consulting': [
+            'Diagnostic & Analyse',
+            'Expertise Technique',
+            'Qualité des Livrables',
+            'Respect du Planning',
+            'Pédagogie & Transfert de compétences',
+            'Réactivité',
+            'Professionnalisme',
+            'Valeur Ajoutée',
+        ],
+        'Formation': [
+            'Ingénierie pédagogique',
+            'Expertise du formateur',
+            'Supports de cours',
+            'Logistique',
+            'Impact opérationnel',
+            'Réactivité',
+            'Professionnalisme',
+            'Image de marque',
+            'Rapport Qualité/Prix',
+        ],
+        'Recrutement': [
+            'Analyse du besoin',
+            'Qualité des profils',
+            'Pertinence des évaluations',
+            'Délai de traitement',
+            'Accompagnement',
+            'Communication',
+            'Professionnalisme',
+            'Rapport Qualité/Prix',
+        ],
+    }
+
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='satisfaction_pdfs')
     year = models.IntegerField()
-    pdf_file = models.FileField(upload_to='satisfaction_pdfs/%Y/')
+    service_type = models.CharField(max_length=20, choices=SERVICE_CHOICES, default='Consulting')
+
+    # 👇 NOUVEAU : détail des notes par critère (rempli par le formulaire dynamique)
+    # ex: {"Diagnostic & Analyse": 5, "Expertise Technique": 5, ...}
+    detailed_scores = models.JSONField(default=dict, blank=True)
+
+    score_global = models.FloatField(default=5.0)  # calculé automatiquement si detailed_scores est rempli
+    score_recommendation = models.IntegerField(default=10)  # NPS /10, reste séparé du calcul de score_global
+    future_intent = models.CharField(max_length=15, choices=INTENT_CHOICES, default='Oui')
+    point_fort = models.TextField(blank=True)
+    amelioration = models.TextField(blank=True)
+    pdf_file = models.FileField(upload_to='satisfaction_pdfs/%Y/', null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField(blank=True)
 
     class Meta:
-        unique_together = ('company', 'year')
-        ordering = ['-year']
+        ordering = ['-year', '-uploaded_at']
+
+    def save(self, *args, **kwargs):
+        # Si des critères détaillés sont fournis, on recalcule score_global automatiquement
+        # (évite les erreurs de calcul manuel)
+        if self.detailed_scores:
+            valeurs = [v for v in self.detailed_scores.values() if isinstance(v, (int, float))]
+            if valeurs:
+                self.score_global = round(sum(valeurs) / len(valeurs), 2)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.company.name} - {self.year}"
+        return f"{self.company.name} ({self.service_type}) - {self.year}"
+
+
+class PrestataireEvaluation(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='prestataire_evaluations')
+    year = models.IntegerField()
+
+    # Critères d'évaluation officiels LCA (notés sur 4)
+    prix = models.FloatField(null=True, blank=True)
+    qualite = models.FloatField(null=True, blank=True)
+    prestation_service = models.FloatField(null=True, blank=True)
+    respect_delais = models.FloatField(null=True, blank=True)
+
+    score_percent = models.FloatField(null=True, blank=True)
+    decision = models.CharField(max_length=100, blank=True)
+    notes = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-year', 'company__name']
+        unique_together = ('company', 'year')
+
+    def save(self, *args, **kwargs):
+        scores = [s for s in [self.prix, self.qualite, self.prestation_service, self.respect_delais] if s is not None]
+        if scores:
+            avg_note = sum(scores) / len(scores)
+            self.score_percent = round((avg_note / 4.0) * 100, 2)
+            if self.score_percent > 80:
+                self.decision = "Maintenir le fournisseur et le privilégier"
+            elif self.score_percent >= 60:
+                self.decision = "Maintenir le fournisseur"
+            elif self.score_percent >= 40:
+                self.decision = "Maintenir le fournisseur sous surveillance"
+            else:
+                self.decision = "Fournisseurs douteux"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.company.name} - Evaluation {self.year}"

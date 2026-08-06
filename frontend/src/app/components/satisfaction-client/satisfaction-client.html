@@ -4,128 +4,493 @@
     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
   </svg>
   <span class="breadcrumb-sep">›</span>
-  <span class="breadcrumb-label">Satisfaction Client</span>
-</div>
+  <span class="breadcrumb-label">Qualité — Satisfaction Client</span>
 
-<div class="satisfaction-page">
-  <div class="page-header">
-    <div>
-      <h1>Enquêtes de Satisfaction Client</h1>
-      <p class="subtitle">Gestion et archivage annuel des résultats d'enquêtes au format PDF</p>
-    </div>
-    <button class="btn-primary" (click)="openUploadModal()">
-      + Ajouter une enquête
+  <div class="breadcrumb-actions">
+    <button class="ghost-btn" (click)="loadSurveys()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M23 4v6h-6M1 20v-6h6" />
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+      </svg>
+      Actualiser
     </button>
   </div>
+</div>
 
-  <div class="filters-bar">
-    <input
-      type="text"
-      class="search-input"
-      placeholder="Rechercher par client ou note..."
-      [ngModel]="searchTerm()"
-      (ngModelChange)="searchTerm.set($event)"
-    />
+<!-- CARTE STATISTIQUES / KPIS -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-header">
+      <span class="kpi-title">Satisfaction Globale</span>
+      <span class="kpi-badge badge-iso">ISO 9001</span>
+    </div>
+    <div class="kpi-value-row">
+      <span class="kpi-value">{{ avgSatisfaction() }} <span class="kpi-max">/ 5</span></span>
+      <span class="kpi-icon">⭐</span>
+    </div>
+    <div class="kpi-sub">Moyenne des évaluations clients</div>
+  </div>
 
-    <select class="year-select" [ngModel]="yearFilter()" (ngModelChange)="yearFilter.set($event)">
+  <div class="kpi-card">
+    <div class="kpi-header">
+      <span class="kpi-title">Score Recommandation (NPS)</span>
+      <span class="kpi-badge badge-nps">Recommandation</span>
+    </div>
+    <div class="kpi-value-row">
+      <span class="kpi-value">{{ avgNps() }} <span class="kpi-max">/ 10</span></span>
+      <span class="kpi-icon">🚀</span>
+    </div>
+    <div class="kpi-sub">Taux de recommandation moyen</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-header">
+      <span class="kpi-title">Intention de Réengagement</span>
+      <span class="kpi-badge badge-repeat">Fidélisation</span>
+    </div>
+    <div class="kpi-value-row">
+      <span class="kpi-value">{{ reengagementRate() }}%</span>
+      <span class="kpi-icon">🔄</span>
+    </div>
+    <div class="kpi-sub">Clients prêts à confier de nouveaux projets</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-header">
+      <span class="kpi-title">Enquêtes Enregistrées</span>
+      <span class="kpi-badge badge-count">Archives</span>
+    </div>
+    <div class="kpi-value-row">
+      <span class="kpi-value">{{ surveys().length }}</span>
+      <span class="kpi-icon">📄</span>
+    </div>
+    <div class="kpi-sub">Enquêtes et procès-verbaux archivés</div>
+  </div>
+</div>
+
+<!-- LIST PANEL MAIN -->
+<div class="list-panel">
+  <div class="list-panel-header">
+    <div>
+      <h2>Enquêtes de Satisfaction Client <span class="count-badge">{{ filteredSurveys.length }}</span></h2>
+      <p class="subtitle">Analyse des retours clients et archivage des questionnaires par pôle d'activité</p>
+    </div>
+    <button class="add-btn" (click)="openAddModal()">+ Enregistrer une enquête</button>
+  </div>
+
+  <div class="filter-bar">
+    <div class="search-wrapper">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.35-4.35" />
+      </svg>
+      <input type="text" placeholder="Rechercher par client, note, point fort..." [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)">
+    </div>
+
+    <select class="filter-select" [ngModel]="serviceFilter()" (ngModelChange)="serviceFilter.set($event)">
+      <option value="">Tous les services</option>
+      <option value="Consulting">Consulting (ISO 9001...)</option>
+      <option value="Formation">Formation</option>
+      <option value="Recrutement">Recrutement</option>
+    </select>
+
+    <select class="filter-select" [ngModel]="yearFilter()" (ngModelChange)="yearFilter.set($event ? +$event : null)">
       <option [ngValue]="null">Toutes les années</option>
-      @for (year of availableYears; track year) {
-        <option [ngValue]="year">{{ year }}</option>
+      @for (y of availableYears; track y) {
+      <option [ngValue]="y">{{ y }}</option>
       }
     </select>
 
-    @if (searchTerm() || yearFilter()) {
-      <button class="btn-clear" (click)="clearFilters()">Effacer les filtres</button>
+    @if (searchTerm() || yearFilter() !== null || serviceFilter()) {
+    <button class="ghost-btn" (click)="clearFilters()">Réinitialiser</button>
     }
   </div>
 
-  <div class="table-container">
-    <table class="surveys-table">
+  <div class="table-card">
+    <table>
       <thead>
         <tr>
           <th>Client</th>
           <th>Année</th>
-          <th>Notes / Remarques</th>
-          <th>Ajouté par</th>
-          <th>Date d'ajout</th>
-          <th class="actions-col">Actions</th>
+          <th>Service Évalué</th>
+          <th>Satisfaction</th>
+          <th>Recommandation</th>
+          <th>Projets Futurs</th>
+          <th>Document PDF</th>
+          <th style="text-align: center; width: 100px;">Actions</th>
         </tr>
       </thead>
       <tbody>
-        @for (survey of filteredSurveys; track survey.id) {
-          <tr class="survey-row">
-            <td class="company-cell">{{ survey.company_name }}</td>
-            <td>
-              <span class="year-badge">{{ survey.year }}</span>
-            </td>
-            <td class="notes-cell">{{ survey.notes || '—' }}</td>
-            <td>{{ survey.uploaded_by_name || '—' }}</td>
-            <td>{{ survey.uploaded_at | date:'dd/MM/yyyy' }}</td>
-            <td class="actions-col">
-              <button class="btn-icon view" (click)="viewPdf(survey.pdf_file)" title="Voir le PDF">
-                📄 Voir
-              </button>
-              <button class="btn-icon delete" (click)="deleteSurvey(survey.id)" title="Supprimer">
-                🗑️
-              </button>
-            </td>
-          </tr>
+        @for (s of filteredSurveys; track s.id) {
+        <tr (click)="openDetail(s)" style="cursor: pointer;">
+          <td>
+            <div class="client-cell">
+              <span class="client-name">{{ s.company_name || 'Client #' + s.company }}</span>
+            </div>
+          </td>
+          <td><strong>{{ s.year }}</strong></td>
+          <td>
+            <span class="service-badge" [class.service-consulting]="s.service_type === 'Consulting'"
+              [class.service-formation]="s.service_type === 'Formation'"
+              [class.service-recrutement]="s.service_type === 'Recrutement'">
+              {{ s.service_type }}
+            </span>
+          </td>
+          <td>
+            <div class="score-stars">
+              ⭐ <strong class="score-num">{{ s.score_global || 5 }}/5</strong>
+            </div>
+          </td>
+          <td>
+            <span class="nps-badge">{{ s.score_recommendation || 10 }}/10</span>
+          </td>
+          <td>
+            <span class="intent-badge" [class.intent-oui]="s.future_intent === 'Oui'"
+              [class.intent-peut-etre]="s.future_intent === 'Peut-être'" [class.intent-non]="s.future_intent === 'Non'">
+              {{ s.future_intent || 'Oui' }}
+            </span>
+          </td>
+          <td>
+            @if (s.pdf_file) {
+            <button class="pdf-link-btn" (click)="viewPdf(s.pdf_file, $event)" title="Voir le PDF">
+              📄 Fichier PDF
+            </button>
+            } @else {
+            <span class="no-pdf">— Aucun PDF —</span>
+            }
+          </td>
+          <td (click)="$event.stopPropagation()" style="text-align: center;">
+            <div class="action-buttons">
+              <button class="ghost-btn" style="padding: 4px 8px;" (click)="openDetail(s)"
+                title="Voir les détails">👁️</button>
+              <button class="ghost-btn" style="padding: 4px 8px;" (click)="openEditModal(s, $event)"
+                title="Modifier">✏️</button>
+              <button class="ghost-btn danger-hover" style="padding: 4px 8px;" (click)="deleteSurvey(s.id, $event)"
+                title="Supprimer">🗑️</button>
+            </div>
+          </td>
+        </tr>
         } @empty {
-          <tr>
-            <td colspan="6" class="empty-state">
-              Aucune enquête de satisfaction enregistrée pour le moment.
-            </td>
-          </tr>
+        <tr>
+          <td colspan="8" class="empty-row">Aucune enquête de satisfaction ne correspond à votre recherche.</td>
+        </tr>
         }
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- Modal Upload -->
-@if (showUploadModal()) {
-  <div class="modal-overlay" (click)="closeUploadModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h2>Ajouter une enquête de satisfaction</h2>
+<!-- VOLET DÉTAIL D'UNE ENQUÊTE -->
+@if (selectedSurvey(); as survey) {
+<div class="modal-overlay" (click)="closeDetail()">
+  <div class="modal-card detail-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h2>{{ survey.company_name }} — {{ survey.year }}</h2>
+        <span class="service-badge" [class.service-consulting]="survey.service_type === 'Consulting'"
+          [class.service-formation]="survey.service_type === 'Formation'"
+          [class.service-recrutement]="survey.service_type === 'Recrutement'">
+          Enquête {{ survey.service_type }}
+        </span>
+      </div>
+      <button class="close-btn" (click)="closeDetail()">✕</button>
+    </div>
 
-      @if (errorMessage()) {
-        <div class="error-banner">{{ errorMessage() }}</div>
+    <div class="detail-content">
+      <div class="scores-summary-card">
+        <div class="score-box">
+          <span class="score-box-label">Satisfaction Globale</span>
+          <span class="score-box-val">⭐ {{ survey.score_global }}/5</span>
+        </div>
+        <div class="score-box">
+          <span class="score-box-label">Recommandation (NPS)</span>
+          <span class="score-box-val">🚀 {{ survey.score_recommendation }}/10</span>
+        </div>
+        <div class="score-box">
+          <span class="score-box-label">Confier de futurs projets</span>
+          <span class="score-box-val">🔄 {{ survey.future_intent }}</span>
+        </div>
+      </div>
+
+      @if (getDetailEntries(survey).length > 0) {
+      <div class="detail-section">
+        <h3>📊 Détail des notes par critère</h3>
+        <div class="criteria-detail-grid">
+          @for (entry of getDetailEntries(survey); track entry.critere) {
+          <div class="criteria-detail-row">
+            <span class="criteria-name">{{ entry.critere }}</span>
+            <span class="criteria-note">{{ entry.note }}/5</span>
+          </div>
+          }
+        </div>
+      </div>
       }
 
-      <div class="form-group">
-        <label>Client *</label>
-        <select [(ngModel)]="uploadForm.company">
-          <option [ngValue]="null">-- Sélectionner un client --</option>
-          @for (company of companies(); track company.id) {
-            <option [ngValue]="company.id">{{ company.name }}</option>
-          }
-        </select>
+      <div class="detail-section">
+        <h3>🌟 Points Forts d'Expertise LCA</h3>
+        <p class="detail-text">{{ survey.point_fort || 'Aucun point fort spécifique saisi.' }}</p>
       </div>
 
-      <div class="form-group">
-        <label>Année *</label>
-        <input type="number" [(ngModel)]="uploadForm.year" min="2000" max="2100" />
+      <div class="detail-section">
+        <h3>💡 Pistes d'Amélioration & Attentes</h3>
+        <p class="detail-text">{{ survey.amelioration || 'Aucune remarque d\'amélioration saisie.' }}</p>
       </div>
 
-      <div class="form-group">
-        <label>Fichier PDF *</label>
-        <input type="file" accept="application/pdf" (change)="onFileSelected($event)" />
-        @if (uploadForm.file) {
-          <span class="file-selected">✓ {{ uploadForm.file.name }}</span>
+      @if (survey.notes) {
+      <div class="detail-section">
+        <h3>📝 Remarques Complémentaires</h3>
+        <p class="detail-text">{{ survey.notes }}</p>
+      </div>
+      }
+
+      <div class="detail-section">
+        <h3>📄 Document PDF Officiel</h3>
+        @if (survey.pdf_file) {
+        <div class="pdf-attachment-box">
+          <span>Document joint : Questionnaire de satisfaction scanné</span>
+          <button class="submit-btn-modal" (click)="viewPdf(survey.pdf_file)">Consulter le PDF</button>
+        </div>
+        } @else {
+        <p class="detail-text" style="color: #94a3b8; font-style: italic;">Aucun fichier PDF joint à cette fiche.</p>
         }
       </div>
+    </div>
 
-      <div class="form-group">
-        <label>Notes (optionnel)</label>
-        <textarea [(ngModel)]="uploadForm.notes" rows="3" placeholder="Remarques sur cette enquête..."></textarea>
+    <div class="modal-actions">
+      <button type="button" class="cancel-btn" (click)="closeDetail()">Fermer</button>
+      <button type="button" class="submit-btn-modal" (click)="openEditModal(survey)">✏️ Modifier cette enquête</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- MODAL SAISIE / ENREGISTREMENT ENQUÊTE -->
+@if (showAddModal()) {
+<div class="modal-overlay" (click)="closeAddModal()">
+  <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Enregistrer une Enquête de Satisfaction Client</h2>
+      <button class="close-btn" (click)="closeAddModal()">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitSurvey()">
+      @if (errorMessage()) {
+      <div class="error-banner">{{ errorMessage() }}</div>
+      }
+
+      <div class="form-row">
+        <div class="field" style="flex: 2;">
+          <label>Client / Entreprise <span class="required">*</span></label>
+          <select [(ngModel)]="form.company" name="company" required class="form-input">
+            <option [ngValue]="null">-- Sélectionner une entreprise --</option>
+            @for (c of companies(); track c.id) {
+            <option [ngValue]="c.id">{{ c.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Année <span class="required">*</span></label>
+          <input type="number" [(ngModel)]="form.year" name="year" required class="form-input">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1.5;">
+          <label>Pôle / Service Évalué <span class="required">*</span></label>
+          <select [(ngModel)]="form.service_type" name="service_type" required class="form-input"
+            (ngModelChange)="onServiceTypeChange()">
+            <option value="Consulting">Consulting</option>
+            <option value="Formation">Formation</option>
+            <option value="Recrutement">Recrutement</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Recommandation (0 à 10)</label>
+          <input type="number" min="0" max="10" [(ngModel)]="form.score_recommendation" name="score_recommendation"
+            class="form-input">
+        </div>
+      </div>
+
+      <div class="criteria-form-section">
+        <label class="criteria-section-label">Notez chaque critère (1 à 5) <span class="required">*</span></label>
+        <div class="criteria-form-grid">
+          @for (critere of currentCriteres; track critere) {
+          <div class="criteria-form-row">
+            <span class="criteria-form-name">{{ critere }}</span>
+            <input type="number" min="1" max="5" step="0.5" [ngModel]="form.detailed_scores[critere]"
+              (ngModelChange)="updateCritereScore(critere, $event)" name="critere_{{ critere }}"
+              class="criteria-form-input">
+          </div>
+          }
+        </div>
+        <div class="computed-score-banner">
+          Note globale calculée automatiquement : <strong>{{ computedScoreGlobal }} / 5</strong>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Confier d'autres projets futurs ?</label>
+          <select [(ngModel)]="form.future_intent" name="future_intent" class="form-input">
+            <option value="Oui">Oui</option>
+            <option value="Peut-être">Peut-être</option>
+            <option value="Non">Non</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1;">
+          <label>🌟 Points Forts d'Expertise LCA</label>
+          <textarea [(ngModel)]="form.point_fort" name="point_fort" rows="2"
+            placeholder="Ex: Réactivité, disponible, excellente méthodologie..." class="form-input"></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1;">
+          <label>💡 Pistes d'Amélioration & Souhaits du Client</label>
+          <textarea [(ngModel)]="form.amelioration" name="amelioration" rows="2"
+            placeholder="Ex: Intégrer plus d'études de cas pratiques, Soft skills..." class="form-input"></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1;">
+          <label>📄 Joindre le Fichier PDF Officiel (Optionnel)</label>
+          <input type="file" accept="application/pdf" (change)="onFileSelected($event)" class="form-input">
+        </div>
       </div>
 
       <div class="modal-actions">
-        <button class="btn-secondary" (click)="closeUploadModal()">Annuler</button>
-        <button class="btn-primary" (click)="submitUpload()" [disabled]="isUploading()">
-          {{ isUploading() ? 'Envoi...' : 'Enregistrer' }}
+        <button type="button" class="cancel-btn" (click)="closeAddModal()">Annuler</button>
+        <button type="submit" class="submit-btn-modal" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Enregistrement...' : 'Enregistrer l\'enquête' }}
         </button>
       </div>
-    </div>
+    </form>
   </div>
+</div>
+}
+
+<!-- MODAL MODIFICATION D'UNE ENQUÊTE -->
+@if (showEditModal()) {
+<div class="modal-overlay" (click)="closeEditModal()">
+  <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Modifier l'Enquête de Satisfaction</h2>
+      <button class="close-btn" (click)="closeEditModal()">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitEditSurvey()">
+      @if (errorMessage()) {
+      <div class="error-banner">{{ errorMessage() }}</div>
+      }
+
+      <div class="form-row">
+        <div class="field" style="flex: 2;">
+          <label>Client / Entreprise <span class="required">*</span></label>
+          <select [(ngModel)]="form.company" name="edit_company" required class="form-input">
+            <option [ngValue]="null">-- Sélectionner une entreprise --</option>
+            @for (c of companies(); track c.id) {
+            <option [ngValue]="c.id">{{ c.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Année <span class="required">*</span></label>
+          <input type="number" [(ngModel)]="form.year" name="edit_year" required class="form-input"
+            placeholder="Ex: 2026" min="2000" max="2099">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1.5;">
+          <label>Pôle / Service Évalué <span class="required">*</span></label>
+          <select [(ngModel)]="form.service_type" name="edit_service_type" required class="form-input"
+            (ngModelChange)="onServiceTypeChange()">
+            <option value="Consulting">Consulting (Accompagnement ISO 9001...)</option>
+            <option value="Formation">Formation (Ingénierie & Pédagogie)</option>
+            <option value="Recrutement">Recrutement (Sourcing & Profils)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Recommandation (0 à 10)</label>
+          <input type="number" min="0" max="10" [(ngModel)]="form.score_recommendation" name="edit_score_recommendation"
+            class="form-input">
+        </div>
+      </div>
+
+      <div class="criteria-form-section">
+        <label class="criteria-section-label">Notez chaque critère (1 à 5) <span class="required">*</span></label>
+        <div class="criteria-form-grid">
+          @for (critere of currentCriteres; track critere) {
+          <div class="criteria-form-row">
+            <span class="criteria-form-name">{{ critere }}</span>
+            <input type="number" min="1" max="5" step="0.5" [ngModel]="form.detailed_scores[critere]"
+              (ngModelChange)="updateCritereScore(critere, $event)" name="edit_critere_{{ critere }}"
+              class="criteria-form-input">
+          </div>
+          }
+        </div>
+        <div class="computed-score-banner">
+          Note globale calculée automatiquement : <strong>{{ computedScoreGlobal }} / 5</strong>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Confier d'autres projets futurs ?</label>
+          <select [(ngModel)]="form.future_intent" name="edit_future_intent" class="form-input">
+            <option value="Oui">Oui</option>
+            <option value="Peut-être">Peut-être</option>
+            <option value="Non">Non</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1;">
+          <label>🌟 Points Forts d'Expertise LCA</label>
+          <textarea [(ngModel)]="form.point_fort" name="edit_point_fort" rows="2" class="form-input"></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1;">
+          <label>💡 Pistes d'Amélioration & Souhaits du Client</label>
+          <textarea [(ngModel)]="form.amelioration" name="edit_amelioration" rows="2" class="form-input"></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1;">
+          <label>📝 Remarques Complémentaires</label>
+          <textarea [(ngModel)]="form.notes" name="edit_notes" rows="2" class="form-input"></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field" style="flex: 1;">
+          <label>📄 Remplacer le Fichier PDF (Optionnel — laisser vide pour conserver l'actuel)</label>
+          <input type="file" accept="application/pdf" (change)="onFileSelected($event)" class="form-input">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="cancel-btn" (click)="closeEditModal()">Annuler</button>
+        <button type="submit" class="submit-btn-modal" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Enregistrement...' : 'Enregistrer les modifications' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 }

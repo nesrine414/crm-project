@@ -101,6 +101,7 @@ export interface UserItem {
   email: string;
   first_name: string;
   last_name: string;
+  is_active: boolean;   // 👈 ajouté
   last_login: string | null;
   date_joined: string;
 }
@@ -145,6 +146,14 @@ export interface SatisfactionSurveyPDF {
   company: number;
   company_name?: string;
   year: number;
+  service_type: 'Consulting' | 'Formation' | 'Recrutement';
+  detailed_scores?: Record<string, number>;   // 👈 NOUVEAU : notes par critère
+  criteres_disponibles?: string[];             // 👈 NOUVEAU : renvoyé par le backend, liste des critères attendus
+  score_global: number;
+  score_recommendation: number;
+  future_intent: 'Oui' | 'Non' | 'Peut-être';
+  point_fort?: string;
+  amelioration?: string;
   pdf_file?: string;
   uploaded_at?: string;
   uploaded_by_name?: string;
@@ -167,8 +176,31 @@ export class CrmDataService {
     return this.http.get<Company[]>(`${this.baseUrl}/companies/`);
   }
   getUsers(): Observable<UserItem[]> {
-  return this.http.get<UserItem[]>(`${this.baseUrl}/users/`);
-}
+    return this.http.get<UserItem[]>(`${this.baseUrl}/users/`);
+  }
+  updateProfile(data: Partial<UserItem>): Observable<UserItem> {
+    return this.http.patch<UserItem>(`${this.baseUrl}/users/update-profile/`, data);
+  }
+
+  changePassword(oldPassword: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/users/change-password/`, { old_password: oldPassword, new_password: newPassword });
+  }
+
+  createUser(data: any): Observable<UserItem> {
+    return this.http.post<UserItem>(`${this.baseUrl}/users/`, data);
+  }
+
+  updateUser(id: number, data: Partial<UserItem>): Observable<UserItem> {
+    return this.http.patch<UserItem>(`${this.baseUrl}/users/${id}/`, data);
+  }
+
+  deactivateUser(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/users/${id}/`);
+  }
+
+  reactivateUser(id: number): Observable<UserItem> {
+    return this.http.post<UserItem>(`${this.baseUrl}/users/${id}/reactivate/`, {});
+  }
 
   addCompany(company: Omit<Company, 'id' | 'contacts'>): Observable<Company> {
     return this.http.post<Company>(`${this.baseUrl}/companies/`, company);
@@ -229,6 +261,17 @@ export class CrmDataService {
   addCampagne(campagne: Omit<Campagne, 'id'>): Observable<Campagne> {
     return this.http.post<Campagne>(`${this.baseUrl}/campaigns/`, campagne);
   }
+  addContact(companyId: number, contact: Omit<ContactItem, 'id'>): Observable<ContactItem> {
+    return this.http.post<ContactItem>(`${this.baseUrl}/contacts/`, { ...contact, company: companyId });
+  }
+
+  updateContact(id: number, contact: Partial<ContactItem>): Observable<ContactItem> {
+    return this.http.patch<ContactItem>(`${this.baseUrl}/contacts/${id}/`, contact);
+  }
+
+  deleteContact(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/contacts/${id}/`);
+  }
   getNotifications(): Observable<NotificationItem[]> {
     return this.http.get<NotificationItem[]>(`${this.baseUrl}/notifications/`);
   }
@@ -271,6 +314,10 @@ export class CrmDataService {
 
   deleteSatisfactionPDF(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/satisfaction-pdfs/${id}/`);
+  }
+
+  updateSatisfactionPDF(id: number, formData: FormData): Observable<SatisfactionSurveyPDF> {
+    return this.http.patch<SatisfactionSurveyPDF>(`${this.baseUrl}/satisfaction-pdfs/${id}/`, formData);
   }
 }
 

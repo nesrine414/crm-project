@@ -1,3 +1,6 @@
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import viewsets, permissions
 from rest_framework import generics
 from .models import Notification
@@ -8,12 +11,12 @@ from .serializers import NonConformiteSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Company, Contact, Interaction, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign, SatisfactionSurveyPDF
+from .models import Company, Contact, Interaction, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign, SatisfactionSurveyPDF, PrestataireEvaluation
 from .serializers import (
     CompanySerializer, ContactSerializer, InteractionSerializer,
     OpportunitySerializer, ReclamationSerializer, ReclamationNoteSerializer,
     FeedbackSerializer, CampaignSerializer, UserSerializer, RegisterSerializer,CustomTokenObtainPairSerializer, NotificationSerializer,
-    SatisfactionSurveyPDFSerializer
+    SatisfactionSurveyPDFSerializer, PrestataireEvaluationSerializer
 )
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
@@ -24,11 +27,34 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .serializers import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all().order_by('-created_at')
     serializer_class = CompanySerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        status_param = self.request.query_params.get('status')
+        if status_param:
+            qs = qs.filter(status=status_param)
+        return qs
+
+
+class PrestataireEvaluationViewSet(viewsets.ModelViewSet):
+    queryset = PrestataireEvaluation.objects.all().order_by('-year', 'company__name')
+    serializer_class = PrestataireEvaluationSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        company_id = self.request.query_params.get('company')
+        year = self.request.query_params.get('year')
+        if company_id:
+            qs = qs.filter(company_id=company_id)
+        if year:
+            qs = qs.filter(year=year)
+        return qs
 
 
 class ContactViewSet(viewsets.ModelViewSet):
@@ -65,10 +91,52 @@ class CampaignViewSet(viewsets.ModelViewSet):
     queryset = Campaign.objects.all()
     serializer_class = CampaignSerializer
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        # Création d'une nouvelle utilisatrice avec mot de passe (réutilise RegisterSerializer)
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+
+    def perform_destroy(self, instance):
+        # On désactive plutôt que supprimer, pour garder l'historique de ses actions passées
+        instance.is_active = False
+        instance.save()
+
+    @action(detail=True, methods=['post'], url_path='reactivate')
+    def reactivate(self, request, pk=None):
+        user = self.get_object()
+        user.is_active = True
+        user.save()
+        return Response(UserSerializer(user).data)
+
+    @action(detail=False, methods=['patch'], url_path='update-profile')
+    def update_profile(self, request):
+        # Modification de son PROPRE profil (nom, email)
+        serializer = UserSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'], url_path='change-password')
+    def change_password(self, request):
+        user = request.user
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not user.check_password(old_password):
+            return Response({'detail': 'Mot de passe actuel incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not new_password or len(new_password) < 8:
+            return Response({'detail': 'Le nouveau mot de passe doit contenir au moins 8 caractères.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({'detail': 'Mot de passe mis à jour avec succès.'})
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -153,4 +221,45 @@ class SatisfactionSurveyPDFViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             serializer.save(uploaded_by=self.request.user)
         else:
-            serializer.save()
+            serializer.save()
+
+
+class GoogleAuthView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        token = request.data.get('credential')
+        if not token:
+            return Response({'detail': 'Token Google manquant.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            payload = id_token.verify_oauth2_token(
+                token, google_requests.Request(), settings.GOOGLE_CLIENT_ID
+            )
+        except ValueError:
+            return Response({'detail': 'Token Google invalide.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        email = payload.get('email')
+        if not email or not payload.get('email_verified'):
+            return Response({'detail': 'Email Google non vérifié.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user, created = User.objects.get_or_create(
+            email=email,
+            defaults={
+                'username': email,
+                'first_name': payload.get('given_name', ''),
+                'last_name': payload.get('family_name', ''),
+            }
+        )
+        if created:
+            user.set_unusable_password()  # elle ne se connectera jamais avec un mot de passe classique
+            user.save()
+
+        if not user.is_active:
+            return Response({'detail': 'Ce compte a été désactivé.'}, status=status.HTTP_403_FORBIDDEN)
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        })

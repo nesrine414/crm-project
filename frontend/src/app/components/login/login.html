@@ -20,13 +20,14 @@
       <div class="field">
         <label>Mot de passe</label>
         <div class="input-icon-wrapper">
-          <input [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" name="password" placeholder="Entrez votre mot de passe" required>
+          <input [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" name="password"
+            placeholder="Entrez votre mot de passe" required>
           <span class="input-icon" (click)="togglePassword()">🔒</span>
         </div>
       </div>
 
-@if (errorMessage()) {
-        <p class="error-message">{{ errorMessage() }}</p>
+      @if (errorMessage()) {
+      <p class="error-message">{{ errorMessage() }}</p>
       }
 
       <button type="submit" class="submit-btn" [disabled]="isLoading()">
@@ -42,8 +43,7 @@
     <div class="divider"><span>Ou se connecter avec</span></div>
 
     <div class="oauth-row">
-      <button type="button" class="oauth-btn oauth-google">Google</button>
-      <button type="button" class="oauth-btn oauth-linkedin">LinkedIn</button>
+      <div id="google-signin-button"></div>
     </div>
   </div>
 </div>

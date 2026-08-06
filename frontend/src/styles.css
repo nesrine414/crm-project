@@ -1,21 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 * {
   box-sizing: border-box;
 }
 
-html, body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  color: var(--text-primary);
-}
-h1, h2, h3, h4 {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
 :root {
   /* Couleurs LCA */
   --primary: #1AACC0;
@@ -38,15 +26,22 @@ h1, h2, h3, h4 {
   --danger-bg: #FDE9E9;
 }
 
-* {
-  box-sizing: border-box;
-}
-
+html,
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: var(--bg-page);
   color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 button {
@@ -64,7 +59,8 @@ button:hover {
   background: var(--primary-dark);
 }
 
-input, select {
+input,
+select {
   padding: 10px 14px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -72,7 +68,8 @@ input, select {
   width: 100%;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: var(--primary);
 }
@@ -96,6 +93,7 @@ td {
   font-size: 14px;
   border-bottom: 1px solid var(--border-color);
 }
+
 /* ---- Responsive global ---- */
 @media (max-width: 900px) {
   .content {
@@ -132,7 +130,8 @@ td {
     padding: 22px 18px !important;
   }
 
-  .page-header, .title-row {
+  .page-header,
+  .title-row {
     flex-direction: column;
     align-items: flex-start !important;
     gap: 12px;

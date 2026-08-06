@@ -20,6 +20,7 @@ export class Clients implements OnInit {
   sortActive = signal(false);
   sortAsc = signal(true);
   showAddModal = signal(false);
+  showEditModal = signal(false);
   currentPage = signal(1);
   pageSize = 10;
 
@@ -29,14 +30,36 @@ export class Clients implements OnInit {
     sector: '',
     city: '',
     service_provided: '' as 'Recrutement' | 'Formation' | 'Consulting' | '',
-    status: 'Client' as 'Client' | 'Lead'
+    status: 'Client' as Company['status']
   };
+
+  // Modèle de modification
+  editClientData = {
+    id: 0,
+    name: '',
+    sector: '',
+    city: '',
+    service_provided: '' as 'Recrutement' | 'Formation' | 'Consulting' | '',
+    status: 'Client' as Company['status']
+  };
+
   newInteraction = {
     type: 'Email' as 'Email' | 'Appel' | 'Réunion' | 'Entretien' | 'Visite',
     date: new Date().toISOString().slice(0, 10),
     note: ''
   };
   showAddInteractionForm = signal(false);
+
+  // 👇 État du formulaire contact (ajout ou modification)
+  showContactForm = signal(false);
+  editingContactId = signal<number | null>(null);
+  contactForm = {
+    first_name: '',
+    last_name: '',
+    role: '',
+    email: '',
+    phone: ''
+  };
 
   avatarColors = ['#1AACC0', '#6B46E5', '#0D9488', '#B45309', '#DC2626', '#7C3AED'];
 
@@ -57,6 +80,11 @@ export class Clients implements OnInit {
       next: (data) => this.crmData.interactions.set(data),
       error: (err) => console.error("Erreur de chargement des interactions :", err)
     });
+
+    this.crmData.getOpportunities().subscribe({
+      next: (data) => this.crmData.opportunities.set(data),
+      error: (err) => console.error("Erreur de chargement des opportunités :", err)
+    });
   }
 
   initialsOf(c: Company): string {
@@ -68,10 +96,10 @@ export class Clients implements OnInit {
   }
 
   dealValue(companyId: number): number {
-  return this.crmData.opportunities()
-    .filter(o => o.company === companyId && o.result === 'Gagné')
-    .reduce((sum, o) => sum + o.estimated_amount, 0);
-}
+    return this.crmData.opportunities()
+      .filter(o => o.company === companyId && o.result === 'Gagné')
+      .reduce((sum, o) => sum + o.estimated_amount, 0);
+  }
 
   filteredClients = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
@@ -123,6 +151,8 @@ export class Clients implements OnInit {
   selectClient(client: Company) {
     this.selectedClient.set(client);
     this.activeTab.set('contacts');
+    this.showContactForm.set(false);
+    this.editingContactId.set(null);
   }
 
   closeDetail() {
@@ -170,6 +200,44 @@ export class Clients implements OnInit {
       error: (err) => console.error("Erreur lors de la création de l'entreprise :", err)
     });
   }
+
+  openEditModal(client: Company, event?: Event) {
+    if (event) event.stopPropagation();
+    this.editClientData = {
+      id: client.id,
+      name: client.name,
+      sector: client.sector ?? '',
+      city: client.address ?? '',
+      service_provided: (client.service_provided as any) ?? '',
+      status: client.status ?? 'Client'
+    };
+    this.showEditModal.set(true);
+  }
+
+  closeEditModal() {
+    this.showEditModal.set(false);
+  }
+
+  submitEditClient() {
+    const payload = {
+      name: this.editClientData.name,
+      sector: this.editClientData.sector,
+      address: this.editClientData.city,
+      service_provided: this.editClientData.service_provided,
+      status: this.editClientData.status
+    };
+    this.crmData.updateCompany(this.editClientData.id, payload as any).subscribe({
+      next: (updated) => {
+        this.refreshData();
+        if (this.selectedClient()?.id === this.editClientData.id) {
+          this.selectedClient.set({ ...this.selectedClient()!, ...updated });
+        }
+        this.showEditModal.set(false);
+      },
+      error: (err) => console.error("Erreur lors de la modification de l'entreprise :", err)
+    });
+  }
+
   toggleAddInteractionForm() {
     this.showAddInteractionForm.set(!this.showAddInteractionForm());
     this.newInteraction = { type: 'Email', date: new Date().toISOString().slice(0, 10), note: '' };
@@ -202,6 +270,110 @@ export class Clients implements OnInit {
         this.selectedClient.set({ ...client, service_provided: updated.service_provided });
       },
       error: (err) => console.error("Erreur de mise à jour du service :", err)
+    });
+  }
+
+  updateClientSector(client: Company, event: Event) {
+    const inputElem = event.target as HTMLInputElement;
+    const value = inputElem.value.trim();
+    if (value === (client.sector ?? '')) return;
+
+    this.crmData.updateCompany(client.id, { sector: value }).subscribe({
+      next: (updated) => {
+        this.refreshData();
+        this.selectedClient.set({ ...client, sector: updated.sector });
+      },
+      error: (err) => console.error("Erreur de mise à jour du secteur :", err)
+    });
+  }
+
+  updateClientAddress(client: Company, event: Event) {
+    const inputElem = event.target as HTMLInputElement;
+    const value = inputElem.value.trim();
+    if (value === (client.address ?? '')) return;
+
+    this.crmData.updateCompany(client.id, { address: value }).subscribe({
+      next: (updated) => {
+        this.refreshData();
+        this.selectedClient.set({ ...client, address: updated.address });
+      },
+      error: (err) => console.error("Erreur de mise à jour de l'adresse :", err)
+    });
+  }
+
+  // 👇 GESTION DES CONTACTS
+
+  emptyContactForm() {
+    return { first_name: '', last_name: '', role: '', email: '', phone: '' };
+  }
+
+  openAddContactForm() {
+    this.editingContactId.set(null);
+    this.contactForm = this.emptyContactForm();
+    this.showContactForm.set(true);
+  }
+
+  openEditContactForm(contact: ContactItem) {
+    this.editingContactId.set(contact.id ?? null);
+    this.contactForm = {
+      first_name: contact.first_name,
+      last_name: contact.last_name,
+      role: contact.role ?? '',
+      email: contact.email ?? '',
+      phone: contact.phone ?? ''
+    };
+    this.showContactForm.set(true);
+  }
+
+  closeContactForm() {
+    this.showContactForm.set(false);
+    this.editingContactId.set(null);
+  }
+
+  submitContactForm() {
+    const client = this.selectedClient();
+    if (!client) return;
+
+    const editId = this.editingContactId();
+
+    if (editId) {
+      // Modification d'un contact existant
+      this.crmData.updateContact(editId, this.contactForm).subscribe({
+        next: (updated) => {
+          const updatedContacts = client.contacts.map(c => c.id === editId ? updated : c);
+          this.selectedClient.set({ ...client, contacts: updatedContacts });
+          this.refreshData();
+          this.closeContactForm();
+        },
+        error: (err) => console.error("Erreur lors de la modification du contact :", err)
+      });
+    } else {
+      // Ajout d'un nouveau contact
+      this.crmData.addContact(client.id, this.contactForm).subscribe({
+        next: (created) => {
+          this.selectedClient.set({ ...client, contacts: [...client.contacts, created] });
+          this.refreshData();
+          this.closeContactForm();
+        },
+        error: (err) => console.error("Erreur lors de l'ajout du contact :", err)
+      });
+    }
+  }
+
+  deleteContact(contactId: number | undefined) {
+    if (!contactId) return;
+    if (!confirm('Supprimer ce contact ?')) return;
+
+    const client = this.selectedClient();
+    if (!client) return;
+
+    this.crmData.deleteContact(contactId).subscribe({
+      next: () => {
+        const updatedContacts = client.contacts.filter(c => c.id !== contactId);
+        this.selectedClient.set({ ...client, contacts: updatedContacts });
+        this.refreshData();
+      },
+      error: (err) => console.error("Erreur lors de la suppression du contact :", err)
     });
   }
 

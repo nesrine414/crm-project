@@ -29,6 +29,7 @@
           <th>Responsable</th>
           <th>Avancement</th>
           <th>Statut</th>
+          <th style="width: 70px; text-align: center;">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -36,7 +37,7 @@
           <tr (click)="selectNc(nc)" style="cursor: pointer;">
             <td>NC-{{ nc.numero }}</td>
             <td>{{ nc.date }}</td>
-            <td style="max-width: 300px;">{{ nc.probleme.slice(0, 80) }}{{ nc.probleme.length > 80 ? '...' : '' }}</td>
+            <td style="max-width: 260px;">{{ nc.probleme.slice(0, 80) }}{{ nc.probleme.length > 80 ? '...' : '' }}</td>
             <td>{{ nc.processus }}</td>
             <td>
               <span class="status-badge" [style.background]="nc.gravite === 3 ? '#FEE2E2' : nc.gravite === 2 ? '#FEF3C7' : '#F1F5F9'" [style.color]="nc.gravite === 3 ? '#991B1B' : nc.gravite === 2 ? '#92400E' : '#475569'">
@@ -62,9 +63,14 @@
                 </select>
               }
             </td>
+            <td style="text-align: center;" (click)="$event.stopPropagation()">
+              <button class="ghost-btn" style="padding: 4px 8px; font-size: 12px;" (click)="openEditModal(nc, $event)" title="Completer / Modifier">
+                ✏️
+              </button>
+            </td>
           </tr>
         } @empty {
-          <tr><td colspan="8" class="empty-row">Aucune non-conformité enregistrée.</td></tr>
+          <tr><td colspan="9" class="empty-row">Aucune non-conformité enregistrée.</td></tr>
         }
       </tbody>
     </table>
@@ -77,9 +83,12 @@
     <div class="modal-card detail-modal" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h2>NC-{{ nc.numero }} — {{ processusLabels[nc.processus] }}</h2>
-        <button class="close-btn" (click)="closeDetail()">✕</button>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="ghost-btn" (click)="openEditModal(nc)">✏️ Modifier cette fiche</button>
+          <button class="close-btn" (click)="closeDetail()">✕</button>
+        </div>
       </div>
-      <div style="padding: 10px 0; display: flex; flex-direction: column; gap: 12px;">
+      <div style="padding: 14px 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
         <div><strong>Problème :</strong> {{ nc.probleme }}</div>
         <div><strong>Origine :</strong> {{ nc.origine || '—' }}</div>
         <div><strong>Gravité :</strong> {{ graviteLabels[nc.gravite] }}</div>
@@ -93,6 +102,12 @@
         <div><strong>Délais :</strong> {{ nc.delais || '—' }}</div>
         <div><strong>Efficacité :</strong> {{ nc.efficacite || '—' }}</div>
         <div><strong>Commentaire :</strong> {{ nc.commentaire || '—' }}</div>
+        <div><strong>Avancement (PDCA) :</strong> {{ nc.avancement }}</div>
+        <div><strong>Statut :</strong> {{ nc.statut }}</div>
+      </div>
+      <div class="modal-actions" style="margin-top: 16px;">
+        <button type="button" class="cancel-btn" (click)="closeDetail()">Fermer</button>
+        <button type="button" class="submit-btn-modal" (click)="openEditModal(nc)">✏️ Compléter / Modifier les champs</button>
       </div>
     </div>
   </div>
@@ -209,6 +224,123 @@
         <div class="modal-actions" style="margin-top: 20px;">
           <button type="button" class="cancel-btn" (click)="closeAddModal()">Annuler</button>
           <button type="submit" class="submit-btn-modal">Déclarer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- MODAL ÉDITION -->
+@if (showEditModal() && editNc()) {
+  <div class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Compléter / Modifier NC-{{ editNc()?.numero }}</h2>
+        <button class="close-btn" (click)="closeEditModal()">✕</button>
+      </div>
+      <form (ngSubmit)="submitEditNc()">
+        <div class="form-row">
+          <div class="field"><label>Numéro</label><input type="number" [value]="editNc()?.numero" readonly disabled></div>
+          <div class="field"><label>Date <span class="required">*</span></label><input type="date" [(ngModel)]="editForm.date" name="edit_date" required></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 2;"><label>Problème <span class="required">*</span></label><textarea [(ngModel)]="editForm.probleme" name="edit_probleme" rows="2" required></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Processus <span class="required">*</span></label>
+            <select [(ngModel)]="editForm.processus" name="edit_processus" required>
+              <option value="PMS">PMS — Pilotage et Management Stratégique</option>
+              <option value="PCS">PCS — Prestation de Consulting</option>
+              <option value="PRT">PRT — Prestation de Recrutement</option>
+              <option value="PFR">PFR — Prestation de Formation</option>
+              <option value="GFS">GFS — Gestion des Fonctions Support</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Gravité <span class="required">*</span></label>
+            <select [(ngModel)]="editForm.gravite" name="edit_gravite" required>
+              <option [ngValue]="1">Faible</option>
+              <option [ngValue]="2">Moyenne</option>
+              <option [ngValue]="3">Élevée / Majeure</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label>Origine</label><input type="text" [(ngModel)]="editForm.origine" name="edit_origine" placeholder="Interne, Externe, Client..."></div>
+          <div class="field">
+            <label>Récurrence</label>
+            <select [(ngModel)]="editForm.recurrence" name="edit_recurrence">
+              <option [ngValue]="false">Non</option>
+              <option [ngValue]="true">Oui</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Action immédiate</label><textarea [(ngModel)]="editForm.action_immediate" name="edit_action_immediate" rows="2" placeholder="Action prise sur le champ..."></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Analyse des causes</label><textarea [(ngModel)]="editForm.analyse_causes" name="edit_analyse_causes" rows="2" placeholder="Pourquoi cela s'est-il produit ?"></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Action corrective</label><textarea [(ngModel)]="editForm.action_corrective" name="edit_action_corrective" rows="2" placeholder="Action préventive/corrective à long terme..."></textarea></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label>Date prévue</label><input type="text" [(ngModel)]="editForm.date_prevue" name="edit_date_prevue" placeholder="Ex: 30/06/2026"></div>
+          <div class="field"><label>Responsable</label><input type="text" [(ngModel)]="editForm.responsable" name="edit_responsable" placeholder="Responsable (ex: Afef)"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label>Date de réalisation</label><input type="text" [(ngModel)]="editForm.date_realisation" name="edit_date_realisation" placeholder="Ex: 15/07/2026"></div>
+          <div class="field"><label>Délais</label><input type="text" [(ngModel)]="editForm.delais" name="edit_delais" placeholder="Ex: Respecté / En retard"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Efficacité</label>
+            <select [(ngModel)]="editForm.efficacite" name="edit_efficacite">
+              <option value="">— Non évalué —</option>
+              <option value="Efficace">Efficace</option>
+              <option value="Non efficace">Non efficace</option>
+              <option value="Insuffisant">Insuffisant</option>
+              <option value="A vérifier">À vérifier</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Avancement (PDCA)</label>
+            <select [(ngModel)]="editForm.avancement" name="edit_avancement">
+              <option value="P">P — Planifier</option>
+              <option value="D">D — Réaliser</option>
+              <option value="C">C — Contrôler</option>
+              <option value="A">A — Acter</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Statut</label>
+            <select [(ngModel)]="editForm.statut" name="edit_statut">
+              <option value="Ouvert">Ouvert</option>
+              <option value="Fermé">Fermé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" style="flex: 1;"><label>Commentaire</label><textarea [(ngModel)]="editForm.commentaire" name="edit_commentaire" rows="2" placeholder="Remarques additionnelles..."></textarea></div>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 20px;">
+          <button type="button" class="cancel-btn" (click)="closeEditModal()">Annuler</button>
+          <button type="submit" class="submit-btn-modal">Enregistrer les modifications</button>
         </div>
       </form>
     </div>

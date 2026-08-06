@@ -5,7 +5,8 @@ from .views import (
     CompanyViewSet, ContactViewSet, InteractionViewSet, NotificationViewSet,
     OpportunityViewSet, ReclamationViewSet, ReclamationNoteViewSet,
     FeedbackViewSet, CampaignViewSet, UserViewSet, RegisterView, PasswordResetRequestView,
-    PasswordResetConfirmView, NonConformiteViewSet, SatisfactionSurveyPDFViewSet
+    PasswordResetConfirmView, NonConformiteViewSet, SatisfactionSurveyPDFViewSet, GoogleAuthView,
+    PrestataireEvaluationViewSet
 )
 
 router = DefaultRouter()
@@ -21,9 +22,11 @@ router.register(r'users', UserViewSet)
 router.register(r'notifications', NotificationViewSet)
 router.register(r'non-conformites', NonConformiteViewSet)
 router.register(r'satisfaction-pdfs', SatisfactionSurveyPDFViewSet)
+router.register(r'prestataire-evaluations', PrestataireEvaluationViewSet)
 
 urlpatterns = router.urls + [
     path('register/', RegisterView.as_view(), name='register'),
     path('password-reset/request/', PasswordResetRequestView.as_view(), name='password_reset_request'),
     path('password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-]
+    path('auth/google/', GoogleAuthView.as_view(), name='google_auth'),
+]

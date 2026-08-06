@@ -1,10 +1,11 @@
 import { Component, inject, computed, signal, OnInit } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
-import { CrmDataService } from '../../services/crm-data';
+import { DecimalPipe, CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { CrmDataService, NonConformite, SatisfactionSurveyPDF, Stage } from '../../services/crm-data';
 
 interface ActivityItem {
   id: string;
-  type: 'opportunity' | 'reclamation';
+  type: 'opportunity' | 'reclamation' | 'nc';
   title: string;
   description: string;
   date: string;
@@ -14,13 +15,15 @@ interface ActivityItem {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, CommonModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
 export class Dashboard implements OnInit {
   crmData = inject(CrmDataService);
   recentActivities = signal<ActivityItem[]>([]);
+  nonConformites = signal<NonConformite[]>([]);
+  satisfactionPDFs = signal<SatisfactionSurveyPDF[]>([]);
 
   stats = computed(() => {
     const comps = this.crmData.clients();
@@ -33,18 +36,83 @@ export class Dashboard implements OnInit {
     const totalRevenue = wonOpps.reduce((sum, o) => sum + Number(o.estimated_amount || 0), 0);
 
     return {
-      clientCount: comps.filter(c => c.status === 'Client').length,
+      clientCount: comps.filter(c => c.status === 'Client' || c.status as string === 'Client').length,
+      leadCount: comps.filter(c => c.status === 'Lead').length,
+      partnerCount: comps.filter(c => c.status as string === 'Partenaire').length,
+      totalCompanies: comps.length,
       pipelineValue: totalPipeline,
       totalRevenue: totalRevenue
     };
   });
 
+  openNcCount = computed(() => {
+    return this.nonConformites().filter(nc => nc.statut === 'Ouvert').length;
+  });
+
+  openRecCount = computed(() => {
+    return this.crmData.reclamations().filter(r => r.status !== 'Résolue').length;
+  });
+
+  satisfactionScoreAvg = computed(() => {
+    const pdfs = this.satisfactionPDFs();
+    if (pdfs.length === 0) return null;
+    const sum = pdfs.reduce((acc, s) => acc + (s.score_global || 5), 0);
+    return Math.round((sum / pdfs.length) * 10) / 10;
+  });
+
   npsScore = computed(() => {
+    const pdfs = this.satisfactionPDFs();
+    if (pdfs.length > 0) {
+      const promoters = pdfs.filter(f => f.score_recommendation >= 9).length;
+      const detractors = pdfs.filter(f => f.score_recommendation <= 6).length;
+      return Math.round(((promoters - detractors) / pdfs.length) * 100);
+    }
     const list = this.crmData.feedbacks();
     if (list.length === 0) return null;
     const promoters = list.filter(f => f.rating === 5).length;
     const detractors = list.filter(f => f.rating <= 3).length;
     return Math.round(((promoters - detractors) / list.length) * 100);
+  });
+
+  pipelineFunnel = computed(() => {
+    const opps = this.crmData.opportunities();
+    const stages: Stage[] = ['Qualification', 'Chiffrage', 'Offre Soumise', 'Négociation', 'Clôturé'];
+    const totalOpps = opps.length || 1;
+
+    return stages.map(stage => {
+      const stageOpps = opps.filter(o => o.stage === stage);
+      const sumAmount = stageOpps.reduce((sum, o) => sum + Number(o.estimated_amount || 0), 0);
+      const count = stageOpps.length;
+      const pct = Math.round((count / totalOpps) * 100);
+      return {
+        stage,
+        count,
+        sumAmount,
+        pct
+      };
+    });
+  });
+
+  sectorDistribution = computed(() => {
+    const clients = this.crmData.clients();
+    if (clients.length === 0) return [];
+    
+    const counts = new Map<string, number>();
+    for (const c of clients) {
+      const sec = c.sector?.trim() || 'Non spécifié';
+      counts.set(sec, (counts.get(sec) || 0) + 1);
+    }
+
+    const sorted = Array.from(counts.entries())
+      .map(([name, count]) => ({
+        name,
+        count,
+        pct: Math.round((count / clients.length) * 100)
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    const colors = ['#0284c7', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#6366f1', '#64748b', '#14b8a6'];
+    return sorted.map((s, idx) => ({ ...s, color: colors[idx % colors.length] }));
   });
 
   monthlyPipeline = computed(() => {
@@ -91,6 +159,10 @@ export class Dashboard implements OnInit {
   });
 
   ngOnInit() {
+    this.refreshAllData();
+  }
+
+  refreshAllData() {
     this.crmData.getClients().subscribe({
       next: (data) => {
         this.crmData.clients.set(data);
@@ -114,6 +186,22 @@ export class Dashboard implements OnInit {
       },
       error: (err) => console.error(err)
     });
+
+    this.crmData.getNonConformites().subscribe({
+      next: (data) => {
+        this.nonConformites.set(data);
+        this.loadRecentActivities();
+      },
+      error: (err) => console.error(err)
+    });
+
+    this.crmData.getSatisfactionPDFs().subscribe({
+      next: (data) => {
+        this.satisfactionPDFs.set(data);
+      },
+      error: (err) => console.error(err)
+    });
+
     this.crmData.getFeedbacks().subscribe({
       next: (data) => {
         this.crmData.feedbacks.set(data);
@@ -136,15 +224,16 @@ export class Dashboard implements OnInit {
     const activities: ActivityItem[] = [];
     const opps = this.crmData.opportunities();
     const recs = this.crmData.reclamations();
+    const ncs = this.nonConformites();
 
     for (const opp of opps) {
       activities.push({
         id: `opp-${opp.id}`,
         type: 'opportunity',
         title: `${opp.project_subject} — ${this.getCompanyName(opp.company)}`,
-        description: `Étape : ${opp.stage} — Montant : ${opp.estimated_amount} DT`,
-        date: this.formatDate(opp.expected_close_date),
-        rawDate: opp.expected_close_date || ''
+        description: `Étape : ${opp.stage} — Montant : ${Number(opp.estimated_amount).toLocaleString('fr-FR')} DT`,
+        date: this.formatDate(opp.expected_close_date || opp.entry_date),
+        rawDate: opp.expected_close_date || opp.entry_date || ''
       });
     }
 
@@ -152,10 +241,21 @@ export class Dashboard implements OnInit {
       activities.push({
         id: `rec-${rec.id}`,
         type: 'reclamation',
-        title: `Ticket SAV : ${rec.subject}`,
+        title: `Ticket SAV #${rec.number || rec.id} : ${rec.subject}`,
         description: `Priorité : ${rec.priority} — Statut : ${rec.status}`,
         date: this.formatDate(rec.created_at),
         rawDate: rec.created_at || ''
+      });
+    }
+
+    for (const nc of ncs) {
+      activities.push({
+        id: `nc-${nc.id}`,
+        type: 'nc',
+        title: `Fiche NC N°${nc.numero} : ${nc.probleme}`,
+        description: `Processus : ${nc.processus} — Statut : ${nc.statut} (${nc.avancement || 'PDCA'})`,
+        date: this.formatDate(nc.date),
+        rawDate: nc.date || ''
       });
     }
 
@@ -165,6 +265,6 @@ export class Dashboard implements OnInit {
       return new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime();
     });
 
-    this.recentActivities.set(activities.slice(0, 6));
+    this.recentActivities.set(activities.slice(0, 8));
   }
 }
