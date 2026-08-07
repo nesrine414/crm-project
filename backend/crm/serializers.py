@@ -1,7 +1,9 @@
+# pyrefly: ignore [missing-import]
 from rest_framework import serializers
+# pyrefly: ignore [missing-import]
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import update_last_login
-from .models import Company, Contact, Interaction, NonConformite, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign, Notification, SatisfactionSurveyPDF, PrestataireEvaluation
+from .models import Company, Contact, Interaction, NonConformite, Opportunity,  Feedback, Campaign, Notification, SatisfactionSurveyPDF, PrestataireEvaluation
 from django.contrib.auth.models import User
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -41,26 +43,7 @@ class OpportunitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReclamationNoteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReclamationNote
-        fields = '__all__'
 
-
-class ReclamationSerializer(serializers.ModelSerializer):
-    notes = ReclamationNoteSerializer(many=True, read_only=True)
-    assigned_to_name = serializers.SerializerMethodField(read_only=True)
-
-    def get_assigned_to_name(self, obj):
-        if obj.assigned_to:
-            name = f"{obj.assigned_to.first_name} {obj.assigned_to.last_name}".strip()
-            return name if name else obj.assigned_to.username
-        return None
-
-    class Meta:
-        model = Reclamation
-        fields = '__all__'
-        read_only_fields = ['number', 'created_at']
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

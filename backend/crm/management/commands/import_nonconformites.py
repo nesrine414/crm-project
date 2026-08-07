@@ -103,7 +103,7 @@ class Command(BaseCommand):
                 'numero': numero,
                 'date': date_obj,
                 'probleme': clean_str(row[2].value),          # C
-                'origine': clean_str(row[3].value),            # D
+                'origine': 'Réclamation Client' if clean_str(row[3].value).lower() == 'client' else clean_str(row[3].value),  # D
                 'processus': clean_str(row[4].value) or 'PMS',  # E
                 'gravite': parse_gravite(row[5].value),         # F
                 'action_immediate': clean_str(row[6].value),    # G

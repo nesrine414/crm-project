@@ -1,0 +1,2632 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$oAG5m3nu75gh9FauyHERXg$h6pMBERMU4OR5nUJqMMGjpUNcA5EbGmUihDOQXOTjzk=",
+    "last_login": "2026-08-07T10:01:30.795Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "Nesrine",
+    "last_name": "hamrouni",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-07-11T13:56:57.987Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "!YlPqNPN16YeJbg45pJMQXaAHWpIyh1t1U6XNyJxk",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "nesrine.hamrouni@supcom.ucar.tn",
+    "first_name": "Nesrine",
+    "last_name": "HAMROUNI",
+    "email": "nesrine.hamrouni@supcom.ucar.tn",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-07-31T12:02:27.952Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fkhvethyt2xes4vlcuun8ukymci340s3",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQAP-yZ0PYLYVuj959QwML2KqBpLQn499Nkx70OjOZN0x-3-Zpb2mdlggjIFx-WfDyTOUQ8eHLvSqpZVuXoI5EnbapW43pdT3bv8Hs2wwjSE-aOXMYnHOUraDmnK0xQVOnezuEPqJhJqSkOzI-i2MxSDiIsdrD5wu2JDaG:1wpOrm:YaMBL-EFtMhGfH67lcIetkVuh_7qI8RmLxivAtRCitU",
+    "expire_date": "2026-08-13T11:23:58.373Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hd5qx1gm3w8z8vesmdpwjwy1x76u9zq7",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQAP-yZ0PYLYVuj959QwML2KqBpLQn499Nkx70OjOZN0x-3-Zpb2mdlggjIFx-WfDyTOUQ8eHLvSqpZVuXoI5EnbapW43pdT3bv8Hs2wwjSE-aOXMYnHOUraDmnK0xQVOnezuEPqJhJqSkOzI-i2MxSDiIsdrD5wu2JDaG:1wjFqT:QlpFfWoDaRwcrnYSej-sHNu9QWFKlAj1DwxHEOEQys4",
+    "expire_date": "2026-07-27T12:33:13.848Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 1,
+  "fields": {
+    "name": "Bulgin",
+    "sector": "Divers",
+    "activity_domain": "",
+    "address": "Elagba",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Recrutement",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.294Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 2,
+  "fields": {
+    "name": "Asmara",
+    "sector": "Agro/detergents",
+    "activity_domain": "",
+    "address": "Angola",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Recrutement",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.301Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 3,
+  "fields": {
+    "name": "Tecnusi",
+    "sector": "Mécanique",
+    "activity_domain": "",
+    "address": "Naassen",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Consulting",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.306Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 4,
+  "fields": {
+    "name": "Saida",
+    "sector": "Agri food",
+    "activity_domain": "",
+    "address": "Migrine",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.310Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 5,
+  "fields": {
+    "name": "APTIV",
+    "sector": "Aéronautique",
+    "activity_domain": "",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Lead",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.315Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 6,
+  "fields": {
+    "name": "Actia",
+    "sector": "Assemblage électrique",
+    "activity_domain": "",
+    "address": "Ghazella",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Lead",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.320Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 7,
+  "fields": {
+    "name": "CIPI Actia",
+    "sector": "Carte électronique",
+    "activity_domain": "",
+    "address": "Charguia",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Lead",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.324Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 8,
+  "fields": {
+    "name": "ASSAD",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Lead",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.328Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 9,
+  "fields": {
+    "name": "AVO Carbon",
+    "sector": "Automobile",
+    "activity_domain": "",
+    "address": "Hamam lif",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Recrutement",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.332Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 10,
+  "fields": {
+    "name": "Delmon France",
+    "sector": "Aéronautique",
+    "activity_domain": "Usinage",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Lead",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.336Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 11,
+  "fields": {
+    "name": "Catering Delight",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Lead",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.351Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 12,
+  "fields": {
+    "name": "Madar Group",
+    "sector": "Agroalimentaire",
+    "activity_domain": "",
+    "address": "Sénegal",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Recrutement",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.355Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 13,
+  "fields": {
+    "name": "FSP",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Lead",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.359Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 14,
+  "fields": {
+    "name": "MCW",
+    "sector": "Automobile",
+    "activity_domain": "",
+    "address": "Mghira",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.362Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 15,
+  "fields": {
+    "name": "Timilec",
+    "sector": "Electrique",
+    "activity_domain": "",
+    "address": "Chbida",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.393Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 16,
+  "fields": {
+    "name": "Beretta",
+    "sector": "Automobile",
+    "activity_domain": "",
+    "address": "Megrine",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.412Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 17,
+  "fields": {
+    "name": "Athir",
+    "sector": "Electronique",
+    "activity_domain": "",
+    "address": "Tunis",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.526Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 18,
+  "fields": {
+    "name": "Amphenol",
+    "sector": "Electrique",
+    "activity_domain": "",
+    "address": "Fahss",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-13T11:46:25.542Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 19,
+  "fields": {
+    "name": "Delmon",
+    "sector": "Aéronautique",
+    "activity_domain": "",
+    "address": "Ben arous",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Recrutement",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Client",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-07-30T10:28:12.156Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 20,
+  "fields": {
+    "name": "Africain Job",
+    "sector": "",
+    "activity_domain": "Recrutement",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Recrutement",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "oui",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Fatma khelifi",
+    "fonction_interlocuteur": "Consultant",
+    "email": "africainjobs23@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.722Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 21,
+  "fields": {
+    "name": "Be Pro",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "oui",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Meher ben Mefteh",
+    "fonction_interlocuteur": "Formateur",
+    "email": "maher.ben.meftah@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.745Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 22,
+  "fields": {
+    "name": "Cabinet Inoubli",
+    "sector": "",
+    "activity_domain": "Comptable",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Comptable",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "oui",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Souad Inoubli",
+    "fonction_interlocuteur": "Comptable",
+    "email": "cabinetlinoublicfc@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.750Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 23,
+  "fields": {
+    "name": "ABBK",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Anouar Daoud",
+    "fonction_interlocuteur": "Commercial",
+    "email": "anouar@abbk-tn.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.755Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 24,
+  "fields": {
+    "name": "Maxima Consulting",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Henia Jaouani",
+    "fonction_interlocuteur": "Formateur",
+    "email": "Jaouani.henia@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.763Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 25,
+  "fields": {
+    "name": "Genis Consulting",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Cherif Ellouzi",
+    "fonction_interlocuteur": "Formateur",
+    "email": "cherif.ellouzi@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.772Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 26,
+  "fields": {
+    "name": "KK Consulting",
+    "sector": "",
+    "activity_domain": "Consulting",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Consulting",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Ali Khalil",
+    "fonction_interlocuteur": "Consultant / Formateur",
+    "email": "elkhalilali33@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.778Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 27,
+  "fields": {
+    "name": "Anour Copy",
+    "sector": "",
+    "activity_domain": "Fourniture bureautique",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Fourniture bureautique",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Omar Baili",
+    "fonction_interlocuteur": "Fournisseur",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.786Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 28,
+  "fields": {
+    "name": "Allié RH",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Sarra Amri",
+    "fonction_interlocuteur": "Formateur",
+    "email": "allierh.tn@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.791Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 29,
+  "fields": {
+    "name": "KBI Consulting",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Kamel El Arbi",
+    "fonction_interlocuteur": "Consultant / Formateur",
+    "email": "kbiconsulting@topnet.tn",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.797Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 30,
+  "fields": {
+    "name": "STE Faouzi Chihaoui Bois",
+    "sector": "",
+    "activity_domain": "Fourniture",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Fourniture",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Faouzi Chihaoui",
+    "fonction_interlocuteur": "Fournisseur",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.802Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 31,
+  "fields": {
+    "name": "B Expert Automotive Industry",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Nedra Debbech",
+    "fonction_interlocuteur": "Formateur",
+    "email": "nedra.debbech@outlook.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.807Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 32,
+  "fields": {
+    "name": "Librairie Arij",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "Fournisseur",
+    "email": "maktabatarij@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.814Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 33,
+  "fields": {
+    "name": "SW super wood",
+    "sector": "",
+    "activity_domain": "Fourniture",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Fourniture",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "Fournisseur",
+    "email": "",
+    "phone": "71624021",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.820Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 34,
+  "fields": {
+    "name": "STE bois et materiaux",
+    "sector": "",
+    "activity_domain": "Fourniture",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Fourniture",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "Fournisseur",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.826Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 35,
+  "fields": {
+    "name": "Pluxee",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Fourniture",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Amine Karoui",
+    "fonction_interlocuteur": "Customer Support",
+    "email": "mohamed.amine.karoui@pluxeegroup.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.832Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 36,
+  "fields": {
+    "name": "Haifa Design",
+    "sector": "",
+    "activity_domain": "Fourniture",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Fourniture",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "Fournisseur",
+    "email": "",
+    "phone": "97834518",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.838Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 37,
+  "fields": {
+    "name": "Société Quincailleire Mzoughi",
+    "sector": "",
+    "activity_domain": "Fourniture",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Fourniture",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "oui",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "Fournisseur",
+    "email": "contacts.q.m@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.844Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 39,
+  "fields": {
+    "name": "Marwa Tlili",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "non",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Marwa Tlili",
+    "fonction_interlocuteur": "Formateur",
+    "email": "arwatlili26@hotmail.fr",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.854Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 40,
+  "fields": {
+    "name": "Haifa Jarray",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "non",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Mohamed Messoudi",
+    "fonction_interlocuteur": "Formateur",
+    "email": "jarrayhaifa@gmail.com",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.860Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 41,
+  "fields": {
+    "name": "Mohamed Messoudi",
+    "sector": "",
+    "activity_domain": "Formation",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "non",
+    "convention_contrat": "non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Mohamed Messoudi",
+    "fonction_interlocuteur": "Formateur",
+    "email": "",
+    "phone": "98823684",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.865Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 42,
+  "fields": {
+    "name": "Adel Cherni (Centre Borj Cedria)",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "",
+    "acquisition_channel": "",
+    "service_provided": "Formation",
+    "collaboration_type": "",
+    "is_retained": false,
+    "status": "Prestataire",
+    "patente": "non",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "Adel Cherni",
+    "fonction_interlocuteur": "Formateur",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-06T10:11:07.933Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 44,
+  "fields": {
+    "name": "Africain Jobs",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "France",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": true,
+    "status": "Partenaire",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-07T09:27:04.547Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 46,
+  "fields": {
+    "name": "ABBK Physicsworks",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "tunisie",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": true,
+    "status": "Partenaire",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-07T09:45:00.778Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 47,
+  "fields": {
+    "name": "SASA",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "India",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": true,
+    "status": "Partenaire",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-07T09:46:19.301Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 48,
+  "fields": {
+    "name": "IND-Corp",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "Cameroun",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": true,
+    "status": "Partenaire",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-07T09:48:20.664Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 49,
+  "fields": {
+    "name": "BePro",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "tunisie",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": true,
+    "status": "Partenaire",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-07T09:49:05.135Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 50,
+  "fields": {
+    "name": "Iset Silana",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "tunisie",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": true,
+    "status": "Partenaire",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-07T09:49:40.177Z"
+  }
+},
+{
+  "model": "crm.company",
+  "pk": 51,
+  "fields": {
+    "name": "LEOP CONSULTING",
+    "sector": "",
+    "activity_domain": "",
+    "address": "",
+    "country": "France",
+    "acquisition_channel": "",
+    "service_provided": "",
+    "collaboration_type": "",
+    "is_retained": true,
+    "status": "Partenaire",
+    "patente": "Oui",
+    "convention_contrat": "Non",
+    "date_debut_contrat": null,
+    "date_fin_contrat": null,
+    "interlocuteur_principal": "",
+    "fonction_interlocuteur": "",
+    "email": "",
+    "phone": "",
+    "cv_document": "",
+    "created_at": "2026-08-07T09:50:37.563Z"
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 1,
+  "fields": {
+    "company": 10,
+    "first_name": "François",
+    "last_name": "Bouviala",
+    "role": "Directeur Groupe",
+    "email": "",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 2,
+  "fields": {
+    "company": 14,
+    "first_name": "Amani",
+    "last_name": "Methni",
+    "role": "Qualité et formation",
+    "email": "a.methni@mcw.tn",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 3,
+  "fields": {
+    "company": 14,
+    "first_name": "Manel",
+    "last_name": "Askri",
+    "role": "RH",
+    "email": "",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 4,
+  "fields": {
+    "company": 15,
+    "first_name": "Houssem",
+    "last_name": "Limem",
+    "role": "Responsable formation",
+    "email": "",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 5,
+  "fields": {
+    "company": 16,
+    "first_name": "Kais",
+    "last_name": "Bouhachem",
+    "role": "Directeur du site",
+    "email": "",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 6,
+  "fields": {
+    "company": 16,
+    "first_name": "Emna",
+    "last_name": "Khiari",
+    "role": "Directrice des opérations",
+    "email": "",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 7,
+  "fields": {
+    "company": 17,
+    "first_name": "Chokri",
+    "last_name": "Dahbi",
+    "role": "Responsable qualité",
+    "email": "",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.contact",
+  "pk": 8,
+  "fields": {
+    "company": 18,
+    "first_name": "Omar",
+    "last_name": "Rjaibi",
+    "role": "Responsable qualité",
+    "email": "",
+    "phone": ""
+  }
+},
+{
+  "model": "crm.interaction",
+  "pk": 4,
+  "fields": {
+    "company": 10,
+    "type": "Visite",
+    "date": "2025-09-09",
+    "note": "Visite sur site"
+  }
+},
+{
+  "model": "crm.interaction",
+  "pk": 5,
+  "fields": {
+    "company": 14,
+    "type": "Visite",
+    "date": "2026-03-03",
+    "note": "Visite sur site 1ère demande de formation"
+  }
+},
+{
+  "model": "crm.interaction",
+  "pk": 6,
+  "fields": {
+    "company": 18,
+    "type": "Réunion",
+    "date": "2026-04-09",
+    "note": "Réunion"
+  }
+},
+{
+  "model": "crm.opportunity",
+  "pk": 1,
+  "fields": {
+    "offer_id": "MDC-26-001",
+    "year": 2026,
+    "entry_date": "2026-07-13",
+    "company": 14,
+    "project_subject": "Formation / Recrutement",
+    "pilot": null,
+    "stage": "Clôturé",
+    "result": "En cours",
+    "estimated_amount": "15000.00",
+    "probability": 80,
+    "expected_close_date": "2026-06-30",
+    "lost_reason": "",
+    "action_plan": "Relance prévue le 22/06 suite à l'envoi de la V2."
+  }
+},
+{
+  "model": "crm.opportunity",
+  "pk": 2,
+  "fields": {
+    "offer_id": "MDC-26-002",
+    "year": 2026,
+    "entry_date": "2026-07-13",
+    "company": 15,
+    "project_subject": "Formation",
+    "pilot": null,
+    "stage": "Offre Soumise",
+    "result": "Gagné",
+    "estimated_amount": "8500.00",
+    "probability": 100,
+    "expected_close_date": "2026-06-15",
+    "lost_reason": "",
+    "action_plan": "Contrat signé. Transmis au processus Réalisation."
+  }
+},
+{
+  "model": "crm.opportunity",
+  "pk": 3,
+  "fields": {
+    "offer_id": "MDC-26-003",
+    "year": 2026,
+    "entry_date": "2026-07-13",
+    "company": 16,
+    "project_subject": "Formation / Recrutement / Consulting",
+    "pilot": null,
+    "stage": "Offre Soumise",
+    "result": "Perdu",
+    "estimated_amount": "22000.00",
+    "probability": 0,
+    "expected_close_date": "2026-06-10",
+    "lost_reason": "Concurrent moins cher",
+    "action_plan": "Débriefing fait : Revoir notre grille sur les audits courts."
+  }
+},
+{
+  "model": "crm.opportunity",
+  "pk": 4,
+  "fields": {
+    "offer_id": "MDC-26-004",
+    "year": 2026,
+    "entry_date": "2026-07-13",
+    "company": 17,
+    "project_subject": "Formation / Consulting",
+    "pilot": null,
+    "stage": "Offre Soumise",
+    "result": "En cours",
+    "estimated_amount": "12500.00",
+    "probability": 50,
+    "expected_close_date": "2026-07-15",
+    "lost_reason": "",
+    "action_plan": "Maquette envoyée, attente retour DG."
+  }
+},
+{
+  "model": "crm.opportunity",
+  "pk": 5,
+  "fields": {
+    "offer_id": "MDC-26-005",
+    "year": 2026,
+    "entry_date": "2026-07-13",
+    "company": 18,
+    "project_subject": "Formation",
+    "pilot": null,
+    "stage": "Qualification",
+    "result": "En cours",
+    "estimated_amount": "0.00",
+    "probability": 0,
+    "expected_close_date": null,
+    "lost_reason": "",
+    "action_plan": ""
+  }
+},
+{
+  "model": "crm.campaign",
+  "pk": 1,
+  "fields": {
+    "name": "Organisation d'un événement dans LCA",
+    "type": "Email",
+    "status": "Planifiée",
+    "sent_count": 0,
+    "opens_count": 0,
+    "conversions_count": 0,
+    "budget": "0.00",
+    "start_date": "2026-08-07"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 1,
+  "fields": {
+    "numero": 1,
+    "date": "2025-01-05",
+    "probleme": "Faible visibilité LinkedIn : perte de plus de 10 K abbonés: de nombreux problèmes ont été rencontrés avec le compte LinkedIn ainsi qu’avec la page personnelle d’Afef (quatre comptes ont été bloqués). Une demande de paiement de 1 700 dollars a été exigée afin de procéder au déblocage du compte.",
+    "origine": "externe",
+    "processus": "PMS",
+    "gravite": 3,
+    "action_immediate": "Contacter LinkedIn",
+    "analyse_causes": "La cause demeure inconnue et pourrait être\n liée à un signalement.",
+    "recurrence": false,
+    "action_corrective": "Creer une page linkedIn au lieu d'un compte + \ncreer une page Face book",
+    "date_prevue": "2025 /2026",
+    "responsable": "Afef / Linda",
+    "date_realisation": "2025.0",
+    "delais": "Après un an",
+    "efficacite": "Efficace",
+    "commentaire": "on n'a plus de problème sur LinkedIn et on a aujourd'hui 6216 abonnés",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.628Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 2,
+  "fields": {
+    "numero": 2,
+    "date": "2025-01-30",
+    "probleme": "Problème de traçabilité des factures et du suivi comptable, impactant la fiabilité du suivi financier et la conformité documentaire",
+    "origine": "Interne + fiscalité",
+    "processus": "GFS",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Traçabilité comptable insuffisante \nAbsence de système de gestion centralisé",
+    "recurrence": false,
+    "action_corrective": "devellopement d'une base de donnée",
+    "date_prevue": "30/06/2026",
+    "responsable": "Linda/ Stagiaire Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "Efficace",
+    "commentaire": "La base de données est disponible, mais elle n’est pas encore exploitée conformément aux objectifs prévus. À ce jour, seules les factures de l’année 2026 y sont enregistrées. Il reste à intégrer les factures des années 2024 et 2025.",
+    "avancement": "D",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.672Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 3,
+  "fields": {
+    "numero": 3,
+    "date": "2025-02-15",
+    "probleme": "Difficulté d’exploitation et de valorisation des CV disponibles dans la base de données actuelle, limitant l’efficacité du processus de recrutement",
+    "origine": "interne",
+    "processus": "PRT",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Manque de stratégie digitale structurée",
+    "recurrence": false,
+    "action_corrective": "Faire appel à un stagiaire d’été afin de classifier les CV et de les enregistrer dans un tableau Excel, en tant que solution temporaire. Par ailleurs, recruter des stagiaires en informatique pour développer une base de données dans le cadre de leurs projets de fin d’études (PFE).",
+    "date_prevue": "30/06/2026",
+    "responsable": "Linda/ Stagiaire Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "Efficace",
+    "commentaire": "Un stagiaire a été recruté durant les mois de juillet et août ; cependant, les résultats obtenus se sont révélés insuffisants au regard des attentes. En parallèle, un binôme de stagiaires a été mobilisé de février à mai pour le développement de la base de données, actuellement en cours de test et d’optimisation.",
+    "avancement": "P",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.679Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 4,
+  "fields": {
+    "numero": 4,
+    "date": "2025-04-05",
+    "probleme": "Insuffisance de formateurs disponibles pour couvrir l’ensemble des thématiques du catalogue de formation, limitant la capacité de réponse aux demandes clients",
+    "origine": "interne",
+    "processus": "PFR",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "La jeunesse de la société ainsi que l’absence d’une base de données structurée constituent des contraintes à prendre en considération.",
+    "recurrence": false,
+    "action_corrective": "Rechercher des formateurs de manière proactive, même en l’absence d’une demande client, notamment à travers les réseaux sociaux. Solliciter également les clients afin qu’ils nous recommandent des formateurs dans différents domaines d’expertise.",
+    "date_prevue": "",
+    "responsable": "Linda/ Stagiaire Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "La base de données est actuellement alimentée avec les formateurs déjà contactés pour des thématiques demandées par les clients. Toutefois, il reste à développer et compléter la partie dédiée à l’identification de formateurs couvrant l’ensemble des thématiques de notre catalogue.==> en cours",
+    "avancement": "P",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.684Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 5,
+  "fields": {
+    "numero": 5,
+    "date": "2025-04-30",
+    "probleme": "Le consultant affecté à la mission de mise en place a rencontré des difficultés impactant l’efficacité et l’avancement de la mission.",
+    "origine": "Audit interne ( mandaté par LCA )",
+    "processus": "PCS",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Le consultant a estimé que la société est de petite taille et ne nécessite pas un système de management complexe. Dans cette optique, il a cherché à simplifier le dispositif, ce qui a conduit à l’allègement de plusieurs exigences. Par ailleurs, le responsable qualité du client a été jugé insuffisamment performant dans le suivi et l’application des exigences qualité.",
+    "recurrence": false,
+    "action_corrective": "mandater l'auditeur afin de finaliser la mission et de mettre en conformité le système chez le client avant  de l’audit de certification.",
+    "date_prevue": "30/04/2025",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "Le systeme a ét mis en place conforme à temps et le client a été certifié avec une seule non conformité mineure",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.688Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 6,
+  "fields": {
+    "numero": 6,
+    "date": "2025-07-02",
+    "probleme": "Une réclamation client pour la tenue vestimontaire de la formatrice",
+    "origine": "Réclamation Client",
+    "processus": "PFR",
+    "gravite": 1,
+    "action_immediate": "",
+    "analyse_causes": "La formatrice est habituée à intervenir dans un environnement hôtelier et ne maîtrisait pas les exigences relatives au code vestimentaire en vigueur dans un environnement industriel.",
+    "recurrence": false,
+    "action_corrective": "Une réunion a été tenue avec la formatrice afin de rappeler les exigences applicables. Un mail d’excuse a également été adressé au client.",
+    "date_prevue": "02/07/2025",
+    "responsable": "AFEF",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "LCA rappelle à l’ensemble des formatrices les règles vestimentaires à respecter lors des interventions chez les clients.",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.692Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 7,
+  "fields": {
+    "numero": 7,
+    "date": "2025-08-04",
+    "probleme": "Absence d’une base structurée des formations (catalogue exploitable et centralisé), rendant difficile la gestion, le suivi et la mise à jour de l’offre formation",
+    "origine": "Externe (suite une réunion avec Actia Tunisie)",
+    "processus": "PFR",
+    "gravite": 2,
+    "action_immediate": "",
+    "analyse_causes": "La jeunesse de la société et nombre de demende clients des formation par an",
+    "recurrence": false,
+    "action_corrective": "devellopement d'une base de donnée",
+    "date_prevue": "30/04/2026",
+    "responsable": "Linda/ Stagiaire Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "La base est disponible, mais le nombre de formateurs disponibles est insuffisant pour répondre aux besoins.",
+    "avancement": "D",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.696Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 8,
+  "fields": {
+    "numero": 8,
+    "date": "2025-09-15",
+    "probleme": "Des problèmes de stationnement ont été constatés les jours de formation chez LCA. Les participants se garent devant les propriétés voisines, ce qui a occasionné des gênes pour le voisinage.",
+    "origine": "Voisin",
+    "processus": "PMS",
+    "gravite": 1,
+    "action_immediate": "",
+    "analyse_causes": "Manque de places de parking.",
+    "recurrence": false,
+    "action_corrective": "Demander aux participants de ne pas se garer devant les propriétés voisines et leur indiquer l’emplacement de stationnement dès leur arrivée au centre. Mettre également en place un affichage adapté à cet effet.",
+    "date_prevue": "30/09/2025",
+    "responsable": "Linda",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.700Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 9,
+  "fields": {
+    "numero": 9,
+    "date": "2025-11-30",
+    "probleme": "Amende CNSS (prestataire non conforme – absence de patente de la formatrice d'anaglais et pas de retenu à la source de 15%",
+    "origine": "CNSS",
+    "processus": "GFS",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Manque de connaissance de la loi , on a pensé que un CV Melik remplace une patente",
+    "recurrence": false,
+    "action_corrective": "Dans la cas d'intervention d'un consultant ou formateur sans patante mais avec CV Melik , il faut prendre en conceduration la retenu à la source 15%",
+    "date_prevue": "2025.0",
+    "responsable": "Afef / Linda",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "Il convient de privilégier les formateurs disposant d’une patente.",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.705Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 10,
+  "fields": {
+    "numero": 10,
+    "date": "2025-11-15",
+    "probleme": "Difficultés de paiement des formations réalisées pour SAIDA en raison de l’absence de compte en dinars de LCA, liée à des contraintes d’ouverture de compte en dinars tunisiens.",
+    "origine": "Le statut de la société : totalement esxportatrice non residante",
+    "processus": "PFR",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Nous avons estimé que ce statut nous donne droit à 30 % du marché local.",
+    "recurrence": false,
+    "action_corrective": "Changement du statut de la société, passant d’une entreprise totalement exportatrice non résidente à une entreprise partiellement exportatrice résidente.",
+    "date_prevue": "2026.0",
+    "responsable": "Souad",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "La demande est faite : attente confirmation",
+    "avancement": "P",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.709Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 11,
+  "fields": {
+    "numero": 11,
+    "date": "2025-11-30",
+    "probleme": "Vérification insuffisante des prestataires",
+    "origine": "Interne",
+    "processus": "PFR",
+    "gravite": 2,
+    "action_immediate": "",
+    "analyse_causes": "Absence de processus formalisés pour la veille (marché, formateurs, offres concurrentes)",
+    "recurrence": false,
+    "action_corrective": "Creer une procedure pour les prestatataires",
+    "date_prevue": "2026.0",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "",
+    "avancement": "P",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.713Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 12,
+  "fields": {
+    "numero": 12,
+    "date": "2025-12-30",
+    "probleme": "Absence des KPI clairs",
+    "origine": "Interne",
+    "processus": "PMS",
+    "gravite": 2,
+    "action_immediate": "",
+    "analyse_causes": "Absence des procedures",
+    "recurrence": false,
+    "action_corrective": "Mettre en place des objectifs stratégiques et des indicateurs clés de performance (KPI), en particulier pour les processus métiers",
+    "date_prevue": "2026.0",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "Les bases de données ont été finalisées, les objectifs ont été définis et leur validation est actuellement en cours.",
+    "avancement": "C",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.718Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 13,
+  "fields": {
+    "numero": 13,
+    "date": "2025-12-30",
+    "probleme": "Consulting : une seule action de consulting en 2025 qui est considéré insufisant",
+    "origine": "Interne",
+    "processus": "PCS",
+    "gravite": 2,
+    "action_immediate": "",
+    "analyse_causes": "Manque de CRM + jeunesse de la société",
+    "recurrence": false,
+    "action_corrective": "Chercher des nouveaux marchés + développement d'une base de données CRM",
+    "date_prevue": "1/07/2026",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "",
+    "avancement": "P",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.723Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 14,
+  "fields": {
+    "numero": 14,
+    "date": "2025-08-08",
+    "probleme": "Pour le recrutement : nombreux candidats ont décliné l’offre de client après plusieurs entretiens ( Avo Carbon ) : 4 personnes",
+    "origine": "Réclamation Client",
+    "processus": "PRT",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Tous les candidats ont été contactés afin de comprendre les raisons de leur désistement. Il ressort que le déroulement des entretiens et une certaine rigidité manifestée par le client ont contribué à décourager plusieurs candidats.",
+    "recurrence": false,
+    "action_corrective": "Une réunion sur site a été organisée avec le client. Par ailleurs, lors du recrutement de nouveaux candidats, il est désormais précisé que le client est particulièrement exigeant. En cas de difficulté durant les échanges, les candidats sont invités à aborder ces points lors de la réunion et à nous en informer rapidement.",
+    "date_prevue": "Aout 2025",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "Le client n'a pas apricié ce retour .\ndepuis cette démarche on n'a pas eu ce genre de problème",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.728Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 15,
+  "fields": {
+    "numero": 15,
+    "date": "2025-08-08",
+    "probleme": "La qualité des fiches d’evaluation notamment pour les langues ( Avo carbon )",
+    "origine": "Réclamation Client",
+    "processus": "PRT",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Les entretiens chez LCA pour Avo Carbon sont réalisés en français et en anglais. En cas de difficulté linguistique, celle-ci est systématiquement signalée. Certains candidats ont toutefois été stressés et n’ont pas réussi à mobiliser le vocabulaire technique en anglais lors de l’entretien.",
+    "recurrence": false,
+    "action_corrective": "Reunion chez le client",
+    "date_prevue": "Aout 2025",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "Du point de vue de LCA, il a également été constaté lors de la réunion que le niveau de langue de l’interlocuteur n’était pas satisfaisant, le nombre d’erreurs relevées ne permettant pas d’évaluer correctement le niveau des candidats. Cette observation a été remontée au directeur de site.",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.733Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 16,
+  "fields": {
+    "numero": 16,
+    "date": "2025-12-25",
+    "probleme": "La démission rapide des candidats (Avo Carbon).",
+    "origine": "Réclamation Client",
+    "processus": "PRT",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Tous les candidats ont été contactés et ont exprimé leur mécontentement concernant l’organisation.",
+    "recurrence": false,
+    "action_corrective": "Une réunion a été organisée avec le client, au cours de laquelle il a été confirmé qu’un turnover important est également constaté au sein de ses propres équipes, et pas uniquement parmi nos candidats.",
+    "date_prevue": "30/03/2026",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "Des propositions ont été formulées afin de favoriser la rétention des candidats, notamment l’autorisation d’un jour de télétravail, la flexibilité des horaires d’arrivée sans fixation stricte à 8h15, la non-surveillance des pauses café, ainsi qu’un traitement du personnel davantage aligné sur un statut cadre plutôt que sur celui d’opérateur.",
+    "avancement": "A",
+    "statut": "Fermé",
+    "created_at": "2026-07-22T11:11:36.737Z"
+  }
+},
+{
+  "model": "crm.nonconformite",
+  "pk": 17,
+  "fields": {
+    "numero": 17,
+    "date": "2026-04-20",
+    "probleme": "un retard d'envoie des candidat logistique pour un poste urgent : perte de projet",
+    "origine": "Bereta",
+    "processus": "PRT",
+    "gravite": 3,
+    "action_immediate": "",
+    "analyse_causes": "Cahrege de travail + non disponiblité d'Afef pour faire les entretiens à temps",
+    "recurrence": false,
+    "action_corrective": "Monter linda en competance pour  faire les entretien toute seule + formation recrutement",
+    "date_prevue": "30/12/2026",
+    "responsable": "Afef",
+    "date_realisation": "",
+    "delais": "",
+    "efficacite": "",
+    "commentaire": "",
+    "avancement": "P",
+    "statut": "Ouvert",
+    "created_at": "2026-07-22T11:11:36.741Z"
+  }
+},
+{
+  "model": "crm.satisfactionsurveypdf",
+  "pk": 5,
+  "fields": {
+    "company": 19,
+    "year": 2025,
+    "service_type": "Recrutement",
+    "detailed_scores": {
+      "Communication": 5,
+      "Accompagnement": 5,
+      "Analyse du besoin": 4,
+      "Professionnalisme": 5,
+      "Délai de traitement": 4,
+      "Qualité des profils": 5,
+      "Rapport Qualité/Prix": 5,
+      "Pertinence des évaluations": 5
+    },
+    "score_global": 4.75,
+    "score_recommendation": 10,
+    "future_intent": "Oui",
+    "point_fort": "L’évaluation réalisée par LCA avant communication des profils",
+    "amelioration": "Réalisation des entretiens avec les candidats sélectionnés et la société (Soit un entretien d’évaluation après l’intégration du candidat dans la société, soit un entretien de départ pour les candidats licenciés ou démissionné, pendant la 1ère période d’essai)",
+    "pdf_file": "satisfaction_pdfs/2026/Fiche_de_satisfaction_client_-_Recrutement_Delmon_Group.pdf",
+    "uploaded_at": "2026-07-30T10:58:18.933Z",
+    "uploaded_by": [
+      "admin"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "crm.satisfactionsurveypdf",
+  "pk": 6,
+  "fields": {
+    "company": 1,
+    "year": 2025,
+    "service_type": "Recrutement",
+    "detailed_scores": {},
+    "score_global": 5.0,
+    "score_recommendation": 10,
+    "future_intent": "Oui",
+    "point_fort": "La réactivité, le souci de bien faire et de l’amélioration",
+    "amelioration": "Poursuivre le renforcement de notre communication et de notre alignement, afin de rendre notre collaboration encore plus fluide et efficace",
+    "pdf_file": "satisfaction_pdfs/2026/Fiche_de_satisfaction_client_-_Recrutement_Bulgin.docx.pdf",
+    "uploaded_at": "2026-07-30T11:00:24.964Z",
+    "uploaded_by": [
+      "admin"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "crm.satisfactionsurveypdf",
+  "pk": 7,
+  "fields": {
+    "company": 9,
+    "year": 2025,
+    "service_type": "Recrutement",
+    "detailed_scores": {
+      "Communication": 5,
+      "Accompagnement": 4,
+      "Analyse du besoin": 4,
+      "Professionnalisme": 5,
+      "Délai de traitement": 4,
+      "Qualité des profils": 4,
+      "Rapport Qualité/Prix": 5,
+      "Pertinence des évaluations": 4
+    },
+    "score_global": 4.38,
+    "score_recommendation": 8,
+    "future_intent": "Oui",
+    "point_fort": "La réactivité, la disponibilité et le cout raisonable",
+    "amelioration": "La détèction de la qualité de certains candidats doit s'améliorer",
+    "pdf_file": "satisfaction_pdfs/2026/Fiche_de_satisfaction_client_-_Recrutement_AVOCARBON.pdf",
+    "uploaded_at": "2026-07-30T11:04:18.644Z",
+    "uploaded_by": [
+      "admin"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "crm.satisfactionsurveypdf",
+  "pk": 8,
+  "fields": {
+    "company": 4,
+    "year": 2025,
+    "service_type": "Formation",
+    "detailed_scores": {
+      "Logistique": 5,
+      "Réactivité": 5,
+      "Image de marque": 4,
+      "Professionnalisme": 5,
+      "Supports de cours": 4,
+      "Impact opérationnel": 4,
+      "Rapport Qualité/Prix": 4,
+      "Expertise du formateur": 4,
+      "Ingénierie pédagogique": 4
+    },
+    "score_global": 4.33,
+    "score_recommendation": 8,
+    "future_intent": "Oui",
+    "point_fort": "L’Organisation",
+    "amelioration": "SOFT SKILLS",
+    "pdf_file": "satisfaction_pdfs/2026/Fiche_de_satisfaction_client_-_Formation_Saida.docx.pdf",
+    "uploaded_at": "2026-07-30T11:05:43.935Z",
+    "uploaded_by": [
+      "admin"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "crm.satisfactionsurveypdf",
+  "pk": 9,
+  "fields": {
+    "company": 1,
+    "year": 2025,
+    "service_type": "Formation",
+    "detailed_scores": {
+      "Logistique": 5,
+      "Réactivité": 5,
+      "Image de marque": 5,
+      "Professionnalisme": 5,
+      "Supports de cours": 5,
+      "Impact opérationnel": 5,
+      "Rapport Qualité/Prix": 5,
+      "Expertise du formateur": 5,
+      "Ingénierie pédagogique": 5
+    },
+    "score_global": 5.0,
+    "score_recommendation": 10,
+    "future_intent": "Oui",
+    "point_fort": "L’organisation, la satisfaction client et la réactivité",
+    "amelioration": "La communication",
+    "pdf_file": "satisfaction_pdfs/2026/Fiche_de_satisfaction_client_-_Formation_Bulgin.docx.pdf",
+    "uploaded_at": "2026-07-30T11:06:46.769Z",
+    "uploaded_by": [
+      "admin"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "crm.satisfactionsurveypdf",
+  "pk": 10,
+  "fields": {
+    "company": 3,
+    "year": 2025,
+    "service_type": "Consulting",
+    "detailed_scores": {
+      "Réactivité": 4,
+      "Valeur Ajoutée": 4,
+      "Professionnalisme": 5,
+      "Expertise Technique": 5,
+      "Respect du Planning": 4,
+      "Diagnostic & Analyse": 5,
+      "Qualité des Livrables": 5,
+      "Pédagogie & Transfert de compétences": 4
+    },
+    "score_global": 4.5,
+    "score_recommendation": 9,
+    "future_intent": "Oui",
+    "point_fort": "Réactivité et la disponibilité.",
+    "amelioration": "Nous aimerions voir une méthodologie plus axée sur la pratique et le terrain. Par exemple, intégrer davantage d'études de cas concrets liés à notre secteur (usinage, outillage)",
+    "pdf_file": "satisfaction_pdfs/2026/Fiche_de_satisfaction_client_-_Consulting_Tecnusi.pdf",
+    "uploaded_at": "2026-07-30T11:07:56.052Z",
+    "uploaded_by": [
+      "admin"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 1,
+  "fields": {
+    "company": 20,
+    "year": 2024,
+    "prix": 3.0,
+    "qualite": 3.0,
+    "prestation_service": 3.0,
+    "respect_delais": 3.0,
+    "score_percent": 75.0,
+    "decision": "Maintenir le fournisseur",
+    "notes": "Excellent partenaire de recrutement ; modèle économique très avantageux basé uniquement sur le succès, sans frais de recherche initiaux.",
+    "created_at": "2026-08-06T10:11:07.911Z",
+    "updated_at": "2026-08-06T11:30:44.134Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 2,
+  "fields": {
+    "company": 22,
+    "year": 2024,
+    "prix": 3.0,
+    "qualite": 3.0,
+    "prestation_service": 3.0,
+    "respect_delais": 3.0,
+    "score_percent": 75.0,
+    "decision": "Maintenir le fournisseur",
+    "notes": "On a fait face à des problèmes mais le service comptable était reactif",
+    "created_at": "2026-08-06T10:11:07.917Z",
+    "updated_at": "2026-08-07T08:08:17.569Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 3,
+  "fields": {
+    "company": 21,
+    "year": 2024,
+    "prix": 3.0,
+    "qualite": 2.0,
+    "prestation_service": 3.0,
+    "respect_delais": 3.0,
+    "score_percent": 68.75,
+    "decision": "Maintenir le fournisseur",
+    "notes": "Formation softskills avec bulgin beaucoup de lecture lors de la formation",
+    "created_at": "2026-08-06T10:11:07.925Z",
+    "updated_at": "2026-08-06T11:30:44.148Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 4,
+  "fields": {
+    "company": 42,
+    "year": 2024,
+    "prix": 3.0,
+    "qualite": 4.0,
+    "prestation_service": 3.0,
+    "respect_delais": 3.0,
+    "score_percent": 81.25,
+    "decision": "Maintenir le fournisseur et le privilégier",
+    "notes": "Retour excelent de Bulgin suite à la formation de Solidworks",
+    "created_at": "2026-08-06T10:11:07.939Z",
+    "updated_at": "2026-08-06T11:30:44.155Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 5,
+  "fields": {
+    "company": 27,
+    "year": 2024,
+    "prix": 4.0,
+    "qualite": 4.0,
+    "prestation_service": 4.0,
+    "respect_delais": 4.0,
+    "score_percent": 100.0,
+    "decision": "Maintenir le fournisseur et le privilégier",
+    "notes": "Prestataire fiable pour les travaux d'impression et de reprographie ; délais généralement respectés.",
+    "created_at": "2026-08-06T10:11:07.947Z",
+    "updated_at": "2026-08-06T11:30:44.160Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 7,
+  "fields": {
+    "company": 20,
+    "year": 2025,
+    "prix": 3.0,
+    "qualite": 3.0,
+    "prestation_service": 3.0,
+    "respect_delais": 3.0,
+    "score_percent": 75.0,
+    "decision": "Maintenir le fournisseur",
+    "notes": "Excellent partenaire de recrutement ; modèle économique très avantageux basé uniquement sur le succès, sans frais de recherche initiaux.",
+    "created_at": "2026-08-06T10:11:07.959Z",
+    "updated_at": "2026-08-06T11:30:44.172Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 8,
+  "fields": {
+    "company": 22,
+    "year": 2025,
+    "prix": 3.0,
+    "qualite": 2.0,
+    "prestation_service": 2.0,
+    "respect_delais": 2.0,
+    "score_percent": 56.25,
+    "decision": "Maintenir le fournisseur sous surveillance",
+    "notes": "On a eu quelques soucis par rapport le changement du statut de la société + des amendes de la part de la CNSS et des impots",
+    "created_at": "2026-08-06T10:11:07.967Z",
+    "updated_at": "2026-08-06T11:30:44.179Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 9,
+  "fields": {
+    "company": 23,
+    "year": 2025,
+    "prix": 4.0,
+    "qualite": 4.0,
+    "prestation_service": 4.0,
+    "respect_delais": 4.0,
+    "score_percent": 100.0,
+    "decision": "Maintenir le fournisseur et le privilégier",
+    "notes": "Formation solidworks excélente avec Bulgin",
+    "created_at": "2026-08-06T10:11:07.974Z",
+    "updated_at": "2026-08-06T11:30:44.185Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 10,
+  "fields": {
+    "company": 24,
+    "year": 2025,
+    "prix": 3.0,
+    "qualite": 3.0,
+    "prestation_service": 3.0,
+    "respect_delais": 3.0,
+    "score_percent": 75.0,
+    "decision": "Maintenir le fournisseur",
+    "notes": "Des sessions de formation réussites avec Saida",
+    "created_at": "2026-08-06T10:11:07.980Z",
+    "updated_at": "2026-08-06T11:30:44.191Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 11,
+  "fields": {
+    "company": 25,
+    "year": 2025,
+    "prix": 3.0,
+    "qualite": 4.0,
+    "prestation_service": 4.0,
+    "respect_delais": 4.0,
+    "score_percent": 93.75,
+    "decision": "Maintenir le fournisseur et le privilégier",
+    "notes": "Il a excélé avec Saida",
+    "created_at": "2026-08-06T10:11:07.984Z",
+    "updated_at": "2026-08-06T11:30:44.196Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 12,
+  "fields": {
+    "company": 26,
+    "year": 2025,
+    "prix": 2.0,
+    "qualite": 3.0,
+    "prestation_service": 2.0,
+    "respect_delais": 3.0,
+    "score_percent": 62.5,
+    "decision": "Maintenir le fournisseur",
+    "notes": "Réaliastion d'un audit interne chez tecnusi",
+    "created_at": "2026-08-06T10:11:07.989Z",
+    "updated_at": "2026-08-06T11:30:44.201Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 13,
+  "fields": {
+    "company": 39,
+    "year": 2025,
+    "prix": 3.0,
+    "qualite": 3.0,
+    "prestation_service": 3.0,
+    "respect_delais": 1.0,
+    "score_percent": 62.5,
+    "decision": "Maintenir le fournisseur",
+    "notes": "Elle a eu un bon retour mais elle n'a pas fini son programme chez Bulgin",
+    "created_at": "2026-08-06T10:11:07.994Z",
+    "updated_at": "2026-08-06T11:30:44.207Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 14,
+  "fields": {
+    "company": 40,
+    "year": 2025,
+    "prix": 4.0,
+    "qualite": 4.0,
+    "prestation_service": 4.0,
+    "respect_delais": 4.0,
+    "score_percent": 100.0,
+    "decision": "Maintenir le fournisseur et le privilégier",
+    "notes": "Un très bon retour de la part de Bulgin",
+    "created_at": "2026-08-06T10:11:07.998Z",
+    "updated_at": "2026-08-06T11:30:44.214Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 15,
+  "fields": {
+    "company": 20,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.002Z",
+    "updated_at": "2026-08-06T11:30:44.220Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 16,
+  "fields": {
+    "company": 22,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.007Z",
+    "updated_at": "2026-08-06T11:30:44.226Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 17,
+  "fields": {
+    "company": 23,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.011Z",
+    "updated_at": "2026-08-06T11:30:44.234Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 18,
+  "fields": {
+    "company": 24,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.016Z",
+    "updated_at": "2026-08-06T11:30:44.242Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 19,
+  "fields": {
+    "company": 25,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.021Z",
+    "updated_at": "2026-08-06T11:30:44.248Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 20,
+  "fields": {
+    "company": 26,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.026Z",
+    "updated_at": "2026-08-06T11:30:44.254Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 21,
+  "fields": {
+    "company": 28,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.032Z",
+    "updated_at": "2026-08-06T11:30:44.261Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 22,
+  "fields": {
+    "company": 29,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.037Z",
+    "updated_at": "2026-08-06T11:30:44.267Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 23,
+  "fields": {
+    "company": 31,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.043Z",
+    "updated_at": "2026-08-06T11:30:44.273Z"
+  }
+},
+{
+  "model": "crm.prestataireevaluation",
+  "pk": 24,
+  "fields": {
+    "company": 41,
+    "year": 2026,
+    "prix": null,
+    "qualite": null,
+    "prestation_service": null,
+    "respect_delais": null,
+    "score_percent": null,
+    "decision": "",
+    "notes": "",
+    "created_at": "2026-08-06T10:11:08.047Z",
+    "updated_at": "2026-08-06T11:30:44.277Z"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2026-07-14T20:43:26.480Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "crm",
+      "opportunity"
+    ],
+    "object_id": "5",
+    "object_repr": "Amphenol - Formation",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2026-07-18T09:34:43.538Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "3",
+    "object_repr": "afef",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2026-07-18T09:34:43.538Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "2",
+    "object_repr": "encadrante",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2026-07-31T10:56:19.607Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "5",
+    "object_repr": "nesrine@email.com",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2026-07-31T10:56:19.607Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "6",
+    "object_repr": "nesrinehamrouni793@gmail.com",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2026-07-31T10:56:19.607Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "4",
+    "object_repr": "test@email.com",
+    "action_flag": 3,
+    "change_message": ""
+  }
+}
+]

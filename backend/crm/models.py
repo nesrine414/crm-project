@@ -14,6 +14,7 @@ class Company(models.Model):
         ('Formation', 'Formation'),
         ('Consulting', 'Consulting'),
         ('Comptable', 'Comptable'),
+        ('Fourniture', 'Fourniture'),
         ('Fourniture bureautique', 'Fourniture bureautique'),
         ('Informatique', 'Informatique'),
         ('Autre', 'Autre'),
@@ -26,6 +27,8 @@ class Company(models.Model):
     country = models.CharField(max_length=100, blank=True)
     acquisition_channel = models.CharField(max_length=100, blank=True)  # Canal d'acquisition
     service_provided = models.CharField(max_length=100, choices=SERVICE_CHOICES, blank=True)
+    collaboration_type = models.CharField(max_length=150, blank=True, default='')  
+    is_retained = models.BooleanField(default=False)  
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Lead')
 
     # Champs spécifiques aux Prestataires (conforme Excel ENR-GFS-03)
@@ -117,49 +120,6 @@ class Opportunity(models.Model):
     def __str__(self):
         return f"{self.company.name} - {self.project_subject}"
 
-
-class Reclamation(models.Model):
-    PRIORITY_CHOICES = [('Faible', 'Faible'), ('Moyenne', 'Moyenne'), ('Élevée', 'Élevée')]
-    CHANNEL_CHOICES = [
-        ('Téléphone', 'Téléphone'), ('Email', 'Email'), ('Réunion', 'Réunion'),
-        ('Formulaire web', 'Formulaire web'), ('Portail client', 'Portail client'),
-    ]
-    STATUS_CHOICES = [('Ouverte', 'Ouverte'), ('En cours', 'En cours'), ('Résolue', 'Résolue')]
-
-    number = models.CharField(max_length=20, unique=True, blank=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='reclamations')
-    subject = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    plan_action = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Ouverte')
-    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Moyenne')
-    channel = models.CharField(max_length=30, choices=CHANNEL_CHOICES, default='Téléphone')
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reclamations')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-        if not self.number:
-            from django.utils import timezone
-            year = timezone.now().year
-            last = Reclamation.objects.filter(number__startswith=f'REC-{year}-').order_by('-id').first()
-            if last and last.number:
-                try:
-                    seq = int(last.number.split('-')[-1]) + 1
-                except (ValueError, IndexError):
-                    seq = 1
-            else:
-                seq = 1
-            self.number = f'REC-{year}-{seq:03d}'
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.number} – {self.subject}"
-
-
-class ReclamationNote(models.Model):
-    reclamation = models.ForeignKey(Reclamation, on_delete=models.CASCADE, related_name='notes')
-    date = models.DateField(auto_now_add=True)
-    note = models.TextField()
 
 
 class Feedback(models.Model):
@@ -363,4 +323,4 @@ class PrestataireEvaluation(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.company.name} - Evaluation {self.year}"
+        return f"{self.company.name} - Evaluation {self.year}"

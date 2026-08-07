@@ -9,12 +9,13 @@ from rest_framework.response import Response
 from .models import NonConformite
 from .serializers import NonConformiteSerializer
 
+# pyrefly: ignore [missing-import]
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Company, Contact, Interaction, Opportunity, Reclamation, ReclamationNote, Feedback, Campaign, SatisfactionSurveyPDF, PrestataireEvaluation
+from .models import Company, Contact, Interaction, Opportunity, Feedback, Campaign, SatisfactionSurveyPDF, PrestataireEvaluation
 from .serializers import (
     CompanySerializer, ContactSerializer, InteractionSerializer,
-    OpportunitySerializer, ReclamationSerializer, ReclamationNoteSerializer,
+    OpportunitySerializer, 
     FeedbackSerializer, CampaignSerializer, UserSerializer, RegisterSerializer,CustomTokenObtainPairSerializer, NotificationSerializer,
     SatisfactionSurveyPDFSerializer, PrestataireEvaluationSerializer
 )
@@ -72,14 +73,7 @@ class OpportunityViewSet(viewsets.ModelViewSet):
     serializer_class = OpportunitySerializer
 
 
-class ReclamationViewSet(viewsets.ModelViewSet):
-    queryset = Reclamation.objects.all().order_by('-created_at')
-    serializer_class = ReclamationSerializer
 
-
-class ReclamationNoteViewSet(viewsets.ModelViewSet):
-    queryset = ReclamationNote.objects.all()
-    serializer_class = ReclamationNoteSerializer
 
 
 class FeedbackViewSet(viewsets.ModelViewSet):
