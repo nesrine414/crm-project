@@ -239,8 +239,13 @@ tbody tr:hover {
   margin-right: 6px;
 }
 
-.dot-success { background: var(--success); }
-.dot-warning { background: var(--warning); }
+.dot-success {
+  background: var(--success);
+}
+
+.dot-warning {
+  background: var(--warning);
+}
 
 .empty-row {
   text-align: center;
@@ -372,12 +377,25 @@ tbody tr:hover {
   flex-shrink: 0;
 }
 
-.type-Email { background: var(--primary); }
-.type-Appel { background: var(--warning); }
-.type-Réunion { background: var(--success); }
-.type-Entretien { background: #6B46E5; }
+.type-Email {
+  background: var(--primary);
+}
 
-.timeline-content { flex: 1; }
+.type-Appel {
+  background: var(--warning);
+}
+
+.type-Réunion {
+  background: var(--success);
+}
+
+.type-Entretien {
+  background: #6B46E5;
+}
+
+.timeline-content {
+  flex: 1;
+}
 
 .timeline-top {
   display: flex;
@@ -489,4 +507,78 @@ tbody tr:hover {
 .submit-btn-modal {
   border-radius: 24px;
   padding: 10px 24px;
+}
+
+.icon-edit-btn {
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.icon-edit-btn:hover {
+  background: var(--bg-page);
+}
+
+.contacts-edit-section {
+  margin-top: 6px;
+  margin-bottom: 15px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 15px;
+}
+
+.contacts-edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.contact-form-row input {
+  height: 32px;
+  font-size: 12px;
+}
+
+.remove-contact-btn {
+  background: none;
+  border: none;
+  color: var(--danger, #EF4444);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.remove-contact-btn:hover {
+  opacity: 0.7;
+}
+
+.col-actions {
+  width: 90px;
+  text-align: center;
+}
+
+.icon-delete-btn {
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.icon-delete-btn:hover {
+  background: var(--bg-page);
 }

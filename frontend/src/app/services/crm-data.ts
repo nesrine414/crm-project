@@ -31,6 +31,8 @@ export interface Company {
   status: 'Client' | 'Lead' | 'Partenaire';
   created_at?: string;
   contacts: ContactItem[];
+  collaboration_type?: string;
+  is_retained?: boolean;
 }
 
 // Les 5 vraies étapes du pipe LCA (fichier Excel)
@@ -62,27 +64,9 @@ export interface Feedback {
   date: string;
 }
 
-export interface ReclamationNote {
-  id?: number;
-  date: string;
-  note: string;
-}
 
-export interface Reclamation {
-  id: number;
-  number?: string;
-  company: number;
-  subject: string;
-  description: string;
-  plan_action?: string;
-  status: 'Ouverte' | 'En cours' | 'Résolue';
-  priority: 'Faible' | 'Moyenne' | 'Élevée';
-  channel: 'Téléphone' | 'Email' | 'Réunion' | 'Formulaire web' | 'Portail client';
-  assigned_to?: number | null;
-  assigned_to_name?: string | null;
-  created_at?: string;
-  notes: ReclamationNote[];
-}
+
+
 
 export interface Campagne {
   id: number;
@@ -169,7 +153,6 @@ export class CrmDataService {
   partners = signal<Company[]>([]);
   opportunities = signal<OpportunityItem[]>([]);
   feedbacks = signal<Feedback[]>([]);
-  reclamations = signal<Reclamation[]>([]);
   campagnes = signal<Campagne[]>([]);
   interactions = signal<Interaction[]>([]);
   getClients(): Observable<Company[]> {
@@ -209,6 +192,9 @@ export class CrmDataService {
   updateCompany(id: number, company: Partial<Company>): Observable<Company> {
     return this.http.patch<Company>(`${this.baseUrl}/companies/${id}/`, company);
   }
+  deleteCompany(id: number): Observable<any> {   // 👈 NOUVEAU
+    return this.http.delete(`${this.baseUrl}/companies/${id}/`);
+  }
 
   getOpportunities(): Observable<OpportunityItem[]> {
     return this.http.get<OpportunityItem[]>(`${this.baseUrl}/opportunities/`);
@@ -232,26 +218,6 @@ export class CrmDataService {
 
   addFeedback(feedback: Omit<Feedback, 'id'>): Observable<Feedback> {
     return this.http.post<Feedback>(`${this.baseUrl}/feedbacks/`, feedback);
-  }
-
-  getReclamations(): Observable<Reclamation[]> {
-    return this.http.get<Reclamation[]>(`${this.baseUrl}/reclamations/`);
-  }
-
-  addReclamation(rec: Omit<Reclamation, 'id' | 'notes'>): Observable<Reclamation> {
-    return this.http.post<Reclamation>(`${this.baseUrl}/reclamations/`, rec);
-  }
-
-  updateReclamationStatus(id: number, status: Reclamation['status']): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/reclamations/${id}/`, { status });
-  }
-
-  updateReclamation(id: number, data: Partial<Reclamation>): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/reclamations/${id}/`, data);
-  }
-
-  deleteReclamation(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/reclamations/${id}/`);
   }
 
   getCampagnes(): Observable<Campagne[]> {

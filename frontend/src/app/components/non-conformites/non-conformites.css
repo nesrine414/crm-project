@@ -436,12 +436,25 @@ tbody tr:hover .row-actions {
   flex-shrink: 0;
 }
 
-.type-Email { background: var(--primary); }
-.type-Appel { background: var(--warning); }
-.type-Réunion { background: var(--success); }
-.type-Entretien { background: #6B46E5; }
+.type-Email {
+  background: var(--primary);
+}
 
-.timeline-content { flex: 1; }
+.type-Appel {
+  background: var(--warning);
+}
+
+.type-Réunion {
+  background: var(--success);
+}
+
+.type-Entretien {
+  background: #6B46E5;
+}
+
+.timeline-content {
+  flex: 1;
+}
 
 .timeline-top {
   display: flex;
@@ -551,6 +564,7 @@ tbody tr:hover .row-actions {
   border-radius: 24px;
   padding: 10px 24px;
 }
+
 .notes-list {
   display: flex;
   flex-direction: column;
@@ -601,4 +615,94 @@ tbody tr:hover .row-actions {
   font-size: 12px;
   font-weight: 600;
   border: 1px solid #cbd5e1;
+}
+
+.origine-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.documents-modal {
+  max-width: 780px;
+}
+
+.doc-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 14px 0 8px 0;
+}
+
+.iso-header-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left: 6px solid #0284c7;
+  border-radius: 10px;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 20px;
+}
+
+.iso-subtitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.iso-title {
+  margin: 2px 0 0 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #0f172a;
+}
+
+.iso-ref-badge {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.iso-item .lbl {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.iso-item .val {
+  color: #0369a1;
+  font-weight: 700;
+  margin-left: 3px;
+}
+
+.iso-sep {
+  color: #cbd5e1;
+}
+
+.documents-modal {
+  max-width: 780px;
+}
+
+.doc-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 14px 0 8px 0;
 }

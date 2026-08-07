@@ -45,28 +45,29 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-.login-header {
+.login-header-centered {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
   margin-bottom: 28px;
 }
 
-.brand-badge {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+.brand-badge-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
   background: var(--navy);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 28px;
 }
 
-.brand-name {
-  font-size: 17px;
+.brand-name-lg {
+  font-size: 19px;
   font-weight: 700;
   color: var(--navy);
 }
@@ -153,7 +154,8 @@
   font-size: 13px;
 }
 
-.divider::before, .divider::after {
+.divider::before,
+.divider::after {
   content: "";
   flex: 1;
   border-bottom: 1px solid var(--border-color);
@@ -194,9 +196,15 @@
 .oauth-linkedin:hover {
   background: #084F99;
 }
+
 .error-message {
   color: var(--danger);
   font-size: 13px;
   margin: 0 0 14px 0;
   text-align: center;
+}
+
+.brand-logo-img {
+  height: 64px;
+  width: auto;
 }

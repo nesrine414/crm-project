@@ -27,12 +27,6 @@ export class Configuration implements OnInit {
   profileMessage = signal<string | null>(null);
   profileError = signal<string | null>(null);
 
-  oldPassword = '';
-  newPassword = '';
-  confirmPassword = '';
-  passwordMessage = signal<string | null>(null);
-  passwordError = signal<string | null>(null);
-
   // --- Gestion utilisateurs ---
   showUserModal = signal(false);
   editingUser: UserItem | null = null;
@@ -138,37 +132,6 @@ export class Configuration implements OnInit {
         setTimeout(() => this.profileMessage.set(null), 3500);
       },
       error: () => this.profileError.set('Impossible de mettre à jour le profil.')
-    });
-  }
-
-  changePassword() {
-    this.passwordMessage.set(null);
-    this.passwordError.set(null);
-
-    if (!this.oldPassword) {
-      this.passwordError.set('Veuillez saisir votre mot de passe actuel.');
-      return;
-    }
-    if (this.newPassword.length < 8) {
-      this.passwordError.set('Le nouveau mot de passe doit contenir au moins 8 caractères.');
-      return;
-    }
-    if (this.newPassword !== this.confirmPassword) {
-      this.passwordError.set('La confirmation ne correspond pas au nouveau mot de passe.');
-      return;
-    }
-
-    this.crmData.changePassword(this.oldPassword, this.newPassword).subscribe({
-      next: () => {
-        this.passwordMessage.set('Mot de passe mis à jour avec succès.');
-        this.oldPassword = '';
-        this.newPassword = '';
-        this.confirmPassword = '';
-        setTimeout(() => this.passwordMessage.set(null), 3500);
-      },
-      error: (err) => {
-        this.passwordError.set(err?.error?.detail || 'Mot de passe actuel incorrect.');
-      }
     });
   }
 

@@ -5,7 +5,7 @@ import { CrmDataService, NonConformite, SatisfactionSurveyPDF, Stage } from '../
 
 interface ActivityItem {
   id: string;
-  type: 'opportunity' | 'reclamation' | 'nc';
+  type: 'opportunity' | 'nc';
   title: string;
   description: string;
   date: string;
@@ -47,10 +47,6 @@ export class Dashboard implements OnInit {
 
   openNcCount = computed(() => {
     return this.nonConformites().filter(nc => nc.statut === 'Ouvert').length;
-  });
-
-  openRecCount = computed(() => {
-    return this.crmData.reclamations().filter(r => r.status !== 'Résolue').length;
   });
 
   satisfactionScoreAvg = computed(() => {
@@ -96,7 +92,7 @@ export class Dashboard implements OnInit {
   sectorDistribution = computed(() => {
     const clients = this.crmData.clients();
     if (clients.length === 0) return [];
-    
+
     const counts = new Map<string, number>();
     for (const c of clients) {
       const sec = c.sector?.trim() || 'Non spécifié';
@@ -141,21 +137,28 @@ export class Dashboard implements OnInit {
     return last6.map(b => ({ ...b, pct: Math.round((b.total / max) * 100) }));
   });
 
-  topClients = computed(() => {
+  wonByYear = computed(() => {
     const opps = this.crmData.opportunities().filter(o => o.result === 'Gagné');
-    const totals = new Map<number, number>();
+    const buckets = new Map<string, { year: string; count: number }>();
 
     for (const opp of opps) {
-      totals.set(opp.company, (totals.get(opp.company) ?? 0) + Number(opp.estimated_amount || 0));
+      const dateStr = opp.expected_close_date || opp.entry_date;
+      if (!dateStr) continue;
+      const year = String(new Date(dateStr).getFullYear());
+      const existing = buckets.get(year);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        buckets.set(year, { year, count: 1 });
+      }
     }
 
-    const ranked = Array.from(totals.entries())
-      .map(([companyId, total]) => ({ name: this.getCompanyName(companyId), total }))
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 5);
-
-    const max = Math.max(...ranked.map(r => r.total), 1);
-    return ranked.map(r => ({ ...r, pct: Math.round((r.total / max) * 100) }));
+    const sorted = Array.from(buckets.values()).sort((a, b) => a.year.localeCompare(b.year));
+    const maxCount = Math.max(...sorted.map(b => b.count), 1);
+    return sorted.map(b => ({
+      ...b,
+      pctCount: Math.round((b.count / maxCount) * 100)
+    }));
   });
 
   ngOnInit() {
@@ -174,14 +177,6 @@ export class Dashboard implements OnInit {
     this.crmData.getOpportunities().subscribe({
       next: (data) => {
         this.crmData.opportunities.set(data);
-        this.loadRecentActivities();
-      },
-      error: (err) => console.error(err)
-    });
-
-    this.crmData.getReclamations().subscribe({
-      next: (data) => {
-        this.crmData.reclamations.set(data);
         this.loadRecentActivities();
       },
       error: (err) => console.error(err)
@@ -223,7 +218,6 @@ export class Dashboard implements OnInit {
   loadRecentActivities() {
     const activities: ActivityItem[] = [];
     const opps = this.crmData.opportunities();
-    const recs = this.crmData.reclamations();
     const ncs = this.nonConformites();
 
     for (const opp of opps) {
@@ -234,17 +228,6 @@ export class Dashboard implements OnInit {
         description: `Étape : ${opp.stage} — Montant : ${Number(opp.estimated_amount).toLocaleString('fr-FR')} DT`,
         date: this.formatDate(opp.expected_close_date || opp.entry_date),
         rawDate: opp.expected_close_date || opp.entry_date || ''
-      });
-    }
-
-    for (const rec of recs) {
-      activities.push({
-        id: `rec-${rec.id}`,
-        type: 'reclamation',
-        title: `Ticket SAV #${rec.number || rec.id} : ${rec.subject}`,
-        description: `Priorité : ${rec.priority} — Statut : ${rec.status}`,
-        date: this.formatDate(rec.created_at),
-        rawDate: rec.created_at || ''
       });
     }
 

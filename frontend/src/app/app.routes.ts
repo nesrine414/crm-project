@@ -5,7 +5,6 @@ import { Dashboard } from './components/dashboard/dashboard';
 import { Clients } from './components/clients/clients';
 import { Partners } from './components/partners/partners';
 import { Pipeline } from './components/pipeline/pipeline';
-import { Reclamations } from './components/reclamations/reclamations';
 import { SatisfactionClientComponent } from './components/satisfaction-client/satisfaction-client';
 import { Campagnes } from './components/campagnes/campagnes';
 import { Configuration } from './components/configuration/configuration';
@@ -23,7 +22,6 @@ export const routes: Routes = [
   { path: 'partners', component: Partners, canActivate: [authGuard] },
   { path: 'prestataires', component: PrestatairesComponent, canActivate: [authGuard] },
   { path: 'pipeline', component: Pipeline, canActivate: [authGuard] },
-  { path: 'reclamations', component: Reclamations, canActivate: [authGuard] },
   { path: 'loyalty', component: SatisfactionClientComponent, canActivate: [authGuard] },
 
   { path: 'campagnes', component: Campagnes, canActivate: [authGuard] },

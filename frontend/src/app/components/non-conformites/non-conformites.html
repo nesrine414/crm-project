@@ -1,52 +1,91 @@
 <div class="breadcrumb-bar">
-  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+  <svg class="breadcrumb-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  </svg>
   <span class="breadcrumb-sep">›</span>
   <span class="breadcrumb-label">Qualité — Non-conformités</span>
   <div class="breadcrumb-actions">
+    <button class="ghost-btn" (click)="openDocumentsModal()" title="Critères d'évaluation">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+      </svg>
+      Documents
+    </button>
     <button class="ghost-btn" (click)="refreshData()">Actualiser</button>
   </div>
 </div>
 
+<!-- EN-TÊTE ISO — visible en permanence sur la page -->
+<div class="iso-header-card">
+  <div class="iso-left">
+    <span class="iso-subtitle">Support / formulaire d'enregistrement</span>
+    <h1 class="iso-title">LISTE DES INFORMATIONS DOCUMENTÉES DU SMQ</h1>
+  </div>
+  <div class="iso-right">
+    <div class="iso-ref-badge">
+      <span class="iso-item"><strong class="lbl">Réf :</strong> <span class="val">ENR-PMS-04</span></span>
+      <span class="iso-sep">|</span>
+      <span class="iso-item"><strong class="lbl">Version :</strong> <span class="val">00</span></span>
+      <span class="iso-sep">|</span>
+      <span class="iso-item"><strong class="lbl">Édition :</strong> <span class="val">11/06/2026</span></span>
+    </div>
+  </div>
+</div>
+
 <div class="list-panel">
-  <div class="list-panel-header">
-    <h2>Non-conformités <span class="count-badge">{{ filteredNcs().length }}</span></h2>
-    <button class="add-btn" (click)="openAddModal()">+ Déclarer une non-conformité</button>
-  </div>
 
-  <div class="search-wrapper">
-    <input type="text" placeholder="Rechercher un problème, un responsable, un processus..." [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
-  </div>
 
-  <div class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th>N°</th>
-          <th>Date</th>
-          <th>Problème</th>
-          <th>Processus</th>
-          <th>Gravité</th>
-          <th>Responsable</th>
-          <th>Avancement</th>
-          <th>Statut</th>
-          <th style="width: 70px; text-align: center;">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (nc of filteredNcs(); track nc.id) {
+  <div class="list-panel">
+    <div class="list-panel-header">
+      <h2>Non-conformités <span class="count-badge">{{ filteredNcs().length }}</span></h2>
+      <button class="add-btn" (click)="openAddModal()">+ Déclarer une non-conformité</button>
+    </div>
+
+    <div class="search-wrapper">
+      <input type="text" placeholder="Rechercher un problème, un responsable, un processus..." [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)">
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Problème</th>
+            <th>Origine</th>
+            <th>Processus</th>
+            <th>Gravité</th>
+            <th>Responsable</th>
+            <th>Avancement</th>
+            <th>Statut</th>
+            <th style="width: 70px; text-align: center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (nc of filteredNcs(); track nc.id) {
           <tr (click)="selectNc(nc)" style="cursor: pointer;">
             <td>NC-{{ nc.numero }}</td>
             <td>{{ nc.date }}</td>
             <td style="max-width: 260px;">{{ nc.probleme.slice(0, 80) }}{{ nc.probleme.length > 80 ? '...' : '' }}</td>
+            <td><span class="origine-badge">{{ formatOrigine(nc.origine) }}</span></td>
             <td>{{ nc.processus }}</td>
             <td>
-              <span class="status-badge" [style.background]="nc.gravite === 3 ? '#FEE2E2' : nc.gravite === 2 ? '#FEF3C7' : '#F1F5F9'" [style.color]="nc.gravite === 3 ? '#991B1B' : nc.gravite === 2 ? '#92400E' : '#475569'">
+              <span class="status-badge"
+                [style.background]="nc.gravite === 3 ? '#FEE2E2' : nc.gravite === 2 ? '#FEF3C7' : '#F1F5F9'"
+                [style.color]="nc.gravite === 3 ? '#991B1B' : nc.gravite === 2 ? '#92400E' : '#475569'">
                 {{ graviteLabels[nc.gravite] }}
               </span>
             </td>
             <td>{{ nc.responsable || '—' }}</td>
             <td>
-              <select [ngModel]="nc.avancement" (ngModelChange)="updateAvancement(nc, $event)" (click)="$event.stopPropagation()">
+              <select [ngModel]="nc.avancement" (ngModelChange)="updateAvancement(nc, $event)"
+                (click)="$event.stopPropagation()">
                 <option value="P">P — Planifier</option>
                 <option value="D">D — Réaliser</option>
                 <option value="C">C — Contrôler</option>
@@ -55,30 +94,34 @@
             </td>
             <td>
               @if (nc.statut === 'Fermé') {
-                <span class="badge-ferme">Fermé</span>
+              <span class="badge-ferme">Fermé</span>
               } @else {
-                <select [ngModel]="nc.statut" (ngModelChange)="updateStatut(nc, $event)" (click)="$event.stopPropagation()">
-                  <option value="Ouvert">Ouvert</option>
-                  <option value="Fermé">Fermé</option>
-                </select>
+              <select [ngModel]="nc.statut" (ngModelChange)="updateStatut(nc, $event)"
+                (click)="$event.stopPropagation()">
+                <option value="Ouvert">Ouvert</option>
+                <option value="Fermé">Fermé</option>
+              </select>
               }
             </td>
             <td style="text-align: center;" (click)="$event.stopPropagation()">
-              <button class="ghost-btn" style="padding: 4px 8px; font-size: 12px;" (click)="openEditModal(nc, $event)" title="Completer / Modifier">
+              <button class="ghost-btn" style="padding: 4px 8px; font-size: 12px;" (click)="openEditModal(nc, $event)"
+                title="Completer / Modifier">
                 ✏️
               </button>
             </td>
           </tr>
-        } @empty {
-          <tr><td colspan="9" class="empty-row">Aucune non-conformité enregistrée.</td></tr>
-        }
-      </tbody>
-    </table>
+          } @empty {
+          <tr>
+            <td colspan="10" class="empty-row">Aucune non-conformité enregistrée.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 
-<!-- VOLET DÉTAIL -->
-@if (selectedNc(); as nc) {
+  <!-- VOLET DÉTAIL -->
+  @if (selectedNc(); as nc) {
   <div class="modal-overlay" (click)="closeDetail()">
     <div class="modal-card detail-modal" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -90,7 +133,7 @@
       </div>
       <div style="padding: 14px 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
         <div><strong>Problème :</strong> {{ nc.probleme }}</div>
-        <div><strong>Origine :</strong> {{ nc.origine || '—' }}</div>
+        <div><strong>Origine :</strong> {{ formatOrigine(nc.origine) }}</div>
         <div><strong>Gravité :</strong> {{ graviteLabels[nc.gravite] }}</div>
         <div><strong>Action immédiate :</strong> {{ nc.action_immediate || '—' }}</div>
         <div><strong>Analyse des causes :</strong> {{ nc.analyse_causes || '—' }}</div>
@@ -107,14 +150,15 @@
       </div>
       <div class="modal-actions" style="margin-top: 16px;">
         <button type="button" class="cancel-btn" (click)="closeDetail()">Fermer</button>
-        <button type="button" class="submit-btn-modal" (click)="openEditModal(nc)">✏️ Compléter / Modifier les champs</button>
+        <button type="button" class="submit-btn-modal" (click)="openEditModal(nc)">✏️ Compléter / Modifier les
+          champs</button>
       </div>
     </div>
   </div>
-}
+  }
 
-<!-- MODAL CRÉATION -->
-@if (showAddModal()) {
+  <!-- MODAL CRÉATION -->
+  @if (showAddModal()) {
   <div class="modal-overlay" (click)="closeAddModal()">
     <div class="modal-card" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -123,12 +167,16 @@
       </div>
       <form (ngSubmit)="submitNewNc()">
         <div class="form-row">
-          <div class="field"><label>Numéro</label><input type="number" [(ngModel)]="newNc.numero" name="numero" readonly></div>
-          <div class="field"><label>Date <span class="required">*</span></label><input type="date" [(ngModel)]="newNc.date" name="date" required></div>
+          <div class="field"><label>Numéro</label><input type="number" [(ngModel)]="newNc.numero" name="numero"
+              readonly>
+          </div>
+          <div class="field"><label>Date <span class="required">*</span></label><input type="date"
+              [(ngModel)]="newNc.date" name="date" required></div>
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 2;"><label>Problème <span class="required">*</span></label><textarea [(ngModel)]="newNc.probleme" name="probleme" rows="2" required></textarea></div>
+          <div class="field" style="flex: 2;"><label>Problème <span class="required">*</span></label><textarea
+              [(ngModel)]="newNc.probleme" name="probleme" rows="2" required></textarea></div>
         </div>
 
         <div class="form-row">
@@ -153,7 +201,8 @@
         </div>
 
         <div class="form-row">
-          <div class="field"><label>Origine</label><input type="text" [(ngModel)]="newNc.origine" name="origine" placeholder="Interne, Externe, Client..."></div>
+          <div class="field"><label>Origine</label><input type="text" [(ngModel)]="newNc.origine" name="origine"
+              placeholder="Interne, Externe, Client..."></div>
           <div class="field">
             <label>Récurrence</label>
             <select [(ngModel)]="newNc.recurrence" name="recurrence">
@@ -164,25 +213,32 @@
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Action immédiate</label><textarea [(ngModel)]="newNc.action_immediate" name="action_immediate" rows="2"></textarea></div>
+          <div class="field" style="flex: 1;"><label>Action immédiate</label><textarea
+              [(ngModel)]="newNc.action_immediate" name="action_immediate" rows="2"></textarea></div>
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Analyse des causes</label><textarea [(ngModel)]="newNc.analyse_causes" name="analyse_causes" rows="2"></textarea></div>
+          <div class="field" style="flex: 1;"><label>Analyse des causes</label><textarea
+              [(ngModel)]="newNc.analyse_causes" name="analyse_causes" rows="2"></textarea></div>
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Action corrective</label><textarea [(ngModel)]="newNc.action_corrective" name="action_corrective" rows="2"></textarea></div>
+          <div class="field" style="flex: 1;"><label>Action corrective</label><textarea
+              [(ngModel)]="newNc.action_corrective" name="action_corrective" rows="2"></textarea></div>
         </div>
 
         <div class="form-row">
-          <div class="field"><label>Date prévue</label><input type="text" [(ngModel)]="newNc.date_prevue" name="date_prevue" placeholder="Ex: 30/06/2026 ou 2026"></div>
-          <div class="field"><label>Responsable</label><input type="text" [(ngModel)]="newNc.responsable" name="responsable"></div>
+          <div class="field"><label>Date prévue</label><input type="text" [(ngModel)]="newNc.date_prevue"
+              name="date_prevue" placeholder="Ex: 30/06/2026 ou 2026"></div>
+          <div class="field"><label>Responsable</label><input type="text" [(ngModel)]="newNc.responsable"
+              name="responsable"></div>
         </div>
 
         <div class="form-row">
-          <div class="field"><label>Date de réalisation</label><input type="text" [(ngModel)]="newNc.date_realisation" name="date_realisation" placeholder="Ex: 30/06/2026 ou 2026"></div>
-          <div class="field"><label>Délais</label><input type="text" [(ngModel)]="newNc.delais" name="delais" placeholder="Ex: Après un an"></div>
+          <div class="field"><label>Date de réalisation</label><input type="text" [(ngModel)]="newNc.date_realisation"
+              name="date_realisation" placeholder="Ex: 30/06/2026 ou 2026"></div>
+          <div class="field"><label>Délais</label><input type="text" [(ngModel)]="newNc.delais" name="delais"
+              placeholder="Ex: Après un an"></div>
         </div>
 
         <div class="form-row">
@@ -218,7 +274,8 @@
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Commentaire</label><textarea [(ngModel)]="newNc.commentaire" name="commentaire" rows="2"></textarea></div>
+          <div class="field" style="flex: 1;"><label>Commentaire</label><textarea [(ngModel)]="newNc.commentaire"
+              name="commentaire" rows="2"></textarea></div>
         </div>
 
         <div class="modal-actions" style="margin-top: 20px;">
@@ -228,10 +285,73 @@
       </form>
     </div>
   </div>
-}
+  }
+  <!-- MODAL DOCUMENTS SMQ -->
+  @if (showDocumentsModal()) {
+  <div class="modal-overlay" (click)="closeDocumentsModal()">
+    <div class="modal-card documents-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Critères d'évaluation — Qualité</h2>
+        <button class="close-btn" (click)="closeDocumentsModal()">✕</button>
+      </div>
 
-<!-- MODAL ÉDITION -->
-@if (showEditModal() && editNc()) {
+      <h3 class="doc-section-title">Critères d'évaluation de l'efficacité</h3>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 160px;">Mesure</th>
+              <th>Critère</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of criteresEfficacite; track c.mesure) {
+            <tr>
+              <td><strong>{{ c.mesure }}</strong></td>
+              <td>{{ c.critere }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="doc-section-title" style="margin-top: 18px;">Critères d'évaluation de la gravité des non-conformités
+      </h3>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px;">Niveau</th>
+              <th style="width: 160px;">Gravité</th>
+              <th>Critères</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of criteresGravite; track c.niveau) {
+            <tr>
+              <td style="text-align: center;"><strong>{{ c.niveau }}</strong></td>
+              <td>
+                <span class="status-badge"
+                  [style.background]="c.niveau === 3 ? '#FEE2E2' : c.niveau === 2 ? '#FEF3C7' : '#F1F5F9'"
+                  [style.color]="c.niveau === 3 ? '#991B1B' : c.niveau === 2 ? '#92400E' : '#475569'">
+                  {{ c.gravite }}
+                </span>
+              </td>
+              <td>{{ c.critere }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 16px;">
+        <button type="button" class="cancel-btn" (click)="closeDocumentsModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+  }
+  <!-- MODAL ÉDITION -->
+  @if (showEditModal() && editNc()) {
   <div class="modal-overlay" (click)="closeEditModal()">
     <div class="modal-card" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -240,12 +360,15 @@
       </div>
       <form (ngSubmit)="submitEditNc()">
         <div class="form-row">
-          <div class="field"><label>Numéro</label><input type="number" [value]="editNc()?.numero" readonly disabled></div>
-          <div class="field"><label>Date <span class="required">*</span></label><input type="date" [(ngModel)]="editForm.date" name="edit_date" required></div>
+          <div class="field"><label>Numéro</label><input type="number" [value]="editNc()?.numero" readonly disabled>
+          </div>
+          <div class="field"><label>Date <span class="required">*</span></label><input type="date"
+              [(ngModel)]="editForm.date" name="edit_date" required></div>
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 2;"><label>Problème <span class="required">*</span></label><textarea [(ngModel)]="editForm.probleme" name="edit_probleme" rows="2" required></textarea></div>
+          <div class="field" style="flex: 2;"><label>Problème <span class="required">*</span></label><textarea
+              [(ngModel)]="editForm.probleme" name="edit_probleme" rows="2" required></textarea></div>
         </div>
 
         <div class="form-row">
@@ -270,7 +393,8 @@
         </div>
 
         <div class="form-row">
-          <div class="field"><label>Origine</label><input type="text" [(ngModel)]="editForm.origine" name="edit_origine" placeholder="Interne, Externe, Client..."></div>
+          <div class="field"><label>Origine</label><input type="text" [(ngModel)]="editForm.origine" name="edit_origine"
+              placeholder="Interne, Externe, Client..."></div>
           <div class="field">
             <label>Récurrence</label>
             <select [(ngModel)]="editForm.recurrence" name="edit_recurrence">
@@ -281,25 +405,35 @@
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Action immédiate</label><textarea [(ngModel)]="editForm.action_immediate" name="edit_action_immediate" rows="2" placeholder="Action prise sur le champ..."></textarea></div>
+          <div class="field" style="flex: 1;"><label>Action immédiate</label><textarea
+              [(ngModel)]="editForm.action_immediate" name="edit_action_immediate" rows="2"
+              placeholder="Action prise sur le champ..."></textarea></div>
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Analyse des causes</label><textarea [(ngModel)]="editForm.analyse_causes" name="edit_analyse_causes" rows="2" placeholder="Pourquoi cela s'est-il produit ?"></textarea></div>
+          <div class="field" style="flex: 1;"><label>Analyse des causes</label><textarea
+              [(ngModel)]="editForm.analyse_causes" name="edit_analyse_causes" rows="2"
+              placeholder="Pourquoi cela s'est-il produit ?"></textarea></div>
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Action corrective</label><textarea [(ngModel)]="editForm.action_corrective" name="edit_action_corrective" rows="2" placeholder="Action préventive/corrective à long terme..."></textarea></div>
+          <div class="field" style="flex: 1;"><label>Action corrective</label><textarea
+              [(ngModel)]="editForm.action_corrective" name="edit_action_corrective" rows="2"
+              placeholder="Action préventive/corrective à long terme..."></textarea></div>
         </div>
 
         <div class="form-row">
-          <div class="field"><label>Date prévue</label><input type="text" [(ngModel)]="editForm.date_prevue" name="edit_date_prevue" placeholder="Ex: 30/06/2026"></div>
-          <div class="field"><label>Responsable</label><input type="text" [(ngModel)]="editForm.responsable" name="edit_responsable" placeholder="Responsable (ex: Afef)"></div>
+          <div class="field"><label>Date prévue</label><input type="text" [(ngModel)]="editForm.date_prevue"
+              name="edit_date_prevue" placeholder="Ex: 30/06/2026"></div>
+          <div class="field"><label>Responsable</label><input type="text" [(ngModel)]="editForm.responsable"
+              name="edit_responsable" placeholder="Responsable (ex: Afef)"></div>
         </div>
 
         <div class="form-row">
-          <div class="field"><label>Date de réalisation</label><input type="text" [(ngModel)]="editForm.date_realisation" name="edit_date_realisation" placeholder="Ex: 15/07/2026"></div>
-          <div class="field"><label>Délais</label><input type="text" [(ngModel)]="editForm.delais" name="edit_delais" placeholder="Ex: Respecté / En retard"></div>
+          <div class="field"><label>Date de réalisation</label><input type="text"
+              [(ngModel)]="editForm.date_realisation" name="edit_date_realisation" placeholder="Ex: 15/07/2026"></div>
+          <div class="field"><label>Délais</label><input type="text" [(ngModel)]="editForm.delais" name="edit_delais"
+              placeholder="Ex: Respecté / En retard"></div>
         </div>
 
         <div class="form-row">
@@ -335,7 +469,8 @@
         </div>
 
         <div class="form-row">
-          <div class="field" style="flex: 1;"><label>Commentaire</label><textarea [(ngModel)]="editForm.commentaire" name="edit_commentaire" rows="2" placeholder="Remarques additionnelles..."></textarea></div>
+          <div class="field" style="flex: 1;"><label>Commentaire</label><textarea [(ngModel)]="editForm.commentaire"
+              name="edit_commentaire" rows="2" placeholder="Remarques additionnelles..."></textarea></div>
         </div>
 
         <div class="modal-actions" style="margin-top: 20px;">
@@ -345,4 +480,4 @@
       </form>
     </div>
   </div>
-}
+  }

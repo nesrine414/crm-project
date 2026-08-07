@@ -1,37 +1,34 @@
 <div class="dashboard-header">
   <div>
     <h1 class="dashboard-title">Tableau de Bord Exécutif LCA CRM</h1>
-    <p class="dashboard-subtitle">Aperçu analytique en temps réel des performances commerciales, de la satisfaction client et du management de la qualité.</p>
+    <p class="dashboard-subtitle">Aperçu analytique en temps réel des performances commerciales, de la satisfaction
+      client et du management de la qualité.</p>
   </div>
   <div class="header-actions">
     <button class="ghost-btn" (click)="refreshAllData()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M23 4v6h-6M1 20v-6h6"/>
-        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M23 4v6h-6M1 20v-6h6" />
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
       </svg>
       Actualiser les données
     </button>
   </div>
 </div>
 
-<!-- BANNIÈRE D'ALERTE QUALITÉ & SAV SI DOSSIERS OUVERTS -->
-@if (openNcCount() > 0 || openRecCount() > 0) {
-  <div class="alert-banner">
-    <div class="alert-icon">⚠️</div>
-    <div class="alert-info">
-      <strong>Actions Requises — Suivi Qualité & SAV</strong>
-      <span>
-        Vous avez
-        @if (openNcCount() > 0) {
-          <a routerLink="/non-conformites" class="alert-link"><strong>{{ openNcCount() }} non-conformité(s) ouverte(s)</strong></a>
-        }
-        @if (openNcCount() > 0 && openRecCount() > 0) { et }
-        @if (openRecCount() > 0) {
-          <a routerLink="/reclamations" class="alert-link"><strong>{{ openRecCount() }} réclamation(s) SAV en cours</strong></a>
-        }.
-      </span>
-    </div>
+<!-- BANNIÈRE D'ALERTE QUALITÉ SI DOSSIERS OUVERTS -->
+@if (openNcCount() > 0) {
+<div class="alert-banner">
+  <div class="alert-icon">⚠️</div>
+  <div class="alert-info">
+    <strong>Actions Requises — Suivi Qualité</strong>
+    <span>
+      Vous avez
+      <a routerLink="/non-conformites" class="alert-link"><strong>{{ openNcCount() }} non-conformité(s)
+          ouverte(s)</strong></a>.
+    </span>
   </div>
+</div>
 }
 
 <!-- KPI CARDS GRID -->
@@ -49,7 +46,7 @@
     <div class="kpi-footer-tags">
       <span class="mini-tag tag-lead">{{ stats().leadCount }} Leads</span>
       @if (stats().partnerCount > 0) {
-        <span class="mini-tag tag-partner">{{ stats().partnerCount }} Partenaires</span>
+      <span class="mini-tag tag-partner">{{ stats().partnerCount }} Partenaires</span>
       }
     </div>
   </div>
@@ -69,20 +66,7 @@
     </div>
   </div>
 
-  <!-- CA Gagné -->
-  <div class="kpi-card" routerLink="/pipeline">
-    <div class="kpi-top">
-      <span class="kpi-label">Chiffre d'Affaires Gagné</span>
-      <span class="kpi-icon-badge bg-emerald">💰</span>
-    </div>
-    <div class="kpi-val-row">
-      <span class="kpi-value text-emerald">{{ stats().totalRevenue | number }}</span>
-      <span class="kpi-unit">DT</span>
-    </div>
-    <div class="kpi-footer-tags">
-      <span class="mini-sub text-emerald">⭐ Affaires clôturées gagnées</span>
-    </div>
-  </div>
+
 
   <!-- Satisfaction Client -->
   <div class="kpi-card" routerLink="/loyalty">
@@ -92,17 +76,17 @@
     </div>
     <div class="kpi-val-row">
       @if (satisfactionScoreAvg() !== null) {
-        <span class="kpi-value text-amber">{{ satisfactionScoreAvg() }}</span>
-        <span class="kpi-unit">/ 5 (Global)</span>
+      <span class="kpi-value text-amber">{{ satisfactionScoreAvg() }}</span>
+      <span class="kpi-unit">/ 5 (Global)</span>
       } @else {
-        <span class="kpi-value text-muted">—</span>
+      <span class="kpi-value text-muted">—</span>
       }
     </div>
     <div class="kpi-footer-tags">
       @if (npsScore() !== null) {
-        <span class="mini-tag tag-nps">Score NPS : {{ (npsScore() ?? 0) > 0 ? '+' : '' }}{{ npsScore() }}</span>
+      <span class="mini-tag tag-nps">Score NPS : {{ (npsScore() ?? 0) > 0 ? '+' : '' }}{{ npsScore() }}</span>
       } @else {
-        <span class="mini-sub">Enquêtes satisfaction</span>
+      <span class="mini-sub">Enquêtes satisfaction</span>
       }
     </div>
   </div>
@@ -123,23 +107,6 @@
       <span class="mini-sub">{{ nonConformites().length }} fiche(s) au total</span>
     </div>
   </div>
-
-  <!-- SAV / Réclamations -->
-  <div class="kpi-card" routerLink="/reclamations">
-    <div class="kpi-top">
-      <span class="kpi-label">Support & SAV</span>
-      <span class="kpi-icon-badge bg-purple">🛠️</span>
-    </div>
-    <div class="kpi-val-row">
-      <span class="kpi-value" [class.text-purple]="openRecCount() > 0" [class.text-emerald]="openRecCount() === 0">
-        {{ openRecCount() }}
-      </span>
-      <span class="kpi-unit">ticket(s) ouvert(s)</span>
-    </div>
-    <div class="kpi-footer-tags">
-      <span class="mini-sub">{{ crmData.reclamations().length }} réclamation(s) enregistrée(s)</span>
-    </div>
-  </div>
 </div>
 
 <!-- SECTION INTERMÉDIAIRE : PIPELINE FUNNEL & RÉPARTITION SECTEUR -->
@@ -149,7 +116,10 @@
   <div class="dash-card">
     <div class="dash-card-header">
       <div class="dash-card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-title-icon"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" class="card-title-icon">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
         <span>Funnel Commercial des Opportunités</span>
       </div>
       <a routerLink="/pipeline" class="dash-card-link">Voir le Pipe →</a>
@@ -157,24 +127,26 @@
 
     <div class="funnel-container">
       @for (item of pipelineFunnel(); track item.stage) {
-        <div class="funnel-row">
-          <div class="funnel-label-col">
-            <span class="funnel-stage-name">{{ item.stage }}</span>
-            <span class="funnel-stage-count">{{ item.count }} opp.</span>
-          </div>
+      <div class="funnel-row">
+        <div class="funnel-label-col">
+          <span class="funnel-stage-name">{{ item.stage }}</span>
+          <span class="funnel-stage-count">{{ item.count }} opp.</span>
+        </div>
 
-          <div class="funnel-bar-col">
-            <div class="funnel-bar-bg">
-              <div class="funnel-bar-fill" [style.width.%]="item.pct > 0 ? item.pct : 4" [class.fill-negociation]="item.stage === 'Négociation'" [class.fill-cloture]="item.stage === 'Clôturé'"></div>
+        <div class="funnel-bar-col">
+          <div class="funnel-bar-bg">
+            <div class="funnel-bar-fill" [style.width.%]="item.pct > 0 ? item.pct : 4"
+              [class.fill-negociation]="item.stage === 'Négociation'" [class.fill-cloture]="item.stage === 'Clôturé'">
             </div>
           </div>
-
-          <div class="funnel-val-col">
-            <strong>{{ item.sumAmount | number }} DT</strong>
-          </div>
         </div>
+
+        <div class="funnel-val-col">
+          <strong>{{ item.sumAmount | number }} DT</strong>
+        </div>
+      </div>
       } @empty {
-        <p class="empty-state">Aucune opportunité disponible dans le pipeline.</p>
+      <p class="empty-state">Aucune opportunité disponible dans le pipeline.</p>
       }
     </div>
   </div>
@@ -183,7 +155,13 @@
   <div class="dash-card">
     <div class="dash-card-header">
       <div class="dash-card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-title-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" class="card-title-icon">
+          <path
+            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+          <line x1="12" y1="22.08" x2="12" y2="12" />
+        </svg>
         <span>Répartition des Clients par Secteur d'Activité</span>
       </div>
       <a routerLink="/clients" class="dash-card-link">Voir les clients →</a>
@@ -191,22 +169,22 @@
 
     <div class="sectors-container">
       @for (sec of sectorDistribution(); track sec.name) {
-        <div class="sector-row">
-          <div class="sector-info">
-            <span class="sector-dot" [style.background]="sec.color"></span>
-            <span class="sector-name">{{ sec.name }}</span>
-            <span class="sector-count">({{ sec.count }} client{{ sec.count > 1 ? 's' : '' }})</span>
-          </div>
-
-          <div class="sector-bar-wrapper">
-            <div class="sector-bar-bg">
-              <div class="sector-bar-fill" [style.width.%]="sec.pct" [style.background]="sec.color"></div>
-            </div>
-            <span class="sector-pct">{{ sec.pct }}%</span>
-          </div>
+      <div class="sector-row">
+        <div class="sector-info">
+          <span class="sector-dot" [style.background]="sec.color"></span>
+          <span class="sector-name">{{ sec.name }}</span>
+          <span class="sector-count">({{ sec.count }} client{{ sec.count > 1 ? 's' : '' }})</span>
         </div>
+
+        <div class="sector-bar-wrapper">
+          <div class="sector-bar-bg">
+            <div class="sector-bar-fill" [style.width.%]="sec.pct" [style.background]="sec.color"></div>
+          </div>
+          <span class="sector-pct">{{ sec.pct }}%</span>
+        </div>
+      </div>
       } @empty {
-        <p class="empty-state">Aucun secteur d'activité renseigné pour le moment.</p>
+      <p class="empty-state">Aucun secteur d'activité renseigné pour le moment.</p>
       }
     </div>
   </div>
@@ -216,58 +194,69 @@
 <!-- SECTION BASSE : TOP CLIENTS & FLUX D'ACTIVITÉ RÉCENT -->
 <div class="dashboard-grid-2">
 
-  <!-- TOP 5 CLIENTS (CA GAGNÉ) -->
+  <!-- OPPORTUNITÉS GAGNÉES PAR ANNÉE -->
   <div class="dash-card">
     <div class="dash-card-header">
       <div class="dash-card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-title-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span>Top 5 Clients par Chiffre d'Affaires Gagné</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" class="card-title-icon">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        <span>Opportunités Gagnées par Année</span>
       </div>
+      <a routerLink="/pipeline" class="dash-card-link">Voir le Pipe →</a>
     </div>
 
-    <div class="top-clients-container">
-      @for (c of topClients(); track c.name) {
-        <div class="top-client-row">
-          <span class="client-rank-name">{{ c.name }}</span>
-          <div class="client-bar-bg">
-            <div class="client-bar-fill" [style.width.%]="c.pct"></div>
-          </div>
-          <span class="client-total-val">{{ c.total | number }} DT</span>
-        </div>
-      } @empty {
+    <div class="won-chart-container">
+      @if (wonByYear().length === 0) {
         <p class="empty-state">Aucune opportunité gagnée enregistrée pour l'instant.</p>
+      } @else {
+        <!-- Barres -->
+        <div class="won-bars-wrapper">
+          @for (yr of wonByYear(); track yr.year) {
+          <div class="won-bar-group">
+            <div class="won-bars">
+              <div class="won-bar-col">
+                <span class="won-bar-value">{{ yr.count }} projet{{ yr.count > 1 ? 's' : '' }}</span>
+                <div class="won-bar-track">
+                  <div class="won-bar-fill won-bar-blue" [style.height.%]="yr.pctCount"></div>
+                </div>
+              </div>
+            </div>
+            <span class="won-year-label">{{ yr.year }}</span>
+          </div>
+          }
+        </div>
       }
     </div>
   </div>
 
-  <!-- FLUX D'ACTIVITÉ RÉCENT (VENTES, SAV, QUALITÉ) -->
+  <!-- FLUX D'ACTIVITÉ RÉCENT (VENTES, QUALITÉ) -->
   <div class="dash-card">
     <div class="dash-card-header">
       <div class="dash-card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-title-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" class="card-title-icon">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
         <span>Flux d'Activité Récent (En direct)</span>
       </div>
     </div>
 
     <div class="activity-feed">
       @for (act of recentActivities(); track act.id) {
-        <div class="activity-item">
-          <div class="activity-badge"
-            [class.badge-opp]="act.type === 'opportunity'"
-            [class.badge-rec]="act.type === 'reclamation'"
-            [class.badge-nc]="act.type === 'nc'">
-            {{ act.type === 'opportunity' ? '💼 Commercial' : act.type === 'reclamation' ? '🛠️ SAV' : '🛡️ Qualité' }}
-          </div>
-          <div class="activity-content">
-            <strong class="activity-title">{{ act.title }}</strong>
-            <span class="activity-desc">{{ act.description }}</span>
-          </div>
-          <span class="activity-date">{{ act.date }}</span>
+      <div class="activity-item">
+        <div class="activity-badge" [class.badge-opp]="act.type === 'opportunity'" [class.badge-nc]="act.type === 'nc'">
+          {{ act.type === 'opportunity' ? '💼 Commercial' : '🛡️ Qualité' }}
         </div>
+        <div class="activity-content">
+          <strong class="activity-title">{{ act.title }}</strong>
+          <span class="activity-desc">{{ act.description }}</span>
+        </div>
+        <span class="activity-date">{{ act.date }}</span>
+      </div>
       } @empty {
-        <p class="empty-state">Aucune activité récente sur le système.</p>
+      <p class="empty-state">Aucune activité récente sur le système.</p>
       }
     </div>
   </div>
-
-</div>

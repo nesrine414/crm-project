@@ -16,82 +16,194 @@
     <table>
       <thead>
         <tr>
-          <th (click)="sortBy()" class="sortable">Nom de la structure <span class="sort-icon">{{ sortIcon() }}</span></th>
-          <th>Secteur</th>
-          <th>Ville</th>
+          <th (click)="sortBy()" class="sortable">Nom de la société <span class="sort-icon">{{ sortIcon() }}</span></th>
+          <th>Pays</th>
+          <th>Type de collaboration</th>
           <th>Contacts rattachés</th>
+          <th>Retenu ou non</th>
+          <th class="col-actions">Actions</th>
         </tr>
       </thead>
       <tbody>
         @for (partner of pagedPartners(); track partner.id) {
-          <tr (click)="selectPartner(partner)">
-            <td>
-              <div class="name-with-avatar">
-                <span class="avatar" [style.background]="avatarColorOf(partner)">{{ initialsOf(partner) }}</span>
-                <span class="name-cell">{{ partner.name }}</span>
-              </div>
-            </td>
-            <td>{{ partner.sector || '—' }}</td>
-            <td>{{ partner.address || '—' }}</td>
-            <td><span class="status-badge">{{ partner.contacts.length }} contact(s)</span></td>
-          </tr>
+        <tr (click)="selectPartner(partner)">
+          <td>
+            <div class="name-with-avatar">
+              <span class="avatar" [style.background]="avatarColorOf(partner)">{{ initialsOf(partner) }}</span>
+              <span class="name-cell">{{ partner.name }}</span>
+            </div>
+          </td>
+          <td>{{ partner.country || '—' }}</td>
+          <td>{{ partner.collaboration_type || '—' }}</td>
+          <td><span class="status-badge">{{ partner.contacts.length }} contact(s)</span></td>
+          <td>
+            @if (partner.is_retained) {
+            <span class="status-badge badge-success">Retenu</span>
+            } @else {
+            <span class="status-badge badge-warning">Non retenu</span>
+            }
+          </td>
+          <td class="col-actions">
+            <button class="icon-edit-btn" (click)="editFromRow(partner, $event)" title="Modifier">✏️</button>
+            <button class="icon-delete-btn" (click)="deleteFromRow(partner, $event)" title="Supprimer">🗑️</button>
+          </td>
+        </tr>
         } @empty {
-          <tr><td colspan="4" class="empty-row">Aucun partenaire trouvé.</td></tr>
+        <tr>
+          <td colspan="6" class="empty-row">Aucun partenaire trouvé.</td>
+        </tr>
         }
       </tbody>
     </table>
   </div>
 </div>
 
+<!-- ============ MODAL DÉTAIL / ÉDITION ============ -->
 @if (selectedPartner(); as partner) {
-  <div class="modal-overlay" (click)="closeDetail()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>{{ partner.name }}</h2>
+<div class="modal-overlay" (click)="closeDetail()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    @if (!editMode()) {
+    <!-- ---- MODE LECTURE ---- -->
+    <div class="modal-header">
+      <h2>{{ partner.name }}</h2>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <button class="icon-edit-btn" (click)="openEditMode(partner)" title="Modifier">✏️</button>
         <button class="close-btn" (click)="closeDetail()">✕</button>
       </div>
-      <div style="padding: 20px;">
-        <p><strong>Secteur :</strong> {{ partner.sector || '—' }}</p>
-        <p><strong>Adresse :</strong> {{ partner.address || '—' }}</p>
-        <h3 style="margin-top:20px;">Liste des contacts :</h3>
-        @for (c of partner.contacts; track c.id) {
-          <div style="margin-bottom:10px; padding:10px; background:#f9f9f9; border-radius:4px;">
-            <strong>{{ c.first_name }} {{ c.last_name }}</strong> @if(c.role){({{c.role}})} <br>
-            📧 {{ c.email }} @if(c.phone){ | 📞 {{ c.phone }} }
-          </div>
+    </div>
+    <div style="padding: 20px;">
+      <p><strong>Pays :</strong> {{ partner.country || '—' }}</p>
+      <p><strong>Type de collaboration :</strong> {{ partner.collaboration_type || '—' }}</p>
+      <p><strong>Statut :</strong>
+        @if (partner.is_retained) {
+        <span class="status-badge badge-success">Retenu</span>
+        } @else {
+        <span class="status-badge badge-warning">Non retenu</span>
+        }
+      </p>
+      <h3 style="margin-top:20px;">Liste des contacts :</h3>
+      @for (c of partner.contacts; track c.id) {
+      <div style="margin-bottom:10px; padding:10px; background:#f9f9f9; border-radius:4px;">
+        <strong>{{ c.first_name }} {{ c.last_name }}</strong> @if(c.role){({{c.role}})} <br>
+        📧 {{ c.email }} @if(c.phone){ | 📞 {{ c.phone }} }
+      </div>
+      } @empty {
+      <p>Aucun contact lié.</p>
+      }
+    </div>
+    } @else {
+    <!-- ---- MODE ÉDITION ---- -->
+    <div class="modal-header">
+      <h2>Modifier {{ partner.name }}</h2>
+      <button class="close-btn" (click)="cancelEdit()">✕</button>
+    </div>
+    <form (ngSubmit)="saveEdit()" style="padding:20px;">
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Nom du partenaire *</label>
+        <input type="text" [(ngModel)]="editPartner.name" name="edit_name" required style="width:100%; height:35px;">
+      </div>
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Pays</label>
+        <input type="text" [(ngModel)]="editPartner.country" name="edit_country" style="width:100%; height:35px;">
+      </div>
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Type de collaboration</label>
+        <input type="text" [(ngModel)]="editPartner.collaboration_type" name="edit_collaboration_type"
+          style="width:100%; height:35px;">
+      </div>
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Retenu</label>
+        <select [(ngModel)]="editPartner.is_retained" name="edit_is_retained" style="width:100%; height:35px;">
+          <option [ngValue]="true">Oui</option>
+          <option [ngValue]="false">Non</option>
+        </select>
+      </div>
+
+      <div class="contacts-edit-section">
+        <div class="contacts-edit-header">
+          <h4 style="margin:0;">Contacts rattachés</h4>
+          <button type="button" class="ghost-btn" (click)="addEditContact()">+ Ajouter un contact</button>
+        </div>
+        @for (contact of editContacts(); track $index) {
+        <div class="contact-form-row">
+          <input type="text" [(ngModel)]="contact.first_name" [name]="'edit_fn_' + $index" placeholder="Prénom">
+          <input type="text" [(ngModel)]="contact.last_name" [name]="'edit_ln_' + $index" placeholder="Nom">
+          <input type="email" [(ngModel)]="contact.email" [name]="'edit_email_' + $index" placeholder="Email">
+          <input type="text" [(ngModel)]="contact.phone" [name]="'edit_phone_' + $index" placeholder="Téléphone">
+          <button type="button" class="remove-contact-btn" (click)="removeEditContact($index)"
+            title="Supprimer">✕</button>
+        </div>
         } @empty {
-          <p>Aucun contact lié.</p>
+        <p class="empty-text">Aucun contact. Clique sur "+ Ajouter un contact".</p>
         }
       </div>
-    </div>
+
+      <div class="modal-actions">
+        <button type="button" (click)="cancelEdit()">Annuler</button>
+        <button type="submit" class="add-btn">Enregistrer</button>
+      </div>
+    </form>
+    }
+
   </div>
+</div>
 }
 
+<!-- ============ MODAL AJOUT ============ -->
 @if (showAddModal()) {
-  <div class="modal-overlay" (click)="closeAddModal()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Ajouter un Partenaire</h2>
-        <button class="close-btn" (click)="closeAddModal()">✕</button>
-      </div>
-      <form (ngSubmit)="submitNewPartner()" style="padding:20px;">
-        <div style="margin-bottom:15px;">
-          <label style="display:block; margin-bottom:5px;">Nom du partenaire *</label>
-          <input type="text" [(ngModel)]="newPartner.name" name="name" required style="width:100%; height:35px;">
-        </div>
-        <div style="margin-bottom:15px;">
-          <label style="display:block; margin-bottom:5px;">Secteur</label>
-          <input type="text" [(ngModel)]="newPartner.sector" name="sector" style="width:100%; height:35px;">
-        </div>
-<div style="margin-bottom:15px;">
-  <label style="display:block; margin-bottom:5px;">Ville / Adresse</label>
-  <input type="text" [(ngModel)]="newPartner.address" name="address" style="width:100%; height:35px;">
-</div>
-        <div class="modal-actions">
-          <button type="button" (click)="closeAddModal()">Annuler</button>
-          <button type="submit" class="add-btn">Enregistrer</button>
-        </div>
-      </form>
+<div class="modal-overlay" (click)="closeAddModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Ajouter un Partenaire</h2>
+      <button class="close-btn" (click)="closeAddModal()">✕</button>
     </div>
+    <form (ngSubmit)="submitNewPartner()" style="padding:20px;">
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Nom du partenaire *</label>
+        <input type="text" [(ngModel)]="newPartner.name" name="name" required style="width:100%; height:35px;">
+      </div>
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Pays</label>
+        <input type="text" [(ngModel)]="newPartner.country" name="country" style="width:100%; height:35px;">
+      </div>
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Type de collaboration</label>
+        <input type="text" [(ngModel)]="newPartner.collaboration_type" name="collaboration_type"
+          style="width:100%; height:35px;" placeholder="Ex: Sous-traitance, Apporteur d'affaires...">
+      </div>
+      <div style="margin-bottom:15px;">
+        <label style="display:block; margin-bottom:5px;">Retenu</label>
+        <select [(ngModel)]="newPartner.is_retained" name="is_retained" style="width:100%; height:35px;">
+          <option [ngValue]="true">Oui</option>
+          <option [ngValue]="false">Non</option>
+        </select>
+      </div>
+
+      <div class="contacts-edit-section">
+        <div class="contacts-edit-header">
+          <h4 style="margin:0;">Contacts rattachés</h4>
+          <button type="button" class="ghost-btn" (click)="addNewContactField()">+ Ajouter un contact</button>
+        </div>
+        @for (contact of newPartnerContacts(); track $index) {
+        <div class="contact-form-row">
+          <input type="text" [(ngModel)]="contact.first_name" [name]="'new_fn_' + $index" placeholder="Prénom">
+          <input type="text" [(ngModel)]="contact.last_name" [name]="'new_ln_' + $index" placeholder="Nom">
+          <input type="email" [(ngModel)]="contact.email" [name]="'new_email_' + $index" placeholder="Email">
+          <input type="text" [(ngModel)]="contact.phone" [name]="'new_phone_' + $index" placeholder="Téléphone">
+          <button type="button" class="remove-contact-btn" (click)="removeNewContactField($index)"
+            title="Supprimer">✕</button>
+        </div>
+        } @empty {
+        <p class="empty-text">Aucun contact ajouté. Clique sur "+ Ajouter un contact".</p>
+        }
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" (click)="closeAddModal()">Annuler</button>
+        <button type="submit" class="add-btn">Enregistrer</button>
+      </div>
+    </form>
   </div>
+</div>
 }

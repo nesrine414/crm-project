@@ -46,7 +46,7 @@ export class PrestatairesComponent implements OnInit {
 
   prestataires = signal<Prestataire[]>([]);
   evaluations = signal<PrestataireEval[]>([]);
-  
+
   availableYears = signal<number[]>([2024, 2025, 2026]);
   activeTab = signal<string>('directory'); // 'directory' or year e.g. '2024'
   searchQuery = signal<string>('');
@@ -66,7 +66,7 @@ export class PrestatairesComponent implements OnInit {
   selectedPrestataire: Prestataire | null = null;
   selectedPrestataireEvals: PrestataireEval[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.loadPrestataires();
@@ -159,6 +159,53 @@ export class PrestatairesComponent implements OnInit {
       }
     }
     return result;
+  }
+  // Carte "Classement des scores" — triée du meilleur au moins bon, pour l'année active
+  classementScores() {
+    return this.getEvaluationsForActiveYear()
+      .slice()
+      .sort((a, b) => (b.eval.score_percent ?? 0) - (a.eval.score_percent ?? 0));
+  }
+
+  // Détermine la couleur de la barre selon la décision
+  scoreBarColor(decision: string | null | undefined): string {
+    if (!decision) return '#cbd5e1';
+    if (decision.includes('Maintenir')) return '#16a34a';
+    if (decision === 'Fournisseurs douteux') return '#dc2626';
+    return '#f59e0b';
+  }
+
+  // Carte "Statut des décisions" — répartition Maintenu / Exclu / Non évalué pour l'année active
+  statutDecisions() {
+    const total = this.prestataires().length;
+    const evals = this.getEvaluationsForActiveYear();
+
+    let maintenu = 0;
+    let exclu = 0;
+
+    for (const item of evals) {
+      if (item.eval.decision?.includes('Maintenir')) maintenu++;
+      else if (item.eval.decision === 'Fournisseurs douteux') exclu++;
+    }
+
+    const nonEvalue = total - evals.length;
+
+    return { maintenu, exclu, nonEvalue, total };
+  }
+
+  // Construit le dégradé conique du camembert à partir des 3 valeurs
+  pieGradient(): string {
+    const s = this.statutDecisions();
+    if (s.total === 0) return 'conic-gradient(#e2e8f0 0% 100%)';
+
+    const pMaintenu = (s.maintenu / s.total) * 100;
+    const pExclu = (s.exclu / s.total) * 100;
+    const pNonEvalue = 100 - pMaintenu - pExclu;
+
+    const end1 = pMaintenu;
+    const end2 = end1 + pExclu;
+
+    return `conic-gradient(#16a34a 0% ${end1}%, #dc2626 ${end1}% ${end2}%, #94a3b8 ${end2}% 100%)`;
   }
 
   // Details Modal Handlers
@@ -298,7 +345,7 @@ export class PrestatairesComponent implements OnInit {
     const yearNum = parseInt(this.activeTab(), 10);
     this.isEditEval = false;
     const firstProvider = this.prestataires().length > 0 ? this.prestataires()[0] : null;
-    
+
     this.evalForm = {
       company: firstProvider ? firstProvider.id : 0,
       company_name: firstProvider ? firstProvider.name : '',

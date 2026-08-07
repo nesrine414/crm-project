@@ -1,7 +1,8 @@
 <div class="config-page-header">
   <div>
     <h1 class="config-page-title">Paramètres & Configuration</h1>
-    <p class="config-page-subtitle">Gérez vos informations personnelles, votre sécurité et les accès de l'équipe à la plateforme CRM.</p>
+    <p class="config-page-subtitle">Gérez vos informations personnelles, votre sécurité et les accès de l'équipe à la
+      plateforme CRM.</p>
   </div>
 </div>
 
@@ -9,19 +10,21 @@
   <!-- NAVIGATION BARRE LATÉRALE DES PARAMÈTRES -->
   <aside class="config-sidebar">
     <button class="nav-tab-btn" [class.active]="activeTab() === 'profile'" (click)="activeTab.set('profile')">
-      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-        <circle cx="12" cy="7" r="4"/>
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
       </svg>
       <span>Mon Profil & Sécurité</span>
     </button>
 
     <button class="nav-tab-btn" [class.active]="activeTab() === 'users'" (click)="activeTab.set('users')">
-      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
       </svg>
       <span>Utilisateurs & Accès</span>
       <span class="sidebar-badge">{{ users().length }}</span>
@@ -34,324 +37,297 @@
 
     <!-- TAB 1 : MON PROFIL & SÉCURITÉ -->
     @if (activeTab() === 'profile') {
-      <div class="profile-hero-card">
-        <div class="avatar-large">{{ initials }}</div>
-        <div class="profile-hero-info">
-          <h2>{{ (profileFirstName || profileLastName) ? (profileFirstName + ' ' + profileLastName) : (profileUsername || 'Utilisateur') }}</h2>
-          <p class="profile-email">{{ profileEmail || 'Aucune adresse renseignée' }}</p>
-          <div class="profile-role-row">
-            <span class="role-badge badge-admin">Administratrice LCA CRM</span>
-            <span class="status-pill pill-active">Connectée</span>
-          </div>
+    <div class="profile-hero-card">
+      <div class="avatar-large">{{ initials }}</div>
+      <div class="profile-hero-info">
+        <h2>{{ (profileFirstName || profileLastName) ? (profileFirstName + ' ' + profileLastName) : (profileUsername ||
+          'Utilisateur') }}</h2>
+        <p class="profile-email">{{ profileEmail || 'Aucune adresse renseignée' }}</p>
+        <div class="profile-role-row">
+          <span class="role-badge badge-admin">Administratrice LCA CRM</span>
+          <span class="status-pill pill-active">Connectée</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE INFORMATIONS PERSONNELLES -->
+    <div class="settings-card">
+      <div class="card-header-clean">
+        <div>
+          <h3>Informations Personnelles</h3>
+          <p class="card-subtitle">Mettez à jour les coordonnées associées à votre compte CRM.</p>
         </div>
       </div>
 
-      <!-- FORMULAIRE INFORMATIONS PERSONNELLES -->
-      <div class="settings-card">
-        <div class="card-header-clean">
-          <div>
-            <h3>Informations Personnelles</h3>
-            <p class="card-subtitle">Mettez à jour les coordonnées associées à votre compte CRM.</p>
+      <form (ngSubmit)="saveProfile()">
+        <div class="form-row-2">
+          <div class="field-group">
+            <label>Prénom</label>
+            <input type="text" [(ngModel)]="profileFirstName" name="profileFirstName" placeholder="Ex: Nesrine"
+              class="input-clean">
+          </div>
+          <div class="field-group">
+            <label>Nom</label>
+            <input type="text" [(ngModel)]="profileLastName" name="profileLastName" placeholder="Ex: Hamrouni"
+              class="input-clean">
           </div>
         </div>
 
-        <form (ngSubmit)="saveProfile()">
-          <div class="form-row-2">
-            <div class="field-group">
-              <label>Prénom</label>
-              <input type="text" [(ngModel)]="profileFirstName" name="profileFirstName" placeholder="Ex: Nesrine" class="input-clean">
-            </div>
-            <div class="field-group">
-              <label>Nom</label>
-              <input type="text" [(ngModel)]="profileLastName" name="profileLastName" placeholder="Ex: Hamrouni" class="input-clean">
-            </div>
+        <div class="form-row-2">
+          <div class="field-group">
+            <label>Adresse email professionnelle</label>
+            <input type="email" [(ngModel)]="profileEmail" name="profileEmail" placeholder="nom@domaine.tn"
+              class="input-clean">
           </div>
-
-          <div class="form-row-2">
-            <div class="field-group">
-              <label>Adresse email professionnelle</label>
-              <input type="email" [(ngModel)]="profileEmail" name="profileEmail" placeholder="nom@domaine.tn" class="input-clean">
-            </div>
-            <div class="field-group">
-              <label>Identifiant d'accès (Nom d'utilisateur)</label>
-              <input type="text" [value]="profileUsername" disabled class="input-clean input-disabled">
-            </div>
-          </div>
-
-          @if (profileMessage()) {
-            <div class="alert-success-box">✓ {{ profileMessage() }}</div>
-          }
-          @if (profileError()) {
-            <div class="alert-error-box">⚠️ {{ profileError() }}</div>
-          }
-
-          <div class="card-actions-right">
-            <button type="submit" class="primary-btn">Enregistrer le profil</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- FORMULAIRE SÉCURITÉ MOT DE PASSE -->
-      <div class="settings-card">
-        <div class="card-header-clean">
-          <div>
-            <h3>Sécurité & Mot de Passe</h3>
-            <p class="card-subtitle">Modifiez votre mot de passe pour garantir la confidentialité de vos accès.</p>
+          <div class="field-group">
+            <label>Identifiant d'accès (Nom d'utilisateur)</label>
+            <input type="text" [value]="profileUsername" disabled class="input-clean input-disabled">
           </div>
         </div>
 
-        <form (ngSubmit)="changePassword()">
-          <div class="field-group max-w-lg">
-            <label>Mot de passe actuel <span class="req">*</span></label>
-            <input type="password" [(ngModel)]="oldPassword" name="oldPassword" placeholder="••••••••" class="input-clean">
-          </div>
+        @if (profileMessage()) {
+        <div class="alert-success-box">✓ {{ profileMessage() }}</div>
+        }
+        @if (profileError()) {
+        <div class="alert-error-box">⚠️ {{ profileError() }}</div>
+        }
 
-          <div class="form-row-2">
-            <div class="field-group">
-              <label>Nouveau mot de passe <span class="req">*</span></label>
-              <input type="password" [(ngModel)]="newPassword" name="newPassword" placeholder="Minimum 8 caractères" class="input-clean">
-            </div>
-            <div class="field-group">
-              <label>Confirmer le mot de passe <span class="req">*</span></label>
-              <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="Répéter le nouveau mot de passe" class="input-clean">
-            </div>
-          </div>
-
-          @if (passwordMessage()) {
-            <div class="alert-success-box">✓ {{ passwordMessage() }}</div>
-          }
-          @if (passwordError()) {
-            <div class="alert-error-box">⚠️ {{ passwordError() }}</div>
-          }
-
-          <div class="card-actions-right">
-            <button type="submit" class="secondary-btn">Mettre à jour le mot de passe</button>
-          </div>
-        </form>
-      </div>
+        <div class="card-actions-right">
+          <button type="submit" class="primary-btn">Enregistrer le profil</button>
+        </div>
+      </form>
+    </div>
     }
 
     <!-- TAB 2 : GESTION DES UTILISATEURS -->
     @if (activeTab() === 'users') {
-      <div class="settings-card">
-        <div class="card-header-flex">
-          <div>
-            <div class="title-with-badge">
-              <h3>Utilisateurs de la Plateforme LCA CRM</h3>
-              <span class="count-pill">{{ filteredUsers().length }} membre(s)</span>
-            </div>
-            <p class="card-subtitle">Gérez les comptes d'accès à la plateforme interne CRM pour vos collaborateurs.</p>
+    <div class="settings-card">
+      <div class="card-header-flex">
+        <div>
+          <div class="title-with-badge">
+            <h3>Utilisateurs de la Plateforme LCA CRM</h3>
+            <span class="count-pill">{{ filteredUsers().length }} membre(s)</span>
           </div>
-          <button class="primary-btn" (click)="openAddUser()">+ Ajouter une personne</button>
+          <p class="card-subtitle">Gérez les comptes d'accès à la plateforme interne CRM pour vos collaborateurs.</p>
         </div>
+        <button class="primary-btn" (click)="openAddUser()">+ Ajouter une personne</button>
+      </div>
 
-        <!-- BARRE DE RECHERCHE D'UTILISATEURS -->
-        <div class="search-filter-bar">
-          <div class="search-input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" [ngModel]="userSearchTerm()" (ngModelChange)="userSearchTerm.set($event)" placeholder="Rechercher par nom, nom d'utilisateur ou email..." class="search-input">
-          </div>
-        </div>
-
-        <!-- TABLEAU DES UTILISATEURS -->
-        <div class="modern-table-card">
-          <table class="modern-table">
-            <thead>
-              <tr>
-                <th>Utilisateur / Nom</th>
-                <th>Adresse Email</th>
-                <th>Profil / Rôle</th>
-                <th>Statut</th>
-                <th>Dernière connexion</th>
-                <th class="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (u of filteredUsers(); track u.id) {
-                <tr>
-                  <td>
-                    <div class="user-cell">
-                      <div class="user-avatar-small">{{ getUserInitials(u) }}</div>
-                      <div class="user-name-col">
-                        <strong class="user-display-name">
-                          {{ (u.first_name || u.last_name) ? (u.first_name + ' ' + u.last_name) : u.username }}
-                        </strong>
-                        <span class="user-username">&#64;{{ u.username }}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="email-cell">{{ u.email }}</td>
-                  <td>
-                    <span class="role-pill">Administratrice LCA</span>
-                  </td>
-                  <td>
-                    <span class="status-indicator" [class.status-active]="u.is_active" [class.status-disabled]="!u.is_active">
-                      <span class="status-dot"></span>
-                      {{ u.is_active ? 'Active' : 'Désactivée' }}
-                    </span>
-                  </td>
-                  <td class="date-cell">{{ formatDate(u.last_login) }}</td>
-                  <td class="text-right">
-                    <div class="action-btn-group">
-                      <button class="action-icon-btn" (click)="openEditUser(u)" title="Modifier les informations">
-                        ✏️
-                      </button>
-                      @if (u.is_active) {
-                        <button class="action-icon-btn danger-hover" (click)="deactivateUser(u)" title="Désactiver l'accès">
-                          🚫
-                        </button>
-                      } @else {
-                        <button class="action-icon-btn success-hover" (click)="reactivateUser(u)" title="Réactiver l'accès">
-                          🔄
-                        </button>
-                      }
-                    </div>
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="6" class="empty-table-state">
-                    Aucune personne ne correspond à votre recherche.
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+      <!-- BARRE DE RECHERCHE D'UTILISATEURS -->
+      <div class="search-filter-bar">
+        <div class="search-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input type="text" [ngModel]="userSearchTerm()" (ngModelChange)="userSearchTerm.set($event)"
+            placeholder="Rechercher par nom, nom d'utilisateur ou email..." class="search-input">
         </div>
       </div>
+
+      <!-- TABLEAU DES UTILISATEURS -->
+      <div class="modern-table-card">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Utilisateur / Nom</th>
+              <th>Adresse Email</th>
+              <th>Profil / Rôle</th>
+              <th>Statut</th>
+              <th>Dernière connexion</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of filteredUsers(); track u.id) {
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar-small">{{ getUserInitials(u) }}</div>
+                  <div class="user-name-col">
+                    <strong class="user-display-name">
+                      {{ (u.first_name || u.last_name) ? (u.first_name + ' ' + u.last_name) : u.username }}
+                    </strong>
+                    <span class="user-username">&#64;{{ u.username }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="email-cell">{{ u.email }}</td>
+              <td>
+                <span class="role-pill">Administratrice LCA</span>
+              </td>
+              <td>
+                <span class="status-indicator" [class.status-active]="u.is_active"
+                  [class.status-disabled]="!u.is_active">
+                  <span class="status-dot"></span>
+                  {{ u.is_active ? 'Active' : 'Désactivée' }}
+                </span>
+              </td>
+              <td class="date-cell">{{ formatDate(u.last_login) }}</td>
+              <td class="text-right">
+                <div class="action-btn-group">
+                  <button class="action-icon-btn" (click)="openEditUser(u)" title="Modifier les informations">
+                    ✏️
+                  </button>
+                  @if (u.is_active) {
+                  <button class="action-icon-btn danger-hover" (click)="deactivateUser(u)" title="Désactiver l'accès">
+                    🚫
+                  </button>
+                  } @else {
+                  <button class="action-icon-btn success-hover" (click)="reactivateUser(u)" title="Réactiver l'accès">
+                    🔄
+                  </button>
+                  }
+                </div>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="empty-table-state">
+                Aucune personne ne correspond à votre recherche.
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
     }
 
     <!-- TAB 3 & 4 REMOVED -->
     @if (false) {
-      <div class="settings-card">
-        <div class="card-header-clean">
-          <div>
-            <h3>Profil du Cabinet LCA</h3>
-            <p class="card-subtitle">Renseignez les coordonnées officielles et les paramètres régionaux du cabinet.</p>
+    <div class="settings-card">
+      <div class="card-header-clean">
+        <div>
+          <h3>Profil du Cabinet LCA</h3>
+          <p class="card-subtitle">Renseignez les coordonnées officielles et les paramètres régionaux du cabinet.</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="saveOrgSettings()">
+        <div class="form-row-2">
+          <div class="field-group">
+            <label>Nom du Cabinet / Structure</label>
+            <input type="text" [(ngModel)]="orgForm.name" name="orgName" class="input-clean">
+          </div>
+          <div class="field-group">
+            <label>Domaines d'Activité Majeurs</label>
+            <input type="text" [(ngModel)]="orgForm.activity" name="orgActivity" class="input-clean">
           </div>
         </div>
 
-        <form (ngSubmit)="saveOrgSettings()">
-          <div class="form-row-2">
-            <div class="field-group">
-              <label>Nom du Cabinet / Structure</label>
-              <input type="text" [(ngModel)]="orgForm.name" name="orgName" class="input-clean">
-            </div>
-            <div class="field-group">
-              <label>Domaines d'Activité Majeurs</label>
-              <input type="text" [(ngModel)]="orgForm.activity" name="orgActivity" class="input-clean">
-            </div>
-          </div>
-
-          <div class="form-row-2">
-            <div class="field-group">
-              <label>Email Officiel de Contact</label>
-              <input type="email" [(ngModel)]="orgForm.email" name="orgEmail" class="input-clean">
-            </div>
-            <div class="field-group">
-              <label>Téléphone du Siège</label>
-              <input type="text" [(ngModel)]="orgForm.phone" name="orgPhone" class="input-clean">
-            </div>
-          </div>
-
+        <div class="form-row-2">
           <div class="field-group">
-            <label>Adresse du Siège Social</label>
-            <input type="text" [(ngModel)]="orgForm.address" name="orgAddress" class="input-clean">
+            <label>Email Officiel de Contact</label>
+            <input type="email" [(ngModel)]="orgForm.email" name="orgEmail" class="input-clean">
           </div>
-
-          <div class="form-row-3">
-            <div class="field-group">
-              <label>Devise Principale</label>
-              <input type="text" [(ngModel)]="orgForm.currency" name="orgCurrency" class="input-clean">
-            </div>
-            <div class="field-group">
-              <label>Fuseau Horaire</label>
-              <input type="text" [(ngModel)]="orgForm.timezone" name="orgTimezone" class="input-clean">
-            </div>
-            <div class="field-group">
-              <label>Matricule Fiscal / Patente</label>
-              <input type="text" [(ngModel)]="orgForm.taxId" name="orgTaxId" class="input-clean">
-            </div>
+          <div class="field-group">
+            <label>Téléphone du Siège</label>
+            <input type="text" [(ngModel)]="orgForm.phone" name="orgPhone" class="input-clean">
           </div>
+        </div>
 
-          @if (orgMessage()) {
-            <div class="alert-success-box">✓ {{ orgMessage() }}</div>
-          }
+        <div class="field-group">
+          <label>Adresse du Siège Social</label>
+          <input type="text" [(ngModel)]="orgForm.address" name="orgAddress" class="input-clean">
+        </div>
 
-          <div class="card-actions-right">
-            <button type="submit" class="primary-btn">Enregistrer l'organisation</button>
+        <div class="form-row-3">
+          <div class="field-group">
+            <label>Devise Principale</label>
+            <input type="text" [(ngModel)]="orgForm.currency" name="orgCurrency" class="input-clean">
           </div>
-        </form>
-      </div>
+          <div class="field-group">
+            <label>Fuseau Horaire</label>
+            <input type="text" [(ngModel)]="orgForm.timezone" name="orgTimezone" class="input-clean">
+          </div>
+          <div class="field-group">
+            <label>Matricule Fiscal / Patente</label>
+            <input type="text" [(ngModel)]="orgForm.taxId" name="orgTaxId" class="input-clean">
+          </div>
+        </div>
+
+        @if (orgMessage()) {
+        <div class="alert-success-box">✓ {{ orgMessage() }}</div>
+        }
+
+        <div class="card-actions-right">
+          <button type="submit" class="primary-btn">Enregistrer l'organisation</button>
+        </div>
+      </form>
+    </div>
     }
 
     <!-- TAB 4 : NOTIFICATIONS & WORKFLOW -->
     @if (activeTab() === 'notifications') {
-      <div class="settings-card">
-        <div class="card-header-clean">
-          <div>
-            <h3>Notifications & Alertes de Suivi</h3>
-            <p class="card-subtitle">Personnalisez les alertes automatiques pour rester informé(e) des opportunités et incidents SAV.</p>
-          </div>
+    <div class="settings-card">
+      <div class="card-header-clean">
+        <div>
+          <h3>Notifications & Alertes de Suivi</h3>
+          <p class="card-subtitle">Personnalisez les alertes automatiques pour rester informé(e) des opportunités et
+            incidents SAV.</p>
+        </div>
+      </div>
+
+      <form (ngSubmit)="saveNotifSettings()">
+        <div class="toggle-list">
+          <!-- TOGGLE 1 -->
+          <label class="toggle-card">
+            <div class="toggle-info">
+              <strong>🛠️ Notifications de nouvelles Réclamations SAV</strong>
+              <p>Recevoir une alerte immédiate lors de l'enregistrement d'une réclamation client.</p>
+            </div>
+            <input type="checkbox" [(ngModel)]="notifSettings.emailReclamation" name="emailReclamation"
+              class="toggle-switch">
+          </label>
+
+          <!-- TOGGLE 2 -->
+          <label class="toggle-card">
+            <div class="toggle-info">
+              <strong>🛡️ Alertes Qualité & Non-Conformités</strong>
+              <p>Être notifié(e) par email dès l'ouverture d'une nouvelle fiche NC.</p>
+            </div>
+            <input type="checkbox" [(ngModel)]="notifSettings.emailNC" name="emailNC" class="toggle-switch">
+          </label>
+
+          <!-- TOGGLE 3 -->
+          <label class="toggle-card">
+            <div class="toggle-info">
+              <strong>💼 Relances Automatiques d'Opportunités Stagnantes</strong>
+              <p>Alerte visuelle sur le tableau de bord si une opportunité stagne depuis plus de 14 jours.</p>
+            </div>
+            <input type="checkbox" [(ngModel)]="notifSettings.stagnantOppAlert" name="stagnantOppAlert"
+              class="toggle-switch">
+          </label>
+
+          <!-- TOGGLE 4 -->
+          <label class="toggle-card">
+            <div class="toggle-info">
+              <strong>📊 Rapport Hebdomadaire de Performance</strong>
+              <p>Envoi automatique du bilan hebdomadaire du pipe commercial chaque lundi matin.</p>
+            </div>
+            <input type="checkbox" [(ngModel)]="notifSettings.weeklyReport" name="weeklyReport" class="toggle-switch">
+          </label>
+
+          <!-- TOGGLE 5 -->
+          <label class="toggle-card">
+            <div class="toggle-info">
+              <strong>🔔 Badges In-App sur la barre de navigation</strong>
+              <p>Afficher le point rouge de notification en haut à droite de l'écran.</p>
+            </div>
+            <input type="checkbox" [(ngModel)]="notifSettings.inAppNotifs" name="inAppNotifs" class="toggle-switch">
+          </label>
         </div>
 
-        <form (ngSubmit)="saveNotifSettings()">
-          <div class="toggle-list">
-            <!-- TOGGLE 1 -->
-            <label class="toggle-card">
-              <div class="toggle-info">
-                <strong>🛠️ Notifications de nouvelles Réclamations SAV</strong>
-                <p>Recevoir une alerte immédiate lors de l'enregistrement d'une réclamation client.</p>
-              </div>
-              <input type="checkbox" [(ngModel)]="notifSettings.emailReclamation" name="emailReclamation" class="toggle-switch">
-            </label>
+        @if (notifMessage()) {
+        <div class="alert-success-box">✓ {{ notifMessage() }}</div>
+        }
 
-            <!-- TOGGLE 2 -->
-            <label class="toggle-card">
-              <div class="toggle-info">
-                <strong>🛡️ Alertes Qualité & Non-Conformités</strong>
-                <p>Être notifié(e) par email dès l'ouverture d'une nouvelle fiche NC.</p>
-              </div>
-              <input type="checkbox" [(ngModel)]="notifSettings.emailNC" name="emailNC" class="toggle-switch">
-            </label>
-
-            <!-- TOGGLE 3 -->
-            <label class="toggle-card">
-              <div class="toggle-info">
-                <strong>💼 Relances Automatiques d'Opportunités Stagnantes</strong>
-                <p>Alerte visuelle sur le tableau de bord si une opportunité stagne depuis plus de 14 jours.</p>
-              </div>
-              <input type="checkbox" [(ngModel)]="notifSettings.stagnantOppAlert" name="stagnantOppAlert" class="toggle-switch">
-            </label>
-
-            <!-- TOGGLE 4 -->
-            <label class="toggle-card">
-              <div class="toggle-info">
-                <strong>📊 Rapport Hebdomadaire de Performance</strong>
-                <p>Envoi automatique du bilan hebdomadaire du pipe commercial chaque lundi matin.</p>
-              </div>
-              <input type="checkbox" [(ngModel)]="notifSettings.weeklyReport" name="weeklyReport" class="toggle-switch">
-            </label>
-
-            <!-- TOGGLE 5 -->
-            <label class="toggle-card">
-              <div class="toggle-info">
-                <strong>🔔 Badges In-App sur la barre de navigation</strong>
-                <p>Afficher le point rouge de notification en haut à droite de l'écran.</p>
-              </div>
-              <input type="checkbox" [(ngModel)]="notifSettings.inAppNotifs" name="inAppNotifs" class="toggle-switch">
-            </label>
-          </div>
-
-          @if (notifMessage()) {
-            <div class="alert-success-box">✓ {{ notifMessage() }}</div>
-          }
-
-          <div class="card-actions-right">
-            <button type="submit" class="primary-btn">Enregistrer les préférences</button>
-          </div>
-        </form>
-      </div>
+        <div class="card-actions-right">
+          <button type="submit" class="primary-btn">Enregistrer les préférences</button>
+        </div>
+      </form>
+    </div>
     }
 
   </main>
@@ -359,62 +335,67 @@
 
 <!-- MODAL SAISIE / MODIFICATION D'UTILISATEUR -->
 @if (showUserModal()) {
-  <div class="modal-overlay" (click)="closeUserModal()">
-    <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>{{ editingUser ? "Modifier les accès de l'utilisateur" : 'Ajouter un nouvel utilisateur' }}</h2>
-        <button class="close-btn" (click)="closeUserModal()">✕</button>
+<div class="modal-overlay" (click)="closeUserModal()">
+  <div class="modal-card modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editingUser ? "Modifier les accès de l'utilisateur" : 'Ajouter un nouvel utilisateur' }}</h2>
+      <button class="close-btn" (click)="closeUserModal()">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitUserForm()">
+      <div class="form-row-2">
+        <div class="field-group">
+          <label>Prénom</label>
+          <input type="text" [(ngModel)]="userForm.first_name" name="userFirstName" placeholder="Ex: Afef"
+            class="input-clean">
+        </div>
+        <div class="field-group">
+          <label>Nom</label>
+          <input type="text" [(ngModel)]="userForm.last_name" name="userLastName" placeholder="Ex: Ben Ali"
+            class="input-clean">
+        </div>
       </div>
 
-      <form (ngSubmit)="submitUserForm()">
-        <div class="form-row-2">
-          <div class="field-group">
-            <label>Prénom</label>
-            <input type="text" [(ngModel)]="userForm.first_name" name="userFirstName" placeholder="Ex: Afef" class="input-clean">
-          </div>
-          <div class="field-group">
-            <label>Nom</label>
-            <input type="text" [(ngModel)]="userForm.last_name" name="userLastName" placeholder="Ex: Ben Ali" class="input-clean">
-          </div>
-        </div>
-
-        <div class="form-row-2">
-          <div class="field-group">
-            <label>Nom d'utilisateur <span class="req">*</span></label>
-            <input type="text" [(ngModel)]="userForm.username" name="userUsername" [disabled]="!!editingUser" placeholder="ex: afef_lca" class="input-clean">
-          </div>
-          <div class="field-group">
-            <label>Email professionnel <span class="req">*</span></label>
-            <input type="email" [(ngModel)]="userForm.email" name="userEmail" placeholder="afef@lca-consulting.tn" class="input-clean">
-          </div>
-        </div>
-
-        @if (!editingUser) {
-          <div class="field-group">
-            <label>Mot de passe initial <span class="req">*</span></label>
-            <input type="password" [(ngModel)]="userForm.password" name="userPassword" placeholder="Minimum 8 caractères" class="input-clean">
-          </div>
-        }
-
+      <div class="form-row-2">
         <div class="field-group">
-          <label>Profil d'Accès / Rôle</label>
-          <select [(ngModel)]="userForm.role" name="userRole" class="input-clean">
-            <option value="Administrateur">Administrateur / Administratrice LCA</option>
-            <option value="Commercial">Consultant(e) / Commercial(e)</option>
-            <option value="SAV">Responsable SAV & Clientèle</option>
-            <option value="Qualite">Responsable Qualité & ISO</option>
-          </select>
+          <label>Nom d'utilisateur <span class="req">*</span></label>
+          <input type="text" [(ngModel)]="userForm.username" name="userUsername" [disabled]="!!editingUser"
+            placeholder="ex: afef_lca" class="input-clean">
         </div>
-
-        @if (userFormError()) {
-          <div class="alert-error-box">⚠️ {{ userFormError() }}</div>
-        }
-
-        <div class="modal-actions-right">
-          <button type="button" class="cancel-btn" (click)="closeUserModal()">Annuler</button>
-          <button type="submit" class="primary-btn">{{ editingUser ? 'Enregistrer' : 'Créer le compte' }}</button>
+        <div class="field-group">
+          <label>Email professionnel <span class="req">*</span></label>
+          <input type="email" [(ngModel)]="userForm.email" name="userEmail" placeholder="afef@lca-consulting.tn"
+            class="input-clean">
         </div>
-      </form>
-    </div>
+      </div>
+
+      @if (!editingUser) {
+      <div class="field-group">
+        <label>Mot de passe initial <span class="req">*</span></label>
+        <input type="password" [(ngModel)]="userForm.password" name="userPassword" placeholder="Minimum 8 caractères"
+          class="input-clean">
+      </div>
+      }
+
+      <div class="field-group">
+        <label>Profil d'Accès / Rôle</label>
+        <select [(ngModel)]="userForm.role" name="userRole" class="input-clean">
+          <option value="Administrateur">Administrateur / Administratrice LCA</option>
+          <option value="Commercial">Consultant(e) / Commercial(e)</option>
+          <option value="SAV">Responsable SAV & Clientèle</option>
+          <option value="Qualite">Responsable Qualité & ISO</option>
+        </select>
+      </div>
+
+      @if (userFormError()) {
+      <div class="alert-error-box">⚠️ {{ userFormError() }}</div>
+      }
+
+      <div class="modal-actions-right">
+        <button type="button" class="cancel-btn" (click)="closeUserModal()">Annuler</button>
+        <button type="submit" class="primary-btn">{{ editingUser ? 'Enregistrer' : 'Créer le compte' }}</button>
+      </div>
+    </form>
   </div>
+</div>
 }

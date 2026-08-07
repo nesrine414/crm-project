@@ -1,5 +1,5 @@
 <div class="page-container">
-  
+
   <!-- 1. BANDEAU ISO 9001 OFFICIEL CLAIR & PROFESSIONNEL (ENR-GFS-03) -->
   <div class="iso-header-card">
     <div class="iso-left">
@@ -20,16 +20,26 @@
   <!-- 2. ENCADRÉ EXPLICATIF / RÈGLES QUALITÉ -->
   <div class="rules-card">
     <div class="rules-header">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rules-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" class="rules-icon">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="16" x2="12" y2="12" />
+        <line x1="12" y1="8" x2="12.01" y2="8" />
+      </svg>
       <h3>Évaluation et suivi des prestataires :</h3>
     </div>
     <div class="rules-content">
-      <p><strong>- Formateurs et consultants (sociétés ou personnes physiques) :</strong> Soumis à une évaluation systématique.</p>
-      <p><strong>- Autres prestataires (fournisseurs divers) :</strong> Évalués à l'issue de la première collaboration. Leur reconduction (fidélisation) dépend des besoins de LCA et de la qualité de service constatée lors des prestations précédentes.</p>
-      <p class="rule-sub font-medium"><strong>- Critère de sélection :</strong> Prix, qualité, prestation de services et respect des délais.</p>
+      <p><strong>- Formateurs et consultants (sociétés ou personnes physiques) :</strong> Soumis à une évaluation
+        systématique.</p>
+      <p><strong>- Autres prestataires (fournisseurs divers) :</strong> Évalués à l'issue de la première collaboration.
+        Leur reconduction (fidélisation) dépend des besoins de LCA et de la qualité de service constatée lors des
+        prestations précédentes.</p>
+      <p class="rule-sub font-medium"><strong>- Critère de sélection :</strong> Prix, qualité, prestation de services et
+        respect des délais.</p>
       <div class="consultant-box">
         <p><strong>Pour les consultants et les formateurs :</strong></p>
-        <p><strong>Critères de sélection :</strong> Honoraire, Recommandation client, Disponibilité, Proximité, Qualification et compétences.</p>
+        <p><strong>Critères de sélection :</strong> Honoraire, Recommandation client, Disponibilité, Proximité,
+          Qualification et compétences.</p>
       </div>
     </div>
   </div>
@@ -69,26 +79,86 @@
           <tr class="row-unsatisfied">
             <td><strong>Insatisfaisant</strong></td>
             <td><span class="note-pill">1</span></td>
-            <td><strong>< 30%</strong></td>
+            <td><strong>
+                < 30%</strong>
+            </td>
             <td><span class="decision-text">Fournisseurs douteux</span></td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+  <!-- TABLEAU DE BORD : 2 CARTES -->
+  <div class="dashboard-row">
+
+    <!-- CARTE : CLASSEMENT DES SCORES -->
+    <div class="dash-card">
+      <h3 class="dash-title">Classement des scores — {{ activeTab() !== 'directory' ? activeTab() : 'Sélectionnez une
+        année' }}</h3>
+
+      @if (activeTab() !== 'directory') {
+      <div class="score-ranking">
+        @for (item of classementScores(); track item.eval.id) {
+        <div class="rank-row">
+          <span class="rank-name">{{ item.provider.name }}</span>
+          <div class="rank-bar-track">
+            <div class="rank-bar-fill" [style.width.%]="item.eval.score_percent ?? 0"
+              [style.background]="scoreBarColor(item.eval.decision)">
+            </div>
+          </div>
+          <span class="rank-score">{{ item.eval.score_percent ?? '-' }}%</span>
+        </div>
+        } @empty {
+        <p class="dash-empty">Aucune évaluation pour cette année.</p>
+        }
+      </div>
+      } @else {
+      <p class="dash-empty">Sélectionnez un onglet d'année pour voir le classement.</p>
+      }
+    </div>
+
+    <!-- CARTE : STATUT DES DÉCISIONS -->
+    <div class="dash-card">
+      <h3 class="dash-title">Statut des décisions — {{ activeTab() !== 'directory' ? activeTab() : 'Sélectionnez une
+        année' }}</h3>
+
+      @if (activeTab() !== 'directory') {
+      <div class="pie-wrapper">
+        <div class="pie-chart" [style.background]="pieGradient()"></div>
+        <div class="pie-legend">
+          <div class="legend-item">
+            <span class="legend-dot" style="background:#16a34a"></span>
+            Maintenu <strong>({{ statutDecisions().maintenu }})</strong>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot" style="background:#dc2626"></span>
+            Exclu <strong>({{ statutDecisions().exclu }})</strong>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot" style="background:#94a3b8"></span>
+            Non évalué <strong>({{ statutDecisions().nonEvalue }})</strong>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <p class="dash-empty">Sélectionnez un onglet d'année pour voir la répartition.</p>
+      }
+    </div>
+
+  </div>
 
   <!-- 4. BARRE D'ACTIONS ET ONGLETS DE NAVIGATION -->
   <div class="main-section-card">
-    
+
     <div class="toolbar">
       <div class="nav-tabs">
         <button class="nav-tab" [class.active]="activeTab() === 'directory'" (click)="selectTab('directory')">
           📋 Liste des Prestataires
         </button>
         @for (year of availableYears(); track year) {
-          <button class="nav-tab" [class.active]="activeTab() === year.toString()" (click)="selectTab(year.toString())">
-            📊 Évaluation {{ year }}
-          </button>
+        <button class="nav-tab" [class.active]="activeTab() === year.toString()" (click)="selectTab(year.toString())">
+          📊 Évaluation {{ year }}
+        </button>
         }
         <button class="nav-tab add-year-btn" (click)="addYear()" title="Ajouter une année d'évaluation">
           ➕ Année
@@ -97,8 +167,13 @@
 
       <div class="toolbar-right">
         <div class="search-input-wrapper">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Rechercher..." class="search-field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" class="search-icon">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
+            placeholder="Rechercher..." class="search-field">
         </div>
 
         <button class="btn-primary" (click)="openAddCompanyModal()">
@@ -109,181 +184,191 @@
 
     <!-- 5. TABLEAU 1 : RÉPERTOIRE DES PRESTATAIRES -->
     @if (activeTab() === 'directory') {
-      <div class="table-card">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width: 50px;">ID</th>
-              <th>Nom du Prestataire</th>
-              <th>Patente</th>
-              <th>Domaine / Service</th>
-              <th>Interlocuteur Principal</th>
-              <th>Fonction</th>
-              <th>E-mail / Téléphone</th>
-              <th>CV / Doc</th>
-              <th>Convention</th>
-              <th>Date Début Contrat</th>
-              <th>Date Fin Contrat</th>
-              <th style="width: 80px; text-align: center;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (p of filteredPrestataires(); track p.id; let i = $index) {
-              <tr (click)="openDetailsModal(p)" class="clickable-row">
-                <td class="text-center font-bold">{{ i + 1 }}</td>
-                <td><strong class="provider-name">{{ p.name }}</strong></td>
-                <td>
-                  <span class="status-pill" [class.pill-yes]="p.patente === 'oui' || p.patente === 'Oui'" [class.pill-no]="p.patente === 'non' || p.patente === 'Non'">
-                    {{ p.patente || 'Oui' }}
-                  </span>
-                </td>
-                <td>
-                  @if (p.service_provided && p.service_provided !== '-' && p.service_provided !== 'None') {
-                    <span class="service-tag">{{ p.service_provided }}</span>
-                  } @else {
-                    <span class="text-muted">—</span>
-                  }
-                </td>
-                <td>{{ p.interlocuteur_principal || '-' }}</td>
-                <td><span class="role-text">{{ p.fonction_interlocuteur || '-' }}</span></td>
-                <td>
-                  @if (p.email) { <div class="contact-line">📧 {{ p.email }}</div> }
-                  @if (p.phone) { <div class="contact-line">📞 {{ p.phone }}</div> }
-                  @if (!p.email && !p.phone) { <span class="text-muted">-</span> }
-                </td>
-                <td>
-                  @if (p.cv_document) {
-                    <a [href]="p.cv_document" target="_blank" (click)="$event.stopPropagation()" class="cv-link-pill" title="Consulter / Télécharger le CV">
-                      📄 CV
-                    </a>
-                  } @else {
-                    <span class="text-muted">—</span>
-                  }
-                </td>
-                <td>
-                  <span class="status-pill" [class.pill-yes]="p.convention_contrat === 'oui' || p.convention_contrat === 'Oui'" [class.pill-no]="p.convention_contrat === 'non' || p.convention_contrat === 'Non'">
-                    {{ p.convention_contrat || 'Non' }}
-                  </span>
-                </td>
-                <td>{{ p.date_debut_contrat || '-' }}</td>
-                <td>{{ p.date_fin_contrat || '-' }}</td>
-                <td (click)="$event.stopPropagation()">
-                  <div class="row-actions">
-                    <button class="icon-action-btn edit" (click)="openEditCompanyModal(p, $event)" title="Modifier">✏️</button>
-                    <button class="icon-action-btn delete" (click)="deleteCompany(p, $event)" title="Supprimer">🗑️</button>
-                  </div>
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="12" class="empty-state">
-                  Aucun prestataire trouvé. Cliquez sur "+ Nouveau Prestataire" pour en ajouter un.
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+    <div class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 50px;">ID</th>
+            <th>Nom du Prestataire</th>
+            <th>Patente</th>
+            <th>Domaine / Service</th>
+            <th>Interlocuteur Principal</th>
+            <th>Fonction</th>
+            <th>E-mail / Téléphone</th>
+            <th>CV / Doc</th>
+            <th>Convention</th>
+            <th>Date Début Contrat</th>
+            <th>Date Fin Contrat</th>
+            <th style="width: 80px; text-align: center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of filteredPrestataires(); track p.id; let i = $index) {
+          <tr (click)="openDetailsModal(p)" class="clickable-row">
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td><strong class="provider-name">{{ p.name }}</strong></td>
+            <td>
+              <span class="status-pill" [class.pill-yes]="p.patente === 'oui' || p.patente === 'Oui'"
+                [class.pill-no]="p.patente === 'non' || p.patente === 'Non'">
+                {{ p.patente || 'Oui' }}
+              </span>
+            </td>
+            <td>
+              @if (p.service_provided && p.service_provided !== '-' && p.service_provided !== 'None') {
+              <span class="service-tag">{{ p.service_provided }}</span>
+              } @else {
+              <span class="text-muted">—</span>
+              }
+            </td>
+            <td>{{ p.interlocuteur_principal || '-' }}</td>
+            <td><span class="role-text">{{ p.fonction_interlocuteur || '-' }}</span></td>
+            <td>
+              @if (p.email) { <div class="contact-line">📧 {{ p.email }}</div> }
+              @if (p.phone) { <div class="contact-line">📞 {{ p.phone }}</div> }
+              @if (!p.email && !p.phone) { <span class="text-muted">-</span> }
+            </td>
+            <td>
+              @if (p.cv_document) {
+              <a [href]="p.cv_document" target="_blank" (click)="$event.stopPropagation()" class="cv-link-pill"
+                title="Consulter / Télécharger le CV">
+                📄 CV
+              </a>
+              } @else {
+              <span class="text-muted">—</span>
+              }
+            </td>
+            <td>
+              <span class="status-pill"
+                [class.pill-yes]="p.convention_contrat === 'oui' || p.convention_contrat === 'Oui'"
+                [class.pill-no]="p.convention_contrat === 'non' || p.convention_contrat === 'Non'">
+                {{ p.convention_contrat || 'Non' }}
+              </span>
+            </td>
+            <td>{{ p.date_debut_contrat || '-' }}</td>
+            <td>{{ p.date_fin_contrat || '-' }}</td>
+            <td (click)="$event.stopPropagation()">
+              <div class="row-actions">
+                <button class="icon-action-btn edit" (click)="openEditCompanyModal(p, $event)"
+                  title="Modifier">✏️</button>
+                <button class="icon-action-btn delete" (click)="deleteCompany(p, $event)" title="Supprimer">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="12" class="empty-state">
+              Aucun prestataire trouvé. Cliquez sur "+ Nouveau Prestataire" pour en ajouter un.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
     }
 
     <!-- 6. TABLEAU 2 : ÉVALUATION DE L'ANNÉE SÉLECTIONNÉE (SEULEMENT LES CONCERNÉS) -->
     @if (activeTab() !== 'directory') {
-      <div class="table-card">
-        <div class="tab-info-bar">
-          <h2>Évaluation {{ activeTab() }} <span class="count-badge">({{ getEvaluationsForActiveYear().length }} prestataires)</span></h2>
-          <button class="btn-sm-primary" (click)="openAddEvalForActiveYear()">+ Evalué Prestataire {{ activeTab() }}</button>
-        </div>
-
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width: 45px;">ID</th>
-              <th>Nom du Prestataire</th>
-              <th>Patente</th>
-              <th>Domaine / Service</th>
-              <th>Interlocuteur Principal</th>
-              <th>Fonction</th>
-              <th>E-mail / Téléphone</th>
-              <th>Prix (/4)</th>
-              <th>Qualité (/4)</th>
-              <th>Prestation (/4)</th>
-              <th>Respect Délais (/4)</th>
-              <th>Score (%)</th>
-              <th>Décision</th>
-              <th>Notes / Remarques</th>
-              <th style="width: 70px; text-align: center;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of getEvaluationsForActiveYear(); track item.eval.id; let i = $index) {
-              <tr (click)="openDetailsModal(item.provider)" class="clickable-row">
-                <td class="text-center font-bold">{{ i + 1 }}</td>
-                <td><strong class="provider-name">{{ item.provider.name }}</strong></td>
-                <td>
-                  <span class="status-pill" [class.pill-yes]="item.provider.patente === 'oui' || item.provider.patente === 'Oui'">
-                    {{ item.provider.patente || 'Oui' }}
-                  </span>
-                </td>
-                <td><span class="service-tag">{{ item.provider.service_provided }}</span></td>
-                <td>{{ item.provider.interlocuteur_principal || '-' }}</td>
-                <td><span class="role-text">{{ item.provider.fonction_interlocuteur || '-' }}</span></td>
-                <td>
-                  @if (item.provider.email) { <div class="contact-line">{{ item.provider.email }}</div> }
-                  @if (item.provider.phone) { <div class="contact-line">{{ item.provider.phone }}</div> }
-                  @if (!item.provider.email && !item.provider.phone) { <span class="text-muted">-</span> }
-                </td>
-                
-                <!-- NOTES CRITÈRES /4 -->
-                <td class="text-center"><span class="score-num">{{ item.eval.prix ?? '-' }}</span></td>
-                <td class="text-center"><span class="score-num">{{ item.eval.qualite ?? '-' }}</span></td>
-                <td class="text-center"><span class="score-num">{{ item.eval.prestation_service ?? '-' }}</span></td>
-                <td class="text-center"><span class="score-num">{{ item.eval.respect_delais ?? '-' }}</span></td>
-
-                <!-- SCORE % -->
-                <td class="text-center">
-                  @if (item.eval.score_percent !== null && item.eval.score_percent !== undefined) {
-                    <strong class="score-percent-pill">{{ item.eval.score_percent }}%</strong>
-                  } @else {
-                    <span class="text-muted">-</span>
-                  }
-                </td>
-
-                <!-- DÉCISION -->
-                <td>
-                  @if (item.eval.decision) {
-                    <span class="decision-badge" [ngClass]="getBadgeClass(item.eval.decision)">
-                      {{ item.eval.decision }}
-                    </span>
-                  } @else {
-                    <span class="text-muted font-italic">Non évalué</span>
-                  }
-                </td>
-
-                <!-- NOTES -->
-                <td class="notes-col">
-                  <span class="notes-text" [title]="item.eval.notes || ''">
-                    {{ item.eval.notes || '-' }}
-                  </span>
-                </td>
-
-                <!-- ACTIONS INLINE (ICÔNES MODIFIER & SUPPRIMER) -->
-                <td (click)="$event.stopPropagation()">
-                  <div class="row-actions">
-                    <button class="icon-action-btn edit" (click)="openAddOrEditEvalModal(item.provider, item.eval, $event)" title="Modifier l'évaluation">✏️</button>
-                    <button class="icon-action-btn delete" (click)="deleteCompany(item.provider, $event)" title="Supprimer le prestataire">🗑️</button>
-                  </div>
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="15" class="empty-state">
-                  Aucune évaluation enregistrée pour l'année {{ activeTab() }}.
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+    <div class="table-card">
+      <div class="tab-info-bar">
+        <h2>Évaluation {{ activeTab() }} <span class="count-badge">({{ getEvaluationsForActiveYear().length }}
+            prestataires)</span></h2>
+        <button class="btn-sm-primary" (click)="openAddEvalForActiveYear()">+ Evalué Prestataire {{ activeTab()
+          }}</button>
       </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 45px;">ID</th>
+            <th>Nom du Prestataire</th>
+            <th>Patente</th>
+            <th>Domaine / Service</th>
+            <th>Interlocuteur Principal</th>
+            <th>Fonction</th>
+            <th>E-mail / Téléphone</th>
+            <th>Prix (/4)</th>
+            <th>Qualité (/4)</th>
+            <th>Prestation (/4)</th>
+            <th>Respect Délais (/4)</th>
+            <th>Score (%)</th>
+            <th>Décision</th>
+            <th>Notes / Remarques</th>
+            <th style="width: 70px; text-align: center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of getEvaluationsForActiveYear(); track item.eval.id; let i = $index) {
+          <tr (click)="openDetailsModal(item.provider)" class="clickable-row">
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td><strong class="provider-name">{{ item.provider.name }}</strong></td>
+            <td>
+              <span class="status-pill"
+                [class.pill-yes]="item.provider.patente === 'oui' || item.provider.patente === 'Oui'">
+                {{ item.provider.patente || 'Oui' }}
+              </span>
+            </td>
+            <td><span class="service-tag">{{ item.provider.service_provided }}</span></td>
+            <td>{{ item.provider.interlocuteur_principal || '-' }}</td>
+            <td><span class="role-text">{{ item.provider.fonction_interlocuteur || '-' }}</span></td>
+            <td>
+              @if (item.provider.email) { <div class="contact-line">{{ item.provider.email }}</div> }
+              @if (item.provider.phone) { <div class="contact-line">{{ item.provider.phone }}</div> }
+              @if (!item.provider.email && !item.provider.phone) { <span class="text-muted">-</span> }
+            </td>
+
+            <!-- NOTES CRITÈRES /4 -->
+            <td class="text-center"><span class="score-num">{{ item.eval.prix ?? '-' }}</span></td>
+            <td class="text-center"><span class="score-num">{{ item.eval.qualite ?? '-' }}</span></td>
+            <td class="text-center"><span class="score-num">{{ item.eval.prestation_service ?? '-' }}</span></td>
+            <td class="text-center"><span class="score-num">{{ item.eval.respect_delais ?? '-' }}</span></td>
+
+            <!-- SCORE % -->
+            <td class="text-center">
+              @if (item.eval.score_percent !== null && item.eval.score_percent !== undefined) {
+              <strong class="score-percent-pill">{{ item.eval.score_percent }}%</strong>
+              } @else {
+              <span class="text-muted">-</span>
+              }
+            </td>
+
+            <!-- DÉCISION -->
+            <td>
+              @if (item.eval.decision) {
+              <span class="decision-badge" [ngClass]="getBadgeClass(item.eval.decision)">
+                {{ item.eval.decision }}
+              </span>
+              } @else {
+              <span class="text-muted font-italic">Non évalué</span>
+              }
+            </td>
+
+            <!-- NOTES -->
+            <td class="notes-col">
+              <span class="notes-text" [title]="item.eval.notes || ''">
+                {{ item.eval.notes || '-' }}
+              </span>
+            </td>
+
+            <!-- ACTIONS INLINE (ICÔNES MODIFIER & SUPPRIMER) -->
+            <td (click)="$event.stopPropagation()">
+              <div class="row-actions">
+                <button class="icon-action-btn edit" (click)="openAddOrEditEvalModal(item.provider, item.eval, $event)"
+                  title="Modifier l'évaluation">✏️</button>
+                <button class="icon-action-btn delete" (click)="deleteCompany(item.provider, $event)"
+                  title="Supprimer le prestataire">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="15" class="empty-state">
+              Aucune évaluation enregistrée pour l'année {{ activeTab() }}.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
     }
 
   </div>
@@ -291,368 +376,379 @@
 
 <!-- MODAL DETAILS PRESTATAIRE (DÉTAILS COMPLETS AU CLIC SUR UNE LIGNE) -->
 @if (showDetailsModal && selectedPrestataire) {
-  <div class="modal-overlay" (click)="closeDetailsModal()">
-    <div class="modal-card detail-modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div>
-          <span class="status-pill pill-yes">{{ selectedPrestataire.status || 'Prestataire' }}</span>
-          <h2 style="margin: 4px 0 0 0; font-size: 20px;">{{ selectedPrestataire.name }}</h2>
+<div class="modal-overlay" (click)="closeDetailsModal()">
+  <div class="modal-card detail-modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <span class="status-pill pill-yes">{{ selectedPrestataire.status || 'Prestataire' }}</span>
+        <h2 style="margin: 4px 0 0 0; font-size: 20px;">{{ selectedPrestataire.name }}</h2>
+      </div>
+      <button class="modal-close" (click)="closeDetailsModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-box">
+          <span class="detail-label">Domaine / Service</span>
+          <span class="detail-value highlight">{{ selectedPrestataire.service_provided }}</span>
         </div>
-        <button class="modal-close" (click)="closeDetailsModal()">✕</button>
+        <div class="detail-box">
+          <span class="detail-label">Patente</span>
+          <span class="detail-value">{{ selectedPrestataire.patente || 'Oui' }}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label">Interlocuteur Principal</span>
+          <span class="detail-value">{{ selectedPrestataire.interlocuteur_principal || '-' }}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label">Fonction</span>
+          <span class="detail-value">{{ selectedPrestataire.fonction_interlocuteur || '-' }}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label">E-mail</span>
+          <span class="detail-value">{{ selectedPrestataire.email || '-' }}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label">Téléphone</span>
+          <span class="detail-value">{{ selectedPrestataire.phone || '-' }}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label">Convention / Contrat</span>
+          <span class="detail-value">{{ selectedPrestataire.convention_contrat || 'Non' }}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label">Période de Contrat</span>
+          <span class="detail-value">
+            {{ selectedPrestataire.date_debut_contrat || 'NC' }} ➔ {{ selectedPrestataire.date_fin_contrat || 'NC' }}
+          </span>
+        </div>
       </div>
 
-      <div class="modal-body">
-        <div class="detail-grid">
-          <div class="detail-box">
-            <span class="detail-label">Domaine / Service</span>
-            <span class="detail-value highlight">{{ selectedPrestataire.service_provided }}</span>
-          </div>
-          <div class="detail-box">
-            <span class="detail-label">Patente</span>
-            <span class="detail-value">{{ selectedPrestataire.patente || 'Oui' }}</span>
-          </div>
-          <div class="detail-box">
-            <span class="detail-label">Interlocuteur Principal</span>
-            <span class="detail-value">{{ selectedPrestataire.interlocuteur_principal || '-' }}</span>
-          </div>
-          <div class="detail-box">
-            <span class="detail-label">Fonction</span>
-            <span class="detail-value">{{ selectedPrestataire.fonction_interlocuteur || '-' }}</span>
-          </div>
-          <div class="detail-box">
-            <span class="detail-label">E-mail</span>
-            <span class="detail-value">{{ selectedPrestataire.email || '-' }}</span>
-          </div>
-          <div class="detail-box">
-            <span class="detail-label">Téléphone</span>
-            <span class="detail-value">{{ selectedPrestataire.phone || '-' }}</span>
-          </div>
-          <div class="detail-box">
-            <span class="detail-label">Convention / Contrat</span>
-            <span class="detail-value">{{ selectedPrestataire.convention_contrat || 'Non' }}</span>
-          </div>
-          <div class="detail-box">
-            <span class="detail-label">Période de Contrat</span>
-            <span class="detail-value">
-              {{ selectedPrestataire.date_debut_contrat || 'NC' }} ➔ {{ selectedPrestataire.date_fin_contrat || 'NC' }}
-            </span>
-          </div>
-        </div>
+      @if (selectedPrestataire.cv_document) {
+      <div class="cv-download-banner mt-3">
+        <span>📄 Document CV / Pièce jointe du prestataire</span>
+        <a [href]="selectedPrestataire.cv_document" target="_blank" class="btn-file">Télécharger / Consulter</a>
+      </div>
+      }
 
-        @if (selectedPrestataire.cv_document) {
-          <div class="cv-download-banner mt-3">
-            <span>📄 Document CV / Pièce jointe du prestataire</span>
-            <a [href]="selectedPrestataire.cv_document" target="_blank" class="btn-file">Télécharger / Consulter</a>
+      <div class="history-section mt-4">
+        <h4>Historique des Évaluations Annuelles</h4>
+        @for (ev of selectedPrestataireEvals; track ev.id) {
+        <div class="history-card">
+          <div class="history-header">
+            <strong>Évaluation {{ ev.year }}</strong>
+            <span class="decision-badge" [ngClass]="getBadgeClass(ev.decision)">{{ ev.decision || 'Non évalué' }}</span>
           </div>
-        }
-
-        <div class="history-section mt-4">
-          <h4>Historique des Évaluations Annuelles</h4>
-          @for (ev of selectedPrestataireEvals; track ev.id) {
-            <div class="history-card">
-              <div class="history-header">
-                <strong>Évaluation {{ ev.year }}</strong>
-                <span class="decision-badge" [ngClass]="getBadgeClass(ev.decision)">{{ ev.decision || 'Non évalué' }}</span>
-              </div>
-              <div class="history-metrics">
-                <span>Prix: <strong>{{ ev.prix ?? '-' }}/4</strong></span>
-                <span>Qualité: <strong>{{ ev.qualite ?? '-' }}/4</strong></span>
-                <span>Prestation: <strong>{{ ev.prestation_service ?? '-' }}/4</strong></span>
-                <span>Délais: <strong>{{ ev.respect_delais ?? '-' }}/4</strong></span>
-                <span>Score Global: <strong style="color: #0284c7;">{{ ev.score_percent ? ev.score_percent + '%' : '-' }}</strong></span>
-              </div>
-              @if (ev.notes) {
-                <p class="history-notes">💬 {{ ev.notes }}</p>
-              }
-            </div>
-          } @empty {
-            <p class="text-muted">Aucune évaluation enregistrée pour ce prestataire.</p>
+          <div class="history-metrics">
+            <span>Prix: <strong>{{ ev.prix ?? '-' }}/4</strong></span>
+            <span>Qualité: <strong>{{ ev.qualite ?? '-' }}/4</strong></span>
+            <span>Prestation: <strong>{{ ev.prestation_service ?? '-' }}/4</strong></span>
+            <span>Délais: <strong>{{ ev.respect_delais ?? '-' }}/4</strong></span>
+            <span>Score Global: <strong style="color: #0284c7;">{{ ev.score_percent ? ev.score_percent + '%' : '-'
+                }}</strong></span>
+          </div>
+          @if (ev.notes) {
+          <p class="history-notes">💬 {{ ev.notes }}</p>
           }
         </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeDetailsModal()">Fermer</button>
-        <button class="btn-icon-labeled edit" (click)="openEditCompanyModal(selectedPrestataire); closeDetailsModal()">✏️ Modifier</button>
-        <button class="btn-icon-labeled delete" (click)="deleteCompany(selectedPrestataire)">🗑️ Supprimer</button>
+        } @empty {
+        <p class="text-muted">Aucune évaluation enregistrée pour ce prestataire.</p>
+        }
       </div>
     </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeDetailsModal()">Fermer</button>
+      <button class="btn-icon-labeled edit" (click)="openEditCompanyModal(selectedPrestataire); closeDetailsModal()">✏️
+        Modifier</button>
+      <button class="btn-icon-labeled delete" (click)="deleteCompany(selectedPrestataire)">🗑️ Supprimer</button>
+    </div>
   </div>
+</div>
 }
 
 <!-- MODAL FORMULAIRE PRESTATAIRE -->
 @if (showCompanyModal) {
-  <div class="modal-overlay" (click)="closeCompanyModal()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3>{{ isEditCompany ? 'Modifier le Prestataire' : 'Nouveau Prestataire' }}</h3>
-        <button class="modal-close" (click)="closeCompanyModal()">✕</button>
+<div class="modal-overlay" (click)="closeCompanyModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ isEditCompany ? 'Modifier le Prestataire' : 'Nouveau Prestataire' }}</h3>
+      <button class="modal-close" (click)="closeCompanyModal()">✕</button>
+    </div>
+    <div class="modal-body grid-2">
+      <div class="form-group full-width">
+        <label>Nom du Prestataire <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="companyForm.name" class="form-control"
+          placeholder="ex: Africain Job, Genis Consulting...">
       </div>
-      <div class="modal-body grid-2">
-        <div class="form-group full-width">
-          <label>Nom du Prestataire <span class="required">*</span></label>
-          <input type="text" [(ngModel)]="companyForm.name" class="form-control" placeholder="ex: Africain Job, Genis Consulting...">
-        </div>
 
-        <div class="form-group">
-          <label>Patente</label>
-          <select [(ngModel)]="companyForm.patente" class="form-control">
-            <option value="Oui">Oui</option>
-            <option value="Non">Non</option>
-            <option value="En cours">En cours</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Domaine / Service</label>
-          <select [(ngModel)]="companyForm.service_provided" class="form-control">
-            <option value="Recrutement">Recrutement</option>
-            <option value="Formation">Formation</option>
-            <option value="Consulting">Consulting</option>
-            <option value="Comptable">Comptable</option>
-            <option value="Fourniture bureautique">Fourniture bureautique</option>
-            <option value="Fourniture">Fourniture</option>
-            <option value="Informatique">Informatique</option>
-            <option value="Autre">Autre</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Interlocuteur Principal</label>
-          <input type="text" [(ngModel)]="companyForm.interlocuteur_principal" class="form-control" placeholder="Nom & Prénom">
-        </div>
-
-        <div class="form-group">
-          <label>Fonction Interlocuteur</label>
-          <input type="text" [(ngModel)]="companyForm.fonction_interlocuteur" class="form-control" placeholder="ex: Formateur, Gérant...">
-        </div>
-
-        <div class="form-group">
-          <label>E-mail</label>
-          <input type="email" [(ngModel)]="companyForm.email" class="form-control" placeholder="email@domaine.com">
-        </div>
-
-        <div class="form-group">
-          <label>Téléphone</label>
-          <input type="text" [(ngModel)]="companyForm.phone" class="form-control" placeholder="+216 ...">
-        </div>
-
-        <div class="form-group">
-          <label>Convention / Contrat Signé</label>
-          <select [(ngModel)]="companyForm.convention_contrat" class="form-control">
-            <option value="Oui">Oui</option>
-            <option value="Non">Non</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Date Début Contrat</label>
-          <input type="date" [(ngModel)]="companyForm.date_debut_contrat" class="form-control">
-        </div>
-
-        <div class="form-group">
-          <label>Date Fin Contrat</label>
-          <input type="date" [(ngModel)]="companyForm.date_fin_contrat" class="form-control">
-        </div>
-
-        <div class="form-group full-width">
-          <label>Joindre Document / CV (PDF, DOCX)</label>
-          <input type="file" (change)="onCvFileSelected($event)" class="form-control">
-        </div>
+      <div class="form-group">
+        <label>Patente</label>
+        <select [(ngModel)]="companyForm.patente" class="form-control">
+          <option value="Oui">Oui</option>
+          <option value="Non">Non</option>
+          <option value="En cours">En cours</option>
+        </select>
       </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeCompanyModal()">Annuler</button>
-        <button class="btn-primary" (click)="saveCompany()">Enregistrer</button>
+
+      <div class="form-group">
+        <label>Domaine / Service</label>
+        <select [(ngModel)]="companyForm.service_provided" class="form-control">
+          <option value="Recrutement">Recrutement</option>
+          <option value="Formation">Formation</option>
+          <option value="Consulting">Consulting</option>
+          <option value="Comptable">Comptable</option>
+          <option value="Fourniture bureautique">Fourniture bureautique</option>
+          <option value="Fourniture">Fourniture</option>
+          <option value="Informatique">Informatique</option>
+          <option value="Autre">Autre</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Interlocuteur Principal</label>
+        <input type="text" [(ngModel)]="companyForm.interlocuteur_principal" class="form-control"
+          placeholder="Nom & Prénom">
+      </div>
+
+      <div class="form-group">
+        <label>Fonction Interlocuteur</label>
+        <input type="text" [(ngModel)]="companyForm.fonction_interlocuteur" class="form-control"
+          placeholder="ex: Formateur, Gérant...">
+      </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" [(ngModel)]="companyForm.email" class="form-control" placeholder="email@domaine.com">
+      </div>
+
+      <div class="form-group">
+        <label>Téléphone</label>
+        <input type="text" [(ngModel)]="companyForm.phone" class="form-control" placeholder="+216 ...">
+      </div>
+
+      <div class="form-group">
+        <label>Convention / Contrat Signé</label>
+        <select [(ngModel)]="companyForm.convention_contrat" class="form-control">
+          <option value="Oui">Oui</option>
+          <option value="Non">Non</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Date Début Contrat</label>
+        <input type="date" [(ngModel)]="companyForm.date_debut_contrat" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>Date Fin Contrat</label>
+        <input type="date" [(ngModel)]="companyForm.date_fin_contrat" class="form-control">
+      </div>
+
+      <div class="form-group full-width">
+        <label>Joindre Document / CV (PDF, DOCX)</label>
+        <input type="file" (change)="onCvFileSelected($event)" class="form-control">
       </div>
     </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeCompanyModal()">Annuler</button>
+      <button class="btn-primary" (click)="saveCompany()">Enregistrer</button>
+    </div>
   </div>
+</div>
 }
 
 <!-- MODAL FORMULAIRE ÉVALUATION (NOTES SUR 4) -->
 @if (showEvalModal) {
-  <div class="modal-overlay" (click)="closeEvalModal()">
-    <div class="modal-card eval-modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header">
+<div class="modal-overlay" (click)="closeEvalModal()">
+  <div class="modal-card eval-modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <span class="eval-year-badge">{{ evalForm.year }}</span>
+        <h3 style="margin: 4px 0 0 0;">{{ isEditEval ? 'Modifier l\'Évaluation' : 'Nouvelle Évaluation' }}</h3>
+      </div>
+      <button class="modal-close" (click)="closeEvalModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Bannière / Sélection prestataire -->
+      @if (!isEditEval) {
+      <div class="form-group mb-3"
+        style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;">
+        <label
+          style="font-weight: 700; color: #0284c7; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
+          Sélectionner le Prestataire à évaluer
+        </label>
+        <select class="form-control" [ngModel]="evalForm.company" (change)="onEvalCompanySelect($event.target)"
+          style="background: #fff; font-weight: 600; font-size: 14px;">
+          @for (p of prestataires(); track p.id) {
+          <option [value]="p.id">{{ p.name }} ({{ p.service_provided }})</option>
+          }
+        </select>
+      </div>
+      } @else {
+      <div class="eval-prestataire-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eval-icon">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
         <div>
-          <span class="eval-year-badge">{{ evalForm.year }}</span>
-          <h3 style="margin: 4px 0 0 0;">{{ isEditEval ? 'Modifier l\'Évaluation' : 'Nouvelle Évaluation' }}</h3>
+          <span class="eval-banner-label">Prestataire évalué</span>
+          <strong class="eval-banner-name">{{ evalForm.company_name }}</strong>
         </div>
-        <button class="modal-close" (click)="closeEvalModal()">✕</button>
       </div>
-      <div class="modal-body">
+      }
 
-        <!-- Bannière / Sélection prestataire -->
-        @if (!isEditEval) {
-          <div class="form-group mb-3" style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;">
-            <label style="font-weight: 700; color: #0284c7; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
-              Sélectionner le Prestataire à évaluer
-            </label>
-            <select class="form-control" [ngModel]="evalForm.company" (change)="onEvalCompanySelect($event.target)" style="background: #fff; font-weight: 600; font-size: 14px;">
-              @for (p of prestataires(); track p.id) {
-                <option [value]="p.id">{{ p.name }} ({{ p.service_provided }})</option>
-              }
+      <!-- Section 1 : Critères de notation -->
+      <div class="eval-grid-section">
+        <h4 class="eval-section-title">
+          <span class="section-num">1</span> Critères d'Évaluation (Note sur 4)
+        </h4>
+        <div class="eval-criteria-grid">
+
+          <!-- PRIX -->
+          <div class="eval-criterion-card">
+            <div class="criterion-header">
+              <span class="criterion-icon">💰</span>
+              <span class="criterion-label">Prix</span>
+            </div>
+            <select class="criterion-select" [(ngModel)]="evalForm.prix" (ngModelChange)="onNoteChange()">
+              <option [ngValue]="null">-- Sélectionner --</option>
+              <option [ngValue]="1">1 — Insatisfaisant</option>
+              <option [ngValue]="2">2 — Moyen</option>
+              <option [ngValue]="3">3 — Satisfaisant</option>
+              <option [ngValue]="4">4 — Très satisfaisant</option>
             </select>
-          </div>
-        } @else {
-          <div class="eval-prestataire-banner">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eval-icon">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            <div>
-              <span class="eval-banner-label">Prestataire évalué</span>
-              <strong class="eval-banner-name">{{ evalForm.company_name }}</strong>
+            <div class="criterion-note" [class.note-filled]="evalForm.prix !== null && evalForm.prix !== undefined">
+              @if (evalForm.prix !== null && evalForm.prix !== undefined) {
+              <strong>{{ evalForm.prix }}</strong><span>/4</span>
+              } @else {
+              <span class="note-empty">—</span>
+              }
             </div>
           </div>
-        }
 
-        <!-- Section 1 : Critères de notation -->
-        <div class="eval-grid-section">
-          <h4 class="eval-section-title">
-            <span class="section-num">1</span> Critères d'Évaluation (Note sur 4)
-          </h4>
-          <div class="eval-criteria-grid">
-
-            <!-- PRIX -->
-            <div class="eval-criterion-card">
-              <div class="criterion-header">
-                <span class="criterion-icon">💰</span>
-                <span class="criterion-label">Prix</span>
-              </div>
-              <select class="criterion-select" [(ngModel)]="evalForm.prix" (ngModelChange)="onNoteChange()">
-                <option [ngValue]="null">-- Sélectionner --</option>
-                <option [ngValue]="1">1 — Insatisfaisant</option>
-                <option [ngValue]="2">2 — Moyen</option>
-                <option [ngValue]="3">3 — Satisfaisant</option>
-                <option [ngValue]="4">4 — Très satisfaisant</option>
-              </select>
-              <div class="criterion-note" [class.note-filled]="evalForm.prix !== null && evalForm.prix !== undefined">
-                @if (evalForm.prix !== null && evalForm.prix !== undefined) {
-                  <strong>{{ evalForm.prix }}</strong><span>/4</span>
-                } @else {
-                  <span class="note-empty">—</span>
-                }
-              </div>
+          <!-- QUALITÉ -->
+          <div class="eval-criterion-card">
+            <div class="criterion-header">
+              <span class="criterion-icon">⭐</span>
+              <span class="criterion-label">Qualité</span>
             </div>
-
-            <!-- QUALITÉ -->
-            <div class="eval-criterion-card">
-              <div class="criterion-header">
-                <span class="criterion-icon">⭐</span>
-                <span class="criterion-label">Qualité</span>
-              </div>
-              <select class="criterion-select" [(ngModel)]="evalForm.qualite" (ngModelChange)="onNoteChange()">
-                <option [ngValue]="null">-- Sélectionner --</option>
-                <option [ngValue]="1">1 — Insatisfaisant</option>
-                <option [ngValue]="2">2 — Moyen</option>
-                <option [ngValue]="3">3 — Satisfaisant</option>
-                <option [ngValue]="4">4 — Très satisfaisant</option>
-              </select>
-              <div class="criterion-note" [class.note-filled]="evalForm.qualite !== null && evalForm.qualite !== undefined">
-                @if (evalForm.qualite !== null && evalForm.qualite !== undefined) {
-                  <strong>{{ evalForm.qualite }}</strong><span>/4</span>
-                } @else {
-                  <span class="note-empty">—</span>
-                }
-              </div>
+            <select class="criterion-select" [(ngModel)]="evalForm.qualite" (ngModelChange)="onNoteChange()">
+              <option [ngValue]="null">-- Sélectionner --</option>
+              <option [ngValue]="1">1 — Insatisfaisant</option>
+              <option [ngValue]="2">2 — Moyen</option>
+              <option [ngValue]="3">3 — Satisfaisant</option>
+              <option [ngValue]="4">4 — Très satisfaisant</option>
+            </select>
+            <div class="criterion-note"
+              [class.note-filled]="evalForm.qualite !== null && evalForm.qualite !== undefined">
+              @if (evalForm.qualite !== null && evalForm.qualite !== undefined) {
+              <strong>{{ evalForm.qualite }}</strong><span>/4</span>
+              } @else {
+              <span class="note-empty">—</span>
+              }
             </div>
-
-            <!-- PRESTATION DE SERVICE -->
-            <div class="eval-criterion-card">
-              <div class="criterion-header">
-                <span class="criterion-icon">🛠️</span>
-                <span class="criterion-label">Prestation de service</span>
-              </div>
-              <select class="criterion-select" [(ngModel)]="evalForm.prestation_service" (ngModelChange)="onNoteChange()">
-                <option [ngValue]="null">-- Sélectionner --</option>
-                <option [ngValue]="1">1 — Insatisfaisant</option>
-                <option [ngValue]="2">2 — Moyen</option>
-                <option [ngValue]="3">3 — Satisfaisant</option>
-                <option [ngValue]="4">4 — Très satisfaisant</option>
-              </select>
-              <div class="criterion-note" [class.note-filled]="evalForm.prestation_service !== null && evalForm.prestation_service !== undefined">
-                @if (evalForm.prestation_service !== null && evalForm.prestation_service !== undefined) {
-                  <strong>{{ evalForm.prestation_service }}</strong><span>/4</span>
-                } @else {
-                  <span class="note-empty">—</span>
-                }
-              </div>
-            </div>
-
-            <!-- RESPECT DES DÉLAIS -->
-            <div class="eval-criterion-card">
-              <div class="criterion-header">
-                <span class="criterion-icon">⏱️</span>
-                <span class="criterion-label">Respect des délais</span>
-              </div>
-              <select class="criterion-select" [(ngModel)]="evalForm.respect_delais" (ngModelChange)="onNoteChange()">
-                <option [ngValue]="null">-- Sélectionner --</option>
-                <option [ngValue]="1">1 — Insatisfaisant</option>
-                <option [ngValue]="2">2 — Moyen</option>
-                <option [ngValue]="3">3 — Satisfaisant</option>
-                <option [ngValue]="4">4 — Très satisfaisant</option>
-              </select>
-              <div class="criterion-note" [class.note-filled]="evalForm.respect_delais !== null && evalForm.respect_delais !== undefined">
-                @if (evalForm.respect_delais !== null && evalForm.respect_delais !== undefined) {
-                  <strong>{{ evalForm.respect_delais }}</strong><span>/4</span>
-                } @else {
-                  <span class="note-empty">—</span>
-                }
-              </div>
-            </div>
-
           </div>
+
+          <!-- PRESTATION DE SERVICE -->
+          <div class="eval-criterion-card">
+            <div class="criterion-header">
+              <span class="criterion-icon">🛠️</span>
+              <span class="criterion-label">Prestation de service</span>
+            </div>
+            <select class="criterion-select" [(ngModel)]="evalForm.prestation_service" (ngModelChange)="onNoteChange()">
+              <option [ngValue]="null">-- Sélectionner --</option>
+              <option [ngValue]="1">1 — Insatisfaisant</option>
+              <option [ngValue]="2">2 — Moyen</option>
+              <option [ngValue]="3">3 — Satisfaisant</option>
+              <option [ngValue]="4">4 — Très satisfaisant</option>
+            </select>
+            <div class="criterion-note"
+              [class.note-filled]="evalForm.prestation_service !== null && evalForm.prestation_service !== undefined">
+              @if (evalForm.prestation_service !== null && evalForm.prestation_service !== undefined) {
+              <strong>{{ evalForm.prestation_service }}</strong><span>/4</span>
+              } @else {
+              <span class="note-empty">—</span>
+              }
+            </div>
+          </div>
+
+          <!-- RESPECT DES DÉLAIS -->
+          <div class="eval-criterion-card">
+            <div class="criterion-header">
+              <span class="criterion-icon">⏱️</span>
+              <span class="criterion-label">Respect des délais</span>
+            </div>
+            <select class="criterion-select" [(ngModel)]="evalForm.respect_delais" (ngModelChange)="onNoteChange()">
+              <option [ngValue]="null">-- Sélectionner --</option>
+              <option [ngValue]="1">1 — Insatisfaisant</option>
+              <option [ngValue]="2">2 — Moyen</option>
+              <option [ngValue]="3">3 — Satisfaisant</option>
+              <option [ngValue]="4">4 — Très satisfaisant</option>
+            </select>
+            <div class="criterion-note"
+              [class.note-filled]="evalForm.respect_delais !== null && evalForm.respect_delais !== undefined">
+              @if (evalForm.respect_delais !== null && evalForm.respect_delais !== undefined) {
+              <strong>{{ evalForm.respect_delais }}</strong><span>/4</span>
+              } @else {
+              <span class="note-empty">—</span>
+              }
+            </div>
+          </div>
+
         </div>
-
-        <!-- Section 2 : Résultat automatique -->
-        <div class="eval-result-section">
-          <h4 class="eval-section-title">
-            <span class="section-num">2</span> Résultat Calculé Automatiquement
-          </h4>
-          <div class="eval-result-row">
-            <div class="eval-result-item">
-              <span class="result-label">Score Global (%)</span>
-              <div class="result-score-display" [class.score-available]="liveScore !== null">
-                @if (liveScore !== null) {
-                  <span class="score-big">{{ liveScore }}%</span>
-                } @else {
-                  <span class="score-pending">En attente des notes...</span>
-                }
-              </div>
-            </div>
-            <div class="eval-result-item">
-              <span class="result-label">Décision Qualité</span>
-              <div class="result-decision-display">
-                @if (liveScore !== null) {
-                  <span class="decision-badge" [ngClass]="getBadgeClass(liveDecision)">
-                    {{ liveDecision }}
-                  </span>
-                } @else {
-                  <span class="text-muted font-italic">— Saisir les notes ci-dessus —</span>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 3 : Notes / Remarques -->
-        <div class="eval-notes-section">
-          <h4 class="eval-section-title">
-            <span class="section-num">3</span> Notes &amp; Remarques Qualitatives
-          </h4>
-          <textarea [(ngModel)]="evalForm.notes" rows="3" class="form-control"
-            placeholder="Saisir vos remarques, retours d'expérience ou observations qualitatives..."></textarea>
-        </div>
-
       </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeEvalModal()">Annuler</button>
-        <button class="btn-primary" (click)="saveEval()">
-          💾 Enregistrer l'Évaluation
-        </button>
+
+      <!-- Section 2 : Résultat automatique -->
+      <div class="eval-result-section">
+        <h4 class="eval-section-title">
+          <span class="section-num">2</span> Résultat Calculé Automatiquement
+        </h4>
+        <div class="eval-result-row">
+          <div class="eval-result-item">
+            <span class="result-label">Score Global (%)</span>
+            <div class="result-score-display" [class.score-available]="liveScore !== null">
+              @if (liveScore !== null) {
+              <span class="score-big">{{ liveScore }}%</span>
+              } @else {
+              <span class="score-pending">En attente des notes...</span>
+              }
+            </div>
+          </div>
+          <div class="eval-result-item">
+            <span class="result-label">Décision Qualité</span>
+            <div class="result-decision-display">
+              @if (liveScore !== null) {
+              <span class="decision-badge" [ngClass]="getBadgeClass(liveDecision)">
+                {{ liveDecision }}
+              </span>
+              } @else {
+              <span class="text-muted font-italic">— Saisir les notes ci-dessus —</span>
+              }
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- Section 3 : Notes / Remarques -->
+      <div class="eval-notes-section">
+        <h4 class="eval-section-title">
+          <span class="section-num">3</span> Notes &amp; Remarques Qualitatives
+        </h4>
+        <textarea [(ngModel)]="evalForm.notes" rows="3" class="form-control"
+          placeholder="Saisir vos remarques, retours d'expérience ou observations qualitatives..."></textarea>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeEvalModal()">Annuler</button>
+      <button class="btn-primary" (click)="saveEval()">
+        💾 Enregistrer l'Évaluation
+      </button>
     </div>
   </div>
+</div>
 }

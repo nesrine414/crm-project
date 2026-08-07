@@ -73,7 +73,7 @@ export class NonConformites implements OnInit {
       const ncNum = `nc-${nc.numero}`.toLowerCase();
       const numOnly = `${nc.numero}`;
       const procLabel = (this.processusLabels[nc.processus] ?? '').toLowerCase();
-      
+
       return (
         ncNum.includes(term) ||
         numOnly.includes(term) ||
@@ -106,7 +106,16 @@ export class NonConformites implements OnInit {
     this.showAddModal.set(false);
   }
 
+  formatOrigine(origine?: string): string {
+    if (!origine) return '—';
+    if (origine.trim().toLowerCase() === 'client') return 'Réclamation Client';
+    return origine;
+  }
+
   submitNewNc() {
+    if (this.newNc.origine && this.newNc.origine.trim().toLowerCase() === 'client') {
+      this.newNc.origine = 'Réclamation Client';
+    }
     this.crmData.addNonConformite(this.newNc).subscribe({
       next: () => {
         this.refreshData();
@@ -120,6 +129,9 @@ export class NonConformites implements OnInit {
     if (event) event.stopPropagation();
     this.editNc.set(nc);
     this.editForm = { ...nc };
+    if (this.editForm.origine && this.editForm.origine.trim().toLowerCase() === 'client') {
+      this.editForm.origine = 'Réclamation Client';
+    }
     this.showEditModal.set(true);
   }
 
@@ -131,6 +143,10 @@ export class NonConformites implements OnInit {
   submitEditNc() {
     const current = this.editNc();
     if (!current) return;
+
+    if (this.editForm.origine && this.editForm.origine.trim().toLowerCase() === 'client') {
+      this.editForm.origine = 'Réclamation Client';
+    }
 
     this.crmData.updateNonConformite(current.id, this.editForm).subscribe({
       next: () => {
@@ -156,5 +172,41 @@ export class NonConformites implements OnInit {
       next: () => this.refreshData(),
       error: (err) => console.error(err)
     });
+  }
+  // Ajouter avec les autres signals, en haut de la classe
+  showDocumentsModal = signal(false);
+
+  criteresEfficacite = [
+    {
+      mesure: 'Efficace',
+      critere: "L'action a été correctement mise en œuvre, le problème initial a complètement disparu, et aucun signe de récurrence n'a été constaté."
+    },
+    {
+      mesure: 'Non efficace',
+      critere: "L'action a été mise en place et part d'une bonne intention, mais elle ne résout qu'une partie du problème. La cause reste présente."
+    },
+    {
+      mesure: 'Insuffisant',
+      critere: "L'action a échoué. Le problème s'est reproduit à l'identique, ou la solution choisie s'est avérée inapplicable ou inutile."
+    },
+    {
+      mesure: 'A vérifier',
+      critere: "L'action est déployée, mais la période d'observation (délai de carence) n'est pas encore terminée. On manque de recul."
+    }
+  ];
+
+  criteresGravite = [
+    { niveau: 1, gravite: 'Faible', critere: "Écart ponctuel sans impact significatif sur la qualité du service, la satisfaction du client ou la conformité." },
+    { niveau: 2, gravite: 'Moyenne', critere: "Écart susceptible d'affecter la qualité du service, l'efficacité du processus ou la satisfaction du client." },
+    { niveau: 3, gravite: 'Élevée / Majeure', critere: "Écart ayant un impact important sur la qualité du service, la conformité réglementaire, la satisfaction du client." }
+  ];
+
+  // Ajouter avec les autres méthodes
+  openDocumentsModal() {
+    this.showDocumentsModal.set(true);
+  }
+
+  closeDocumentsModal() {
+    this.showDocumentsModal.set(false);
   }
 }
